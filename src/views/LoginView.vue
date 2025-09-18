@@ -3,17 +3,28 @@
     Tere, palun logi sisse
   </h1>
 
-  <div class="container text-center">
+  <div class="container text-center justify-content-center">
     <div class="row">
       <div class="col">
-        Column
+
       </div>
       <div class="col">
-        Column
+        <form>
+          <div class="mb-3">
+            <label class="form-label">Kasutajanimi</label>
+            <input class="form-control">
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Password</label>
+            <input class="form-control">
+          </div>
+          <button type="submit" class="btn btn-primary">Sisene</button>
+        </form>
       </div>
       <div class="col">
-        Column
+
       </div>
+
     </div>
   </div>
 </template>
