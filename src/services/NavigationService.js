@@ -5,6 +5,4 @@ export default {
     navigateToHome() {
         router.push({name: 'home'});
     },
-
-
 };
