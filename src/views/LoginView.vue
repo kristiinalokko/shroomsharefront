@@ -8,17 +8,16 @@
       <div class="col">
       </div>
       <div class="col">
-        <form>
           <div class="mb-3">
             <label class="form-label">Kasutajanimi</label>
             <input v-model="username" class="form-control">
           </div>
           <div class="mb-3">
             <label class="form-label">Password</label>
-            <input v-model="password" class="form-control">
+            <input v-model="password" type="password" class="form-control">
           </div>
-          <button @click="login" type="submit" class="btn btn-primary">Sisene</button>
-        </form>
+          <button @click="login" type="submit" class="btn btn-primary me-3">Sisene</button>
+          <button type="submit" class="btn btn-primary">Tagasi</button>
       </div>
       <div class="col">
       </div>
@@ -28,6 +27,7 @@
 
 <script>
 import LoginService from "@/services/LoginService";
+import NavigationService from "@/services/NavigationService";
 
 export default {
   name: 'LoginView',
@@ -35,19 +35,41 @@ export default {
     return {
       username: '',
       password: '',
+
+      loginResponse: {
+        userId: 0,
+        roleName: ''
+      },
+
+      errorResponse: {
+        message: '',
+        code: 0
+      }
+
+
+
     }
   },
   methods: {
 
-    login(username, password) {
+    login() {
 
-      LoginService.sendLoginRequest(username, password)
-          .then()
-          .catch()
+      LoginService.sendLoginRequest(this.username, this.password)
+          .then(response => this.handleLoginResponse(response))
+          .catch(error => this.handleErrorResponse(error))
+    },
 
+    handleLoginResponse(response) {
+      this.loginResponse = response.data
+      sessionStorage.setItem('userId', this.loginResponse.userId)
+      sessionStorage.setItem('roleName', this.loginResponse.roleName)
+      NavigationService.navigateToHome()
+    },
 
-
-    }
+    handleErrorResponse(error) {
+      this.errorResponse = error.response.data
+      alert(this.errorResponse.message)
+    },
 
   },
 
