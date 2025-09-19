@@ -38,40 +38,48 @@ export default {
   name: 'RegisterView',
   data() {
     return {
-      username:'',
-      password1:'',
-      password2:'',
+      username: '',
+      password1: '',
+      password2: '',
 
-      user:{
+      user: {
         username: '',
         password: ''
       },
 
-      errorResponse:{
-        message:'',
+      errorResponse: {
+        message: '',
         errorCode: 0,
       }
 
     }
   },
   methods: {
-    register(){
+    register() {
 
-      if (this.username.length < 1 || this.password1.length < 1 || this.password2.length < 1){
+      if (this.inputIsEmpty()) {
         alert('täida kõik väljad')
-      } else if (this.password1 === this.password2) {
-        this.user.username = this.username
-        this.user.password = this.password1
+      } else if (this.passwordsMatch()) {
+        this.createUser();
         RegisterService.sendRegistrationRequest(this.user)
             .then(() => NavigationService.navigateToHome())
             .catch(error => this.handleErrorResponse(error))
-      }else {
-          alert('passwords dont match')
-        }
-      },
+      } else {
+        alert('passwords dont match')
+      }
+    },
+    inputIsEmpty() {
+      return this.username.length < 1 || this.password1.length < 1 || this.password2.length < 1;
+    },
+    passwordsMatch() {
+      return this.password1 === this.password2;
+    },
+    createUser() {
+      this.user.username = this.username
+      this.user.password = this.password1
+    },
 
-
-    handleErrorResponse(error){
+    handleErrorResponse(error) {
       this.errorResponse = error.response.data
       alert(this.errorResponse.message)
     }
