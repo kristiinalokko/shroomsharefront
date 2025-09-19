@@ -43,7 +43,7 @@ export default {
 
       errorResponse: {
         message: '',
-        code: 0
+        errorCode: 0
       }
 
 
