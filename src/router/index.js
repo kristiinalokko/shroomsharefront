@@ -2,7 +2,8 @@ import {createRouter, createWebHistory} from 'vue-router'
 import HomeView from '../views/HomeView.vue'
 import LoginView from "@/views/LoginView.vue";
 import RegisterView from "@/views/RegisterView.vue";
-import LocationView from "@/views/LocationView.vue";
+import LocationView from "@/views/LocationInfoView.vue";
+import LocationInfoView from "@/views/LocationInfoView.vue";
 
 const routes = [
     {
@@ -24,6 +25,11 @@ const routes = [
         path: '/location',
         name: 'location',
         component: LocationView
+    },
+    {
+        path: '/location-info',
+        name: 'locationInfo',
+        component: LocationInfoView
     }
 
 
