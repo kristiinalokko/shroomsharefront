@@ -6,5 +6,4 @@ export default {
         router.push({name: 'home'});
     },
 
-
 };
