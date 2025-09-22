@@ -7,7 +7,7 @@
       <div class="col">
         Siia tuleb pilt
         <LocationImage/>
-<!--        <img src="../assets/forest.jpg" height="1080" width="1613"/>-->
+        <!--        <img src="../assets/forest.jpg" height="1080" width="1613"/>-->
       </div>
       <div class="col">
         Siia tulevad kirjeldus ja seene liikide nimekiri ja allpool nurgas punane süda
@@ -27,10 +27,11 @@
 </template>
 
 <script>
-import LoginService from "@/services/LoginService";
 import {useRoute} from "vue-router";
 import LocationImage from "@/components/LocationImage.vue";
 import FavoriteService from "@/services/FavoriteService";
+import LocationService from "@/services/LocationService";
+import SessionStorageService from "@/services/SessionStorageService";
 
 export default {
   name: 'LocationView',
@@ -39,6 +40,7 @@ export default {
     return {
       locationId: Number(useRoute().query.locationId),
       userId: sessionStorage.getItem("userId"),
+      isLoggedIn: false,
 
       errorResponse: {
         message: '',
@@ -61,14 +63,14 @@ export default {
   },
   methods: {
 
-    getLocation() {
-      LoginService.sendLocationRequest(this.locationId)
+    getLocation(locationId) {
+      LocationService.sendLocationRequest(locationId)
           .then(response => this.handleGetLocationResponse(response))
           .catch(error => this.handleErrorResponse(error))
     },
 
-    getFavorite() {
-      FavoriteService.getFavorite(this.locationId, this.userId)
+    getFavorite(locationId, userId) {
+      FavoriteService.getFavorite(locationId, userId)
           .then()
           .catch()
     },
@@ -84,6 +86,12 @@ export default {
   },
   mounted() {
     this.getLocation(this.locationId);
+
+    this.isLoggedIn = SessionStorageService.isLoggedIn();
+    if (this.isLoggedIn) {
+      this.getFavorite(this.locationId, this.userId)
+    }
+
 
 
   }
