@@ -34,7 +34,7 @@ import LocationService from "@/services/LocationService";
 import SessionStorageService from "@/services/SessionStorageService";
 
 export default {
-  name: 'LocationView',
+  name: 'LocationInfo',
   components: {LocationImage},
   data() {
     return {
