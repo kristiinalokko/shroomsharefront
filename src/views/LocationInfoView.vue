@@ -15,7 +15,9 @@
     </div>
     <div class="row justify-content-end">
       ja allpool nurgas punane süda
-      <Favorite v-if="isLoggedIn" :is-favorite="isFavorite" @event-favorite-changed="handleFavoriteChanged"/>
+      <Favorite v-if="isLoggedIn" :is-favorite="isFavorite"
+                @event-delete-favorite="handleDeleteFavorite"
+                @event-add-favorite="handleAddFavorite"/>
     </div>
     <div class="row">
       <div class="col">
@@ -93,9 +95,16 @@ export default {
       this.errorResponse = error.response.data
     },
 
-    handleFavoriteChanged(isFavorite) {
-      this.isFavorite = isFavorite
-      FavoriteService.updateFavorite(isFavorite, this.locationId, this.userId)
+    handleDeleteFavorite() {
+      FavoriteService.deleteFavorite(this.userId, this.locationId)
+          .then(() => this.isFavorite = false)
+          .catch(error => this.handleErrorResponse(error))
+    },
+
+    handleAddFavorite() {
+      FavoriteService.addFavorite(this.userId, this.locationId)
+          .then(() => this.isFavorite = true)
+          .catch(error => this.handleErrorResponse(error))
     },
 
   },

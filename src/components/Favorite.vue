@@ -1,9 +1,7 @@
 <template>
 <div>
-  <font-awesome-icon v-if="isFavorite" @click="handleFavoriteClick" icon="fa-solid fa-heart" />
-  <font-awesome-icon v-else @click="handleFavoriteClick"  icon="fa-regular fa-heart-cdfgircle-plus" />
-  scfg
-  <FontAwesomeIcon icon="fa-light fa-heart-circle-plus" />cb
+  <font-awesome-icon v-if="isFavorite" @click="handleDeleteFavorite" icon="fa-solid fa-heart" />
+  <font-awesome-icon v-else @click="handleAddFavorite"  icon="fa-regular fa-heart" />
 </div>
 </template>
 
@@ -15,8 +13,12 @@ export default {
   },
   methods: {
 
-    handleFavoriteClick() {
-      this.$emit('event-favorite-changed', !this.isFavorite)
+    handleDeleteFavorite() {
+      this.$emit("event-delete-favorite")
+    },
+
+    handleAddFavorite() {
+      this.$emit("event-add-favorite")
     },
 
   },

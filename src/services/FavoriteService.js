@@ -11,14 +11,24 @@ export default {
         })
     },
 
-    updateFavorite(isFavorite, locationId, userId) {
-        return axios.put("/updateFavorite",
+    addFavorite(userId, locationId) {
+        return axios.post('/favorite', null,
             {
-                isFavorite: isFavorite,
-                locationId: locationId,
-                userId: userId
-            })
+                params: {
+                    userId: userId,
+                    locationId: locationId
+                }
+            }
+        )
     },
 
-
-};
+    deleteFavorite(userId, locationId) {
+        return axios.delete('/favorite', {
+            params: {
+                userId: userId,
+                locationId: locationId
+            }
+        })
+    }
+}
+;
