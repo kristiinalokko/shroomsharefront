@@ -34,7 +34,7 @@
       </div>
     </div>
     <div class="row">
-      <div class="col">
+      <div v-if="comments.length > 0" class="col">
         Kommentaarid asukoha kohta:
 <!--        kahjuks näitab siiski ainult üht kommentaari...-->
         <Comment
