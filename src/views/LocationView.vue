@@ -1,7 +1,8 @@
 <template>
   <div class="container text-center">
     <div class="row>">
-      <h1>Lisa asukoht</h1>
+      <h1 v-if="this.locationId > 0">Muuda asukohta</h1>
+      <h1 v-else>Lisa asukoht</h1>
     </div>
     <div class="row">
       <div class="col">
@@ -36,7 +37,8 @@
           </div>
         </div>
         <div class="row mb-3">
-          <button @click="saveLocation" type="button" class="btn btn-primary mb-3">Salvesta</button>
+          <button v-if="isEdit" @click="updateLocation" type="button" class="btn btn-primary mb-3">Uuenda</button>
+          <button v-else @click="saveLocation" type="button" class="btn btn-primary mb-3">Salvesta</button>
           <button type="button" class="btn btn-secondary">Tagasi</button>
         </div>
       </div>
@@ -51,16 +53,20 @@ import LocationImage from "@/components/LocationImage.vue";
 import ImageInput from "@/components/ImageInput.vue";
 import LocationService from "@/services/LocationService";
 import NavigationService from "@/services/NavigationService";
+import {useRoute} from "vue-router";
+import locationService from "@/services/LocationService";
 
 export default {
   name: 'LocationView',
   components: {ImageInput, LocationImage},
   data() {
     return {
+      isEdit: false,
       resetFileInput: false,
+      locationId: Number(useRoute().query.locationId),
 
       location:{
-        userId: sessionStorage.getItem("userId"),
+        userId: 0,
         locationName: '',
         latitude: 0,
         longitude: 0,
@@ -77,15 +83,37 @@ export default {
     }
   },
   methods:{
+
+    updateLocation(){
+      if (this.inputIsValid()){
+        locationService.sendUpdateLocationRequest(this.location)
+            .then(() => NavigationService.navigateToHome())
+            .catch(error => this.handleErrorResponse(error))
+      }
+    },
+
+    getLocation(locationId){
+      LocationService.sendLocationRequest(locationId)
+          .then(response => this.handleGetLocationResponse(response))
+          .catch(error => this.handleErrorResponse(error))
+    },
+
+    handleGetLocationResponse(response) {
+      this.location = response.data
+    },
+
     setLocationImageData(imageData){
       this.imageData = imageData
       this.location.locationImage = imageData
     },
+
     setResetFileInputToFalse(){
       this.resetFileInput = false
     },
+
     saveLocation(){
       if (this.inputIsValid()){
+        this.location.userId = sessionStorage.getItem('userId')
         LocationService.sendNewLocationRequest(this.location)
             .then(() => NavigationService.navigateToHome())
             .catch(error => this.handleErrorResponse(error))
@@ -93,16 +121,23 @@ export default {
         alert("täida kõik väljad")
       }
     },
+
     inputIsValid() {
       return this.location.locationName.length > 0 && this.location.description.length > 0 ;
     },
+
     handleErrorResponse(error) {
       this.errorResponse = error.response.data
       alert(this.errorResponse.message)
-    }
+    },
+
   },
 
   mounted() {
+    this.isEdit = this.locationId > 0;
+    if (this.isEdit){
+      this.getLocation(this.locationId)
+    }
   }
 }
 </script>

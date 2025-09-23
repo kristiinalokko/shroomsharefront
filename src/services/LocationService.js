@@ -12,5 +12,9 @@ export default {
 
     sendNewLocationRequest(location) {
         return axios.post('/location', location)
+    },
+
+    sendUpdateLocationRequest(location) {
+        return axios.put('/location', location)
     }
 }
