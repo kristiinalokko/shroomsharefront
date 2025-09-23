@@ -77,12 +77,16 @@ export default {
 
     getFavorite(locationId, userId) {
       FavoriteService.getFavorite(locationId, userId)
-          .then()
-          .catch()
+          .then(response => this.handleGetFavoriteResponse(response))
+          .catch(error => this.handleErrorResponse(error));
     },
 
     handleGetLocationResponse(response) {
       this.location = response.data
+    },
+
+    handleGetFavoriteResponse(response) {
+      this.isFavorite = response.data
     },
 
     handleErrorResponse(error) {
@@ -95,6 +99,7 @@ export default {
     },
 
   },
+
   mounted() {
     this.getLocation(this.locationId);
 
