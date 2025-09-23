@@ -5,28 +5,46 @@
   <div class="container text-center">
     <div class="row">
       <div class="col">
-        Siia tuleb pilt
         <LocationImage :image-data="location.locationImage"/>
-        <!--        <img src="../assets/forest.jpg" height="1080" width="1613"/>-->
       </div>
       <div class="col">
-        Siia tulevad kirjeldus ja seene liikide nimekiri
+        <div class="row m-5">
+          Kirjeldus:
+          {{ location.description }}
+        </div>
+        <div class="row m-5">
+          SEENE KOMPONENT
+        </div>
+        <div class="row m-5">
+          Lisatud: {{ location.createdAt }}
+        </div>
       </div>
     </div>
     <div class="row justify-content-end">
-      ja allpool nurgas punane süda
-      <Favorite v-if="isLoggedIn" :is-favorite="isFavorite"
-                @event-delete-favorite="handleDeleteFavorite"
-                @event-add-favorite="handleAddFavorite"/>
+      <div class="col">
+        TÄHEKESTE KOMPONENT
+      </div>
+      <div class="col">
+      </div>
+      <div class="col">
+        Lisa lemmikute hulka:
+        <Favorite v-if="isLoggedIn" :is-favorite="isFavorite"
+                  @event-delete-favorite="handleDeleteFavorite"
+                  @event-add-favorite="handleAddFavorite"/>
+      </div>
     </div>
     <div class="row">
       <div class="col">
-        Siia tulevad kommentaarid
+        Kommentaarid asukoha kohta:
+        <Comment
+            v-for="comment in comments"
+            :comment="comment"
+        />
       </div>
-    </div>
-    <div class="row justify-content-lg-end">
       <div class="col">
+
         Siia tulevad nupud: muuda (kui admin või user), kustuta (kui admin või user), tagasi
+        <!--        <button v-if="isEdit" @click="navigateToEdit" type="button" class="btn btn-primary">Muuda</button>-->
       </div>
     </div>
   </div>
@@ -39,10 +57,12 @@ import FavoriteService from "@/services/FavoriteService";
 import LocationService from "@/services/LocationService";
 import SessionStorageService from "@/services/SessionStorageService";
 import Favorite from "@/components/Favorite.vue";
+import Comment from "@/components/Comment.vue";
+import CommentService from "@/services/CommentService";
 
 export default {
   name: 'LocationView',
-  components: {Favorite, LocationImage},
+  components: {Comment, Favorite, LocationImage},
   data() {
     return {
       locationId: Number(useRoute().query.locationId),
@@ -65,8 +85,18 @@ export default {
         username: '',
         createdAt: '',
         avgRating: 0
-      }
+      },
 
+      comments:
+          [
+            {
+              username: '',
+              body: '',
+              rating: 0,
+              created: '',
+              imageData: ''
+            },
+          ]
     }
   },
   methods: {
@@ -83,12 +113,22 @@ export default {
           .catch(error => this.handleErrorResponse(error));
     },
 
+    getComments(locationId) {
+      CommentService.getComments(locationId)
+          .then(response => this.handleGetCommentsResponse(response))
+          .catch(error => this.handleErrorResponse(error))
+    },
+
     handleGetLocationResponse(response) {
       this.location = response.data
     },
 
     handleGetFavoriteResponse(response) {
       this.isFavorite = response.data
+    },
+
+    handleGetCommentsResponse(response) {
+      this.comments = response.data
     },
 
     handleErrorResponse(error) {
@@ -106,6 +146,10 @@ export default {
           .then(() => this.isFavorite = true)
           .catch(error => this.handleErrorResponse(error))
     },
+    //
+    // navigateToEdit() {
+    //   NavigationService.navigateToEdit(this.locationId)
+    // },
 
   },
   mounted() {
@@ -116,7 +160,7 @@ export default {
       this.getFavorite(this.locationId, this.userId)
     }
 
-
+    this.getComments(this.locationId);
 
   }
 }
