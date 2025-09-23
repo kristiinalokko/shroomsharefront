@@ -7,11 +7,13 @@
       <div class="col">
         Siia tuleb pilt
         <LocationImage/>
-        <!--        <img src="../assets/forest.jpg" height="1080" width="1613"/>-->
       </div>
       <div class="col">
-        Siia tulevad kirjeldus ja seene liikide nimekiri ja allpool nurgas punane süda
+        Siia tulevad kirjeldus ja seene liikide nimekiri
       </div>
+    </div>
+    <div class="row justify-content-lg-end">
+      ja allpool nurgas punane süda
     </div>
     <div class="row">
       <div class="col">
@@ -68,12 +70,12 @@ export default {
           .then(response => this.handleGetLocationResponse(response))
           .catch(error => this.handleErrorResponse(error))
     },
-
-    getFavorite(locationId, userId) {
-      FavoriteService.getFavorite(locationId, userId)
-          .then()
-          .catch()
-    },
+    //
+    // getFavorite(locationId, userId) {
+    //   FavoriteService.getFavorite(locationId, userId)
+    //       .then()
+    //       .catch()
+    // },
 
     handleGetLocationResponse(response) {
       this.location = response.data
@@ -86,11 +88,11 @@ export default {
   },
   mounted() {
     this.getLocation(this.locationId);
-
-    this.isLoggedIn = SessionStorageService.isLoggedIn();
-    if (this.isLoggedIn) {
-      this.getFavorite(this.locationId, this.userId)
-    }
+    //
+    // this.isLoggedIn = SessionStorageService.isLoggedIn();
+    // if (this.isLoggedIn) {
+    //   this.getFavorite(this.locationId, this.userId)
+    // }
 
 
 
