@@ -6,7 +6,7 @@
     <div class="row">
       <div class="col">
         Siia tuleb pilt
-        <LocationImage/>
+        <LocationImage :image-data="location.locationImage"/>
         <!--        <img src="../assets/forest.jpg" height="1080" width="1613"/>-->
       </div>
       <div class="col">

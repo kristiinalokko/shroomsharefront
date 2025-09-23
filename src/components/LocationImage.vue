@@ -6,10 +6,8 @@
 <script>
 export default {
   name: 'LocationImage',
-  data() {
-    return {
+  props: {
       imageData: ''
-    }
   },
   methods: {},
   mounted() {

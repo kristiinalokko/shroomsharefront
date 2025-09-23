@@ -12,7 +12,7 @@ export default {
     },
 
     updateFavorite(isFavorite, locationId, userId) {
-        return axios.put("/favorite",
+        return axios.put("/updateFavorite",
             {
                 isFavorite: isFavorite,
                 locationId: locationId,
