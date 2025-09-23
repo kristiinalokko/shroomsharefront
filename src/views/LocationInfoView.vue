@@ -36,6 +36,7 @@
     <div class="row">
       <div class="col">
         Kommentaarid asukoha kohta:
+<!--        kahjuks näitab siiski ainult üht kommentaari...-->
         <Comment
             v-for="comment in comments"
             :comment="comment"
