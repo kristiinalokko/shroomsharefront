@@ -15,6 +15,8 @@ import {FontAwesomeIcon} from '@fortawesome/vue-fontawesome'
 import {faR, fas, faUserSecret} from '@fortawesome/free-solid-svg-icons'
 import {far} from '@fortawesome/free-regular-svg-icons'
 
+import "leaflet/dist/leaflet.css";
+
 // Add the imported icons to the library
 library.add(faUserSecret, fas, faR, far)
 

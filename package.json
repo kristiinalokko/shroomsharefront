@@ -7,26 +7,40 @@
     "build": "vue-cli-service build"
   },
   "dependencies": {
+    "@bopen/leaflet-area-selection": "^0.7.0",
     "@fortawesome/fontawesome-svg-core": "^6.7.2",
     "@fortawesome/free-brands-svg-icons": "^6.7.2",
     "@fortawesome/free-regular-svg-icons": "^6.7.2",
     "@fortawesome/free-solid-svg-icons": "^6.7.2",
     "@fortawesome/vue-fontawesome": "^3.0.8",
     "@popperjs/core": "^2.11.8",
+    "@vue-leaflet/vue-leaflet": "^0.10.1",
     "axios": "^1.7.9",
     "bootstrap": "^5.3.3",
+    "leaflet": "^1.9.4",
+    "osmtogeojson": "^3.0.0-beta.5",
     "vue": "^3.2.13",
     "vue-axios": "^3.5.2",
     "vue-router": "^4.0.3"
   },
-  "devDependencies": {
-    "@vue/cli-plugin-router": "~5.0.0",
-    "@vue/cli-service": "~5.0.0"
+  "_comments": {
+    "dependencies": {
+      "leaflet": "Used for interactive maps",
+      "@vue-leaflet/vue-leaflet": "Vue 3 wrapper for Leaflet",
+      "@bopen/leaflet-area-selection": "Adds area selection tool to Leaflet"
+    },
+    "devDependencies": {
+      "@vue/cli-plugin-router": "~5.0.0",
+      "@vue/cli-service": "~5.0.0"
+    },
+    "browserslist": [
+      "> 1%",
+      "last 2 versions",
+      "not dead",
+      "not ie 11"
+    ]
   },
-  "browserslist": [
-    "> 1%",
-    "last 2 versions",
-    "not dead",
-    "not ie 11"
-  ]
+  "devDependencies": {
+    "@vue/cli-service": "^5.0.9"
+  }
 }
