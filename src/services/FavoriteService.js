@@ -9,7 +9,26 @@ export default {
                 userId: userId
             }
         })
+    },
+
+    addFavorite(userId, locationId) {
+        return axios.post('/favorite', null,
+            {
+                params: {
+                    userId: userId,
+                    locationId: locationId
+                }
+            }
+        )
+    },
+
+    deleteFavorite(userId, locationId) {
+        return axios.delete('/favorite', {
+            params: {
+                userId: userId,
+                locationId: locationId
+            }
+        })
     }
-
-
 }
+;
