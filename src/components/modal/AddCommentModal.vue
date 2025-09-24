@@ -27,8 +27,8 @@
     </template>
 
     <template #buttons>
-      <button @click="saveComment" type="button" class="btn btn-outline-success">Salvesta</button>
-      Button: tagasi
+      <button @click="saveComment" type="button" class="btn btn-outline-success me-3" >Salvesta</button>
+      <button @click="$emit('event-close-modal')" type="button" class="btn btn-outline-danger">Sulge</button>
     </template>
 
   </Modal>
@@ -60,7 +60,13 @@ export default {
         body: '',
         imageData: '',
         rating: 0
-      }
+      },
+
+      errorResponse: {
+        message: '',
+        errorCode: 0
+      },
+
     }
   },
   methods: {
@@ -71,10 +77,22 @@ export default {
 
     handleResetImageSelectComplete() {
       this.comment.imageData = ''
+      this.resetFileInput = false
     },
 
     saveComment() {
       CommentService.postComment(this.comment)
+          .then(() => this.handleCommentAdded)
+          .catch(error=> this.handleErrorResponse(error))
+      this.$emit('event-close-modal')
+    },
+
+    handleErrorResponse(error) {
+      this.errorResponse = error.response.data
+    },
+
+    handleCommentAdded() {
+      this.$emit('event-new-comment-added', this.comment)
     },
 
   }

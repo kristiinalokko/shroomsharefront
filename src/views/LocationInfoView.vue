@@ -5,7 +5,8 @@
 
   <div class="container text-center">
     <AddCommentModal :add-comment-modal-is-open="addCommentModalIsOpen" :location-id="locationId" :userId="userId"
-                     @event-close-modal="closeAddCommentModal"/>
+                     @event-close-modal="closeAddCommentModal"
+                     @event-new-comment-added="handleNewCommentAdded"/>
 
     <div class="row">
       <div class="col">
@@ -39,7 +40,7 @@
     </div>
     <div class="row">
       <div class="col">
-        <div v-if="comments.length > 0" >
+        <div v-if="comments.length > 0">
           Kommentaarid asukoha kohta:
           <div v-for="(comment, index) in comments" :key="index">
             <Comment :comment="comment"/>
@@ -164,14 +165,16 @@ export default {
     },
 
     closeAddCommentModal() {
-      this.addCommentModalIsOpen= false
+      // this.getComments(this.locationId);
+      this.addCommentModalIsOpen = false
     },
 
+    handleNewCommentAdded(newComment) {
+      this.comments.push(newComment)
+      this.getComments(this.locationId);
 
-    //
-    // navigateToEdit() {
-    //   NavigationService.navigateToEdit(this.locationId)
-    // },
+    },
+
 
   },
   mounted() {
