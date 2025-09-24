@@ -23,6 +23,12 @@
         <div class="row m-5">
           Lisatud: {{ location.createdAt }}
         </div>
+        <div class="row m-5 justify-content-center">
+          Lisa lemmikute hulka:
+          <Favorite v-if="isLoggedIn" :is-favorite="isFavorite"
+                    @event-delete-favorite="handleDeleteFavorite"
+                    @event-add-favorite="handleAddFavorite"/>
+        </div>
       </div>
     </div>
     <div class="row justify-content-end">
@@ -32,29 +38,50 @@
       <div class="col">
       </div>
       <div class="col">
-        Lisa lemmikute hulka:
-        <Favorite v-if="isLoggedIn" :is-favorite="isFavorite"
-                  @event-delete-favorite="handleDeleteFavorite"
-                  @event-add-favorite="handleAddFavorite"/>
+        Siia tulevad nupud: muuda (kui admin või user), kustuta (kui admin või user), tagasi
       </div>
     </div>
-    <div class="row">
-      <div class="col">
-        <div v-if="comments.length > 0">
-          Kommentaarid asukoha kohta:
-          <div v-for="(comment, index) in comments" :key="index">
-            <Comment :comment="comment"/>
-          </div>
+    <div class="row justify-content-center">
+
+
+      <div v-if="comments.length > 0">
+
+        Kommentaarid asukoha kohta:
+
+        <nav aria-label="Page navigation example">
+          <ul class="pagination justify-content-center">
+            <li class="page-item">
+              <a class="page-link" href="#" aria-label="Previous">
+                <span aria-hidden="true">&laquo;</span>
+              </a>
+            </li>
+            <div v-for="(comment, index) in comments" :key="index">
+
+              <li @click="changeCommentPage(index)" class="page-item"><a class="page-link" href="#">{{index+1}}</a></li>
+
+            </div>
+            <li class="page-item">
+              <a class="page-link" href="#" aria-label="Next">
+                <span aria-hidden="true">&raquo;</span>
+              </a>
+            </li>
+          </ul>
+
+        </nav>
+<!--        <div v-if="" v-for="(comment, index) in comments" :key="index" class="justify-content-center">-->
+<!--          <Comment :comment="comment"/>-->
+<!--        </div>-->
+
+        <div v-if="commentPage===undefined" v-for="(comment, index) in comments" :key="index" class="justify-content-center">
+          <Comment :comment="comment"/>
         </div>
-        <font-awesome-icon @click="openAddCommentModal" icon="fa-solid fa-circle-plus" class="fa-3x"/>
+        <div v-else v-for="(comment, index) in comments" :key2="index" class="justify-content-center">
+          <Comment v-if="index===commentPage" :comment="comment"/>
+        </div>
 
       </div>
+      <font-awesome-icon @click="openAddCommentModal" icon="fa-solid fa-circle-plus" class="fa-3x"/>
 
-      <div class="col">
-
-        Siia tulevad nupud: muuda (kui admin või user), kustuta (kui admin või user), tagasi
-        <!--        <button v-if="isEdit" @click="navigateToEdit" type="button" class="btn btn-primary">Muuda</button>-->
-      </div>
     </div>
   </div>
 </template>
@@ -82,6 +109,7 @@ export default {
       isFavorite: false,
       forestImageData: defaultForestImage,
       addCommentModalIsOpen: false,
+      commentPage: undefined,
 
       errorResponse: {
         message: '',
@@ -173,6 +201,10 @@ export default {
       alert(newComment)
       this.getComments(this.locationId);
 
+    },
+
+    changeCommentPage(index) {
+      this.commentPage = index
     },
 
 

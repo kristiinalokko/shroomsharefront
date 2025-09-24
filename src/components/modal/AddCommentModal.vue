@@ -9,7 +9,7 @@
       <div class="container text-center">
         <div class="row">
           <div class="col">
-            <LocationImage :image-data="comment.imageData" :default-image-data="defaultCommentImage" />
+            <Image :image-data="comment.imageData" :default-image-data="defaultCommentImage" />
           </div>
           <div class="col">
             <div class="input-group">
@@ -40,10 +40,11 @@ import Modal from "@/components/modal/base/Modal.vue";
 import ImageInput from "@/components/ImageInput.vue";
 import LocationImage from "@/components/Image.vue";
 import CommentService from "@/services/CommentService";
+import Image from "@/components/Image.vue";
 
 export default {
   name: 'AddCommentModal',
-  components: {LocationImage: LocationImage, ImageInput, Modal},
+  components: {Image, LocationImage: LocationImage, ImageInput, Modal},
   props: {
     addCommentModalIsOpen: Boolean,
     locationId: Number
