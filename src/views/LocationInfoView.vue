@@ -5,7 +5,7 @@
   <div class="container text-center">
     <div class="row">
       <div class="col">
-        <LocationImage :image-data="location.locationImage" :default-image-data="defaultImageData"/>
+        <LocationImage :image-data="location.locationImage" :default-image-data="forestImageData"/>
       </div>
       <div class="col">
         <div class="row m-5">
@@ -70,7 +70,7 @@ export default {
       userId: sessionStorage.getItem("userId"),
       isLoggedIn: false,
       isFavorite: false,
-      defaultImageData: defaultForestImage,
+      forestImageData: defaultForestImage,
 
       errorResponse: {
         message: '',
