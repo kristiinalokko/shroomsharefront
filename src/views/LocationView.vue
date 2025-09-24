@@ -10,15 +10,15 @@
       </div>
       <div class="col-4">
         <div class="row mb-3">
-          <LocationImage :image-data="imageData" class="img-fluid"/>
+          <LocationImage :image-data="location.locationImage" :default-image-data="forestImageData"/>
         </div>
         <div class="row mb-3">
           <label>Asukoha nimi:</label>
           <input v-model="location.locationName" type="text" class="form-control" placeholder="Parim seenekoht">
         </div>
         <div class="row mb-3">
+          <label class="text-center mb-2">Kirjeldus</label>
           <div class="input-group">
-            <span class="input-group-text">Asukoha kirjeldus</span>
             <textarea v-model="location.description" class="form-control"></textarea>
           </div>
         </div>
@@ -55,6 +55,7 @@ import LocationService from "@/services/LocationService";
 import NavigationService from "@/services/NavigationService";
 import {useRoute} from "vue-router";
 import locationService from "@/services/LocationService";
+import defaultForestImage from "@/assets/forest.jpg";
 
 export default {
   name: 'LocationView',
@@ -64,6 +65,7 @@ export default {
       isEdit: false,
       resetFileInput: false,
       locationId: Number(useRoute().query.locationId),
+      forestImageData: defaultForestImage,
 
       location:{
         userId: 0,
@@ -73,8 +75,6 @@ export default {
         description: '',
         locationImage: '',
       },
-
-      imageData:'',
 
       errorResponse: {
         message: '',
@@ -103,7 +103,6 @@ export default {
     },
 
     setLocationImageData(imageData){
-      this.imageData = imageData
       this.location.locationImage = imageData
     },
 
