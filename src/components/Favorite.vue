@@ -1,7 +1,7 @@
 <template>
 <div>
-  <font-awesome-icon v-if="isFavorite" @click="handleDeleteFavorite" icon="fa-solid fa-heart" />
-  <font-awesome-icon v-else @click="handleAddFavorite"  icon="fa-regular fa-heart" />
+  <font-awesome-icon v-if="isFavorite" @click="handleDeleteFavorite" icon="fa-solid fa-heart" class="fa-3x" />
+  <font-awesome-icon v-else @click="handleAddFavorite"  icon="fa-regular fa-heart" class="fa-3x"  />
 </div>
 </template>
 
