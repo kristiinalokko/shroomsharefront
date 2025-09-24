@@ -37,10 +37,9 @@
       <div v-if="comments.length > 0" class="col">
         Kommentaarid asukoha kohta:
 <!--        kahjuks näitab siiski ainult üht kommentaari...-->
-        <Comment
-            v-for="comment in comments"
-            :comment="comment"
-        />
+        <div v-for="comment in comments">
+          <Comment :comment="comment"/>
+        </div>
       </div>
       <div class="col">
 
