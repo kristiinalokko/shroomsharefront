@@ -16,5 +16,9 @@ export default {
 
     sendUpdateLocationRequest(location) {
         return axios.put('/location', location)
+    },
+
+    sendGetMapLocationsAllRequest() {
+        return axios.get('/map-locations/all');
     }
 }
