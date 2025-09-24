@@ -198,7 +198,6 @@ export default {
     },
 
     handleNewCommentAdded(newComment) {
-      alert(newComment)
       this.getComments(this.locationId);
 
     },
