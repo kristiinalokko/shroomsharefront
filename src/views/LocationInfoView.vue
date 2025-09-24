@@ -5,7 +5,7 @@
   <div class="container text-center">
     <div class="row">
       <div class="col">
-        <LocationImage :image-data="location.locationImage"/>
+        <LocationImage :image-data="location.locationImage" :default-image-data="defaultImageData"/>
       </div>
       <div class="col">
         <div class="row m-5">
@@ -37,7 +37,7 @@
       <div v-if="comments.length > 0" class="col">
         Kommentaarid asukoha kohta:
 <!--        kahjuks näitab siiski ainult üht kommentaari...-->
-        <div v-for="comment in comments">
+        <div v-for="(comment, index) in comments" :key="index">
           <Comment :comment="comment"/>
         </div>
       </div>
@@ -52,23 +52,25 @@
 
 <script>
 import {useRoute} from "vue-router";
-import LocationImage from "@/components/LocationImage.vue";
+import Image from "@/components/Image.vue";
 import FavoriteService from "@/services/FavoriteService";
 import LocationService from "@/services/LocationService";
 import SessionStorageService from "@/services/SessionStorageService";
 import Favorite from "@/components/Favorite.vue";
 import Comment from "@/components/Comment.vue";
 import CommentService from "@/services/CommentService";
+import defaultForestImage from '@/assets/forest.jpg'
 
 export default {
   name: 'LocationView',
-  components: {Comment, Favorite, LocationImage},
+  components: {Comment, Favorite, LocationImage: Image},
   data() {
     return {
       locationId: Number(useRoute().query.locationId),
       userId: sessionStorage.getItem("userId"),
       isLoggedIn: false,
       isFavorite: false,
+      defaultImageData: defaultForestImage,
 
       errorResponse: {
         message: '',
@@ -164,4 +166,5 @@ export default {
 
   }
 }
+
 </script>

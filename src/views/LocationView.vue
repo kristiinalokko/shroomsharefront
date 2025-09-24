@@ -49,7 +49,7 @@
 <script>
 
 
-import LocationImage from "@/components/LocationImage.vue";
+import Image from "@/components/Image.vue";
 import ImageInput from "@/components/ImageInput.vue";
 import LocationService from "@/services/LocationService";
 import NavigationService from "@/services/NavigationService";
@@ -58,7 +58,7 @@ import locationService from "@/services/LocationService";
 
 export default {
   name: 'LocationView',
-  components: {ImageInput, LocationImage},
+  components: {ImageInput, LocationImage: Image},
   data() {
     return {
       isEdit: false,
