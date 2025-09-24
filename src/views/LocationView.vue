@@ -10,7 +10,7 @@
       </div>
       <div class="col-4">
         <div class="row mb-3">
-          <LocationImage :image-data="location.locationImage" :default-image-data="forestImageData"/>
+          <Image :image-data="location.locationImage" :default-image-data="forestImageData"/>
         </div>
         <div class="row mb-3">
           <label>Asukoha nimi:</label>
@@ -44,6 +44,20 @@
       </div>
     </div>
   </div>
+  <div v-if="isEdit">
+    <hr class="my-4">
+    <h3>Lisa seen</h3>
+    <div class="container text-center">
+      <div class="row">
+        <div class="col">
+          seene pilt
+        </div>
+        <div class="col">
+          dropdown seene valimiseks
+        </div>
+      </div>
+    </div>
+  </div>
 </template>
 
 <script>
@@ -56,16 +70,18 @@ import NavigationService from "@/services/NavigationService";
 import {useRoute} from "vue-router";
 import locationService from "@/services/LocationService";
 import defaultForestImage from "@/assets/forest.jpg";
+import defaultShroomImage from "@/assets/shroom.png";
 
 export default {
   name: 'LocationView',
-  components: {ImageInput, LocationImage: Image},
+  components: {ImageInput, Image: Image},
   data() {
     return {
       isEdit: false,
       resetFileInput: false,
       locationId: Number(useRoute().query.locationId),
       forestImageData: defaultForestImage,
+      shroomImageData: defaultShroomImage,
 
       location:{
         userId: 0,

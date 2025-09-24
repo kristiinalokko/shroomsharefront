@@ -4,6 +4,7 @@ import LoginView from "@/views/LoginView.vue";
 import RegisterView from "@/views/RegisterView.vue";
 import LocationView from "@/views/LocationView.vue";
 import LocationInfoView from "@/views/LocationInfoView.vue";
+import ShroomView from "@/views/ShroomView.vue";
 
 const routes = [
     {
@@ -30,6 +31,11 @@ const routes = [
         path: '/location-info',
         name: 'locationInfo',
         component: LocationInfoView
+    },
+    {
+        path: '/shroom',
+        name: 'shroom',
+        component: ShroomView
     }
 
 
