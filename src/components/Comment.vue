@@ -2,8 +2,7 @@
   <div class="card mb-3" style="max-width: 540px;">
     <div class="row g-0">
       <div class="col-md-4">
-        Siin on pilt
-        <img v-if="comment.imageData !== ''" :src="comment.imageData" class="img-thumbnail" alt="Kommentaari pilt">
+        <Image :image-data="comment.imageData" :default-image-data="this.commentImage"/>
       </div>
       <div class="col-md-8">
         <div class="card-body">
@@ -17,16 +16,25 @@
 </template>
 
 <script>
+import defaultCommentImage from '@/assets/comment.png'
+import LocationImage from "@/components/LocationImage.vue";
+
+
 export default {
   name: 'Comment',
+  components: {Image: LocationImage,},
   props: {
-
     comment: {
       username: String,
       body: String,
       rating: Number,
       created: String,
       imageData: String
+    }
+  },
+  data() {
+    return {
+      commentImage: defaultCommentImage
     }
   },
   methods: {},

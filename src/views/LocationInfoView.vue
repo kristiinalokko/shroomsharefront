@@ -2,7 +2,11 @@
   <h1>
     {{ location.locationName }}
   </h1>
+
   <div class="container text-center">
+    <AddCommentModal :add-comment-modal-is-open="addCommentModalIsOpen" :location-id="locationId" :userId="userId"
+                     @event-close-modal="closeAddCommentModal"/>
+
     <div class="row">
       <div class="col">
         <LocationImage :image-data="location.locationImage" :default-image-data="forestImageData"/>
@@ -34,13 +38,17 @@
       </div>
     </div>
     <div class="row">
-      <div v-if="comments.length > 0" class="col">
-        Kommentaarid asukoha kohta:
-<!--        kahjuks näitab siiski ainult üht kommentaari...-->
-        <div v-for="(comment, index) in comments" :key="index">
-          <Comment :comment="comment"/>
+      <div class="col">
+        <div v-if="comments.length > 0" >
+          Kommentaarid asukoha kohta:
+          <div v-for="(comment, index) in comments" :key="index">
+            <Comment :comment="comment"/>
+          </div>
         </div>
+        <font-awesome-icon @click="openAddCommentModal" icon="fa-solid fa-circle-plus" class="fa-3x"/>
+
       </div>
+
       <div class="col">
 
         Siia tulevad nupud: muuda (kui admin või user), kustuta (kui admin või user), tagasi
@@ -52,7 +60,7 @@
 
 <script>
 import {useRoute} from "vue-router";
-import Image from "@/components/Image.vue";
+import LocationImage from "@/components/LocationImage.vue";
 import FavoriteService from "@/services/FavoriteService";
 import LocationService from "@/services/LocationService";
 import SessionStorageService from "@/services/SessionStorageService";
@@ -60,10 +68,11 @@ import Favorite from "@/components/Favorite.vue";
 import Comment from "@/components/Comment.vue";
 import CommentService from "@/services/CommentService";
 import defaultForestImage from '@/assets/forest.jpg'
+import AddCommentModal from "@/components/modal/AddCommentModal.vue";
 
 export default {
   name: 'LocationView',
-  components: {Comment, Favorite, LocationImage: Image},
+  components: {AddCommentModal, Comment, Favorite, LocationImage: LocationImage},
   data() {
     return {
       locationId: Number(useRoute().query.locationId),
@@ -71,6 +80,7 @@ export default {
       isLoggedIn: false,
       isFavorite: false,
       forestImageData: defaultForestImage,
+      addCommentModalIsOpen: false,
 
       errorResponse: {
         message: '',
@@ -148,6 +158,16 @@ export default {
           .then(() => this.isFavorite = true)
           .catch(error => this.handleErrorResponse(error))
     },
+
+    openAddCommentModal() {
+      this.addCommentModalIsOpen = true;
+    },
+
+    closeAddCommentModal() {
+      this.addCommentModalIsOpen= false
+    },
+
+
     //
     // navigateToEdit() {
     //   NavigationService.navigateToEdit(this.locationId)
