@@ -8,7 +8,8 @@ export default {
                 locationId: locationId
             }})
     },
-
-
-
+    sendGetMapLocationsAllRequest() {
+        return axios.get('/map-locations/all');
+    }
 }
+

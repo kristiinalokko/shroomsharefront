@@ -18,6 +18,9 @@ import {far} from '@fortawesome/free-regular-svg-icons'
 // Add the imported icons to the library
 library.add(faUserSecret, fas, faR, far)
 
+// leafleti css kujindused
+import "leaflet/dist/leaflet.css";
+
 const app = createApp(App)
 
 // Register the FontAwesomeIcon component globally
