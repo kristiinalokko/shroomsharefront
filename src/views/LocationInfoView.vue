@@ -4,7 +4,7 @@
   </h1>
 
   <div class="container text-center">
-    <AddCommentModal :add-comment-modal-is-open="addCommentModalIsOpen" :location-id="locationId" :userId="userId"
+    <AddCommentModal :add-comment-modal-is-open="addCommentModalIsOpen" :location-id="locationId"
                      @event-close-modal="closeAddCommentModal"
                      @event-new-comment-added="handleNewCommentAdded"/>
 
@@ -61,7 +61,7 @@
 
 <script>
 import {useRoute} from "vue-router";
-import LocationImage from "@/components/LocationImage.vue";
+import Image from "@/components/Image.vue";
 import FavoriteService from "@/services/FavoriteService";
 import LocationService from "@/services/LocationService";
 import SessionStorageService from "@/services/SessionStorageService";
@@ -73,11 +73,11 @@ import AddCommentModal from "@/components/modal/AddCommentModal.vue";
 
 export default {
   name: 'LocationView',
-  components: {AddCommentModal, Comment, Favorite, LocationImage: LocationImage},
+  components: {AddCommentModal, Comment, Favorite, LocationImage: Image},
   data() {
     return {
       locationId: Number(useRoute().query.locationId),
-      userId: sessionStorage.getItem("userId"),
+      userId: Number(sessionStorage.getItem("userId")),
       isLoggedIn: false,
       isFavorite: false,
       forestImageData: defaultForestImage,
@@ -170,7 +170,7 @@ export default {
     },
 
     handleNewCommentAdded(newComment) {
-      this.comments.push(newComment)
+      alert(newComment)
       this.getComments(this.locationId);
 
     },

@@ -5,7 +5,7 @@
 
 <script>
 export default {
-  name: 'LocationImage',
+  name: 'Image',
   props:{
     imageData: String,
     defaultImageData: String

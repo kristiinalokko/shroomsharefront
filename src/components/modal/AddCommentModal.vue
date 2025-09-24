@@ -38,16 +38,15 @@
 import defaultCommentImage from '@/assets/comment.png'
 import Modal from "@/components/modal/base/Modal.vue";
 import ImageInput from "@/components/ImageInput.vue";
-import LocationLocationImage from "@/components/LocationImage.vue";
+import LocationImage from "@/components/Image.vue";
 import CommentService from "@/services/CommentService";
 
 export default {
   name: 'AddCommentModal',
-  components: {LocationImage: LocationLocationImage, ImageInput, Modal},
+  components: {LocationImage: LocationImage, ImageInput, Modal},
   props: {
     addCommentModalIsOpen: Boolean,
-    locationId: Number,
-    userId: Number
+    locationId: Number
   },
   data() {
     return {
@@ -56,7 +55,7 @@ export default {
 
       comment: {
         locationId: this.locationId,
-        userId: this.userId,
+        userId: Number(sessionStorage.getItem("userId")),
         body: '',
         imageData: '',
         rating: 0
@@ -82,7 +81,7 @@ export default {
 
     saveComment() {
       CommentService.postComment(this.comment)
-          .then(() => this.handleCommentAdded)
+          .then(() => this.handleCommentAdded())
           .catch(error=> this.handleErrorResponse(error))
       this.$emit('event-close-modal')
     },

@@ -17,12 +17,12 @@
 
 <script>
 import defaultCommentImage from '@/assets/comment.png'
-import LocationImage from "@/components/LocationImage.vue";
+import Image from "@/components/Image.vue";
 
 
 export default {
   name: 'Comment',
-  components: {Image: LocationImage,},
+  components: {Image: Image,},
   props: {
     comment: {
       username: String,
