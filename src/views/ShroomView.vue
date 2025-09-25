@@ -13,7 +13,8 @@
           </router-link>
         </div>
         <div class="row justify-content-center mt-3">
-          nupud
+          <AlertDanger :message="errorMessage"/>
+          <button @click="$router.go(-1)" type="button" class="btn btn-secondary">Tagasi</button>
         </div>
       </div>
     </div>
@@ -25,15 +26,18 @@ import defaultShroomImage from "@/assets/shroom.png";
 import {useRoute} from "vue-router";
 import ShroomService from "@/services/ShroomService";
 import Image from "@/components/Image.vue";
+import AlertDanger from "@/components/AlertDanger.vue";
 
 export default {
   name: 'ShroomView',
   components: {
+    AlertDanger,
     Image
 
   },
   data() {
     return {
+      errorMessage: '',
       defaultShroomImage: defaultShroomImage,
       shroomId: Number(useRoute().query.shroomId),
 
@@ -69,12 +73,19 @@ export default {
     },
     handleGetShroomResponse(response) {
       this.shroom = response.data
+    },
+    handleErrorMessage() {
+      this.errorMessage = "Ei leitud seent."
+      setTimeout(this.resetErrorMessage, 5000)
+    },
+    resetErrorMessage(){
+      this.errorMessage = ''
     }
   },
   mounted() {
     if (this.shroomId > 0) {
       this.getShroom(this.shroomId)
-    }
+    } else { this.handleErrorMessage() }
   }
 }
 </script>
