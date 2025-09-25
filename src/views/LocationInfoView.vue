@@ -19,7 +19,11 @@
         </div>
         <div class="row m-5">
           Selle asukoha seened:
-
+          <div v-for="shroom in shrooms" class="row mb-3">
+            <router-link :to="{ path: '/shroom', query: { shroomId: shroom.shroomId } }">
+              {{ shroom.shroomName }}
+            </router-link>
+          </div>
         </div>
         <div class="row m-5">
           Lisatud: {{ location.createdAt }}
@@ -34,7 +38,7 @@
     </div>
     <div class="row justify-content-end">
       <div class="col">
-        <StarRating :avg-rating="location.avgRating" />
+        <StarRating :avg-rating="location.avgRating"/>
         <template>
           <div>
             <b-form-rating v-model="rating"></b-form-rating>
@@ -45,7 +49,10 @@
       <div class="col">
       </div>
       <div class="col">
-        Siia tulevad nupud: muuda (kui admin või user), kustuta (kui admin või user), tagasi
+        <button @click="NavigationService.navigateToEdit(locationId)" type="button" class="btn btn-secondary col-3 me-3">Muuda</button>
+        <button @click="deleteLocation" type="button" class="btn btn-secondary col-3 me-3">Kustuta</button>
+        <button @click="$router.go(-1)" type="button" class="btn btn-secondary col-3">Tagasi</button>
+
       </div>
     </div>
     <div class="row justify-content-center">
@@ -54,7 +61,7 @@
 
         Kommentaarid asukoha kohta:
 
-        <CommentPaginator :comments="comments" />
+        <CommentPaginator :comments="comments"/>
 
       </div>
       <font-awesome-icon @click="openAddCommentModal" icon="fa-solid fa-circle-plus" class="fa-3x"/>
@@ -76,9 +83,16 @@ import defaultForestImage from '@/assets/forest.jpg'
 import AddCommentModal from "@/components/modal/AddCommentModal.vue";
 import CommentPaginator from "@/components/pagenation/CommentPagenator.vue";
 import StarRating from "@/components/rating/StarRating.vue";
+import ShroomService from "@/services/ShroomService";
+import NavigationService from "@/services/NavigationService";
 
 export default {
   name: 'LocationView',
+  computed: {
+    NavigationService() {
+      return NavigationService
+    }
+  },
   components: {StarRating, AddCommentModal, Comment, CommentPaginator, Favorite, LocationImage: Image},
   data() {
     return {
@@ -116,7 +130,15 @@ export default {
               created: '',
               imageData: ''
             },
-          ]
+          ],
+
+      shrooms:
+          [
+            {
+              shroomId: 0,
+              shroomName: "string"
+            },
+          ],
     }
   },
   methods: {
@@ -139,6 +161,18 @@ export default {
           .catch(error => this.handleErrorResponse(error))
     },
 
+    getShrooms(locationId) {
+      ShroomService.getShroomsByLocationId(locationId)
+          .then(response => this.shrooms = response.data)
+          .catch(error => this.handleErrorResponse(error))
+    },
+
+    deleteLocation(locationId) {
+      LocationService.deactivateLocation(locationId)
+          .then(() => NavigationService.navigateToHome())
+          .catch(error => this.handleErrorResponse(error))
+    },
+
     handleGetLocationResponse(response) {
       this.location = response.data
     },
@@ -153,6 +187,7 @@ export default {
 
     handleErrorResponse(error) {
       this.errorResponse = error.response.data
+      alert(this.errorResponse.message)
     },
 
     handleDeleteFavorite() {
@@ -193,6 +228,8 @@ export default {
     }
 
     this.getComments(this.locationId);
+
+    this.getShrooms(this.locationId);
 
   }
 }

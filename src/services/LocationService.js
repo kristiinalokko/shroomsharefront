@@ -6,7 +6,8 @@ export default {
         return axios.get('/location-info', {
             params: {
                 locationId: locationId
-            }})
+            }
+        })
     },
 
 
@@ -20,5 +21,14 @@ export default {
 
     sendGetMapLocationsAllRequest() {
         return axios.get('/map-locations/all');
+    },
+
+    deactivateLocation(locationId) {
+        return axios.put('/location', {}, {
+            params:
+                {
+                    locationId: locationId
+                }
+        })
     }
 }

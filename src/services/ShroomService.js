@@ -11,5 +11,12 @@ export default {
     },
     getAllShrooms() {
         return axios.get("/shrooms");
-    }
+    },
+    getShroomsByLocationId(locationId) {
+        return axios.get("/location/shrooms", {
+            params: {
+                locationId: locationId
+            }
+        })
+    },
 }
