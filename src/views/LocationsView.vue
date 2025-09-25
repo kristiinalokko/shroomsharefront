@@ -1,12 +1,13 @@
 <template>
   <div class="container-fluid">
     <div class="row">
-      <h1 class="mb-3">Counties info via Local JSON Data (Plain View)</h1>
+      <h1 class="mb-3">Seene asukohad</h1>
     </div>
     <div class="row">
       <!-- Left Column: Controls and Information -->
       <div class="col-lg-4 col-md-5">
         <div class="controls-panel">
+          <ShroomDropdown @event-new-shroom-selected="setShroomId"/>
           <!-- Header -->
           <div class="mb-4">
             <h4>Estonian Counties Map (Plain)</h4>
@@ -307,10 +308,12 @@
 import {LGeoJson, LMap, LMarker, LPopup, LTileLayer, LTooltip} from '@vue-leaflet/vue-leaflet'
 import geoJsonData from '../assets/mapdata/geo-Json-Data.json'
 import LocationService from "@/services/LocationService";
+import ShroomDropdown from "@/components/ShroomDropdown.vue";
 
 export default {
   name: 'LocationsView',
   components: {
+    ShroomDropdown,
     LMap,
     LTileLayer,
     LGeoJson,
@@ -519,6 +522,10 @@ export default {
   },
 
   methods: {
+
+    setShroomId(shroomId) {
+      alert(shroomId)
+    },
 
     getMapLocations() {
       LocationService.sendGetMapLocationsAllRequest()

@@ -13,36 +13,35 @@
       <ul class="dropdown-menu w-100 show">
         <li
             v-for="shroom in filteredShrooms"
-            :key="shroom.id"
+            :key="shroom.shroomId"
         >
           <a
               class="dropdown-item"
               href="#"
-              @mousedown.prevent="selectShroom(shroom)"
+              @mousedown.prevent="selectShroom(shroom.shroomId)"
           >
-            {{ shroom.name }}
+            {{ shroom.shroomName }}
           </a>
         </li>
       </ul>
     </div>
-    <button
-        class="btn btn-primary mt-2"
-        :disabled="!selectedShroom"
-        @click="addSelectedShroom"
-    >
-      Lisa seen
-    </button>
   </div>
 </template>
 
 <script>
 import ShroomService from "@/services/ShroomService";
+import NavigationService from "@/services/NavigationService";
 
 export default {
   name: "ShroomDropdown",
   data() {
     return {
-      shrooms: [],
+      shrooms: [
+        {
+          shroomId: 0,
+          shroomName: ''
+        }
+      ],
       shroomSearch: '',
       selectedShroom: null,
       dropdownOpen: false
@@ -51,29 +50,21 @@ export default {
   computed: {
     filteredShrooms() {
       return this.shrooms.filter((s) =>
-          s.name.toLowerCase().includes(this.shroomSearch.toLowerCase())
+          s.shroomName.toLowerCase().includes(this.shroomSearch.toLowerCase())
       );
     },
   },
   methods: {
-    selectShroom(shroom) {
-      this.selectedShroom = shroom;
-      this.shroomSearch = shroom.name;
-      this.dropdownOpen = false;
+    selectShroom(shroomId) {
+      this.$emit('event-new-shroom-selected', shroomId)
     },
     getAllShrooms() {
       ShroomService.getAllShrooms()
           .then(response => {
             this.shrooms = response.data;
           })
+          .catch(() => NavigationService.navigateToError())
     },
-    addSelectedShroom() {
-      if (this.selectedShroom) {
-        this.$emit('add-shroom', this.selectedShroom);
-        this.selectedShroom = null;
-        this.shroomSearch = '';
-      }
-    }
   },
   mounted() {
     this.getAllShrooms();
