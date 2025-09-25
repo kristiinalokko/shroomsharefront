@@ -36,10 +36,10 @@
                         @event-reset-image-select-complete="setResetFileInputToFalse"/>
           </div>
         </div>
-        <div class="row mb-3">
-          <button v-if="isEdit" @click="updateLocation" type="button" class="btn btn-primary mb-3">Uuenda</button>
-          <button v-else @click="saveLocation" type="button" class="btn btn-primary mb-3">Salvesta</button>
-          <button type="button" class="btn btn-secondary">Tagasi</button>
+        <div class="row mb-3 justify-content-center">
+          <button v-if="isEdit" @click="updateLocation" type="button" class="btn btn-primary col-3 me-3">Uuenda</button>
+          <button v-else @click="saveLocation" type="button" class="btn btn-primary col-3 me-3">Salvesta</button>
+          <button @click="$router.go(-1)" type="button" class="btn btn-secondary col-3 me-3">Tagasi</button>
         </div>
       </div>
     </div>
@@ -50,10 +50,10 @@
     <div class="container text-center">
       <div class="row">
         <div class="col">
-          seene pilt
+          seene info?
         </div>
         <div class="col">
-          dropdown seene valimiseks
+          <ShroomDropdown @add-shroom="handleAddShroom" />
         </div>
       </div>
     </div>
@@ -71,10 +71,11 @@ import {useRoute} from "vue-router";
 import locationService from "@/services/LocationService";
 import defaultForestImage from "@/assets/forest.jpg";
 import defaultShroomImage from "@/assets/shroom.png";
+import ShroomDropdown from "@/components/ShroomDropdown.vue";
 
 export default {
   name: 'LocationView',
-  components: {ImageInput, Image: Image},
+  components: {ShroomDropdown, ImageInput, Image: Image},
   data() {
     return {
       isEdit: false,
@@ -146,6 +147,9 @@ export default {
       alert(this.errorResponse.message)
     },
 
+    handleAddShroom(shroom) {
+
+    }
   },
 
   mounted() {
