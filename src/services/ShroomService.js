@@ -8,5 +8,8 @@ export default {
                 shroomId: shroomId
             }
         })
+    },
+    getAllShrooms() {
+        return axios.get("/shrooms");
     }
 }

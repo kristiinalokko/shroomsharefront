@@ -14,7 +14,7 @@
         </div>
         <div class="row justify-content-center mt-3">
           <AlertDanger :message="errorMessage"/>
-          <button @click="$router.go(-1)" type="button" class="btn btn-secondary">Tagasi</button>
+          <button @click="$router.go(-1)" type="button" class="btn btn-secondary col-3">Tagasi</button>
         </div>
       </div>
     </div>
@@ -69,7 +69,7 @@ export default {
 
     handleErrorResponse(error) {
       this.errorResponse = error.response.data
-      alert(this.errorResponse.message)
+      this.errorMessage = this.errorResponse.message
     },
     handleGetShroomResponse(response) {
       this.shroom = response.data
@@ -83,6 +83,7 @@ export default {
     }
   },
   mounted() {
+    this.resetErrorMessage()
     if (this.shroomId > 0) {
       this.getShroom(this.shroomId)
     } else { this.handleErrorMessage() }
