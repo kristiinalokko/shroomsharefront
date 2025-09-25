@@ -43,41 +43,11 @@
     </div>
     <div class="row justify-content-center">
 
-
       <div v-if="comments.length > 0">
 
         Kommentaarid asukoha kohta:
 
-        <nav aria-label="Page navigation example">
-          <ul class="pagination justify-content-center">
-            <li class="page-item">
-              <a class="page-link" href="#" aria-label="Previous">
-                <span aria-hidden="true">&laquo;</span>
-              </a>
-            </li>
-            <div v-for="(comment, index) in comments" :key="index">
-
-              <li @click="changeCommentPage(index)" class="page-item"><a class="page-link" href="#">{{index+1}}</a></li>
-
-            </div>
-            <li class="page-item">
-              <a class="page-link" href="#" aria-label="Next">
-                <span aria-hidden="true">&raquo;</span>
-              </a>
-            </li>
-          </ul>
-
-        </nav>
-<!--        <div v-if="" v-for="(comment, index) in comments" :key="index" class="justify-content-center">-->
-<!--          <Comment :comment="comment"/>-->
-<!--        </div>-->
-
-        <div v-if="commentPage===undefined" v-for="(comment, index) in comments" :key="index" class="justify-content-center">
-          <Comment :comment="comment"/>
-        </div>
-        <div v-else v-for="(comment, index) in comments" :key2="index" class="justify-content-center">
-          <Comment v-if="index===commentPage" :comment="comment"/>
-        </div>
+        <CommentPaginator :comments="comments" />
 
       </div>
       <font-awesome-icon @click="openAddCommentModal" icon="fa-solid fa-circle-plus" class="fa-3x"/>
@@ -97,10 +67,11 @@ import Comment from "@/components/Comment.vue";
 import CommentService from "@/services/CommentService";
 import defaultForestImage from '@/assets/forest.jpg'
 import AddCommentModal from "@/components/modal/AddCommentModal.vue";
+import CommentPaginator from "@/components/pagenation/CommentPagenator.vue";
 
 export default {
   name: 'LocationView',
-  components: {AddCommentModal, Comment, Favorite, LocationImage: Image},
+  components: {AddCommentModal, Comment, CommentPaginator, Favorite, LocationImage: Image},
   data() {
     return {
       locationId: Number(useRoute().query.locationId),
@@ -109,7 +80,6 @@ export default {
       isFavorite: false,
       forestImageData: defaultForestImage,
       addCommentModalIsOpen: false,
-      commentPage: undefined,
 
       errorResponse: {
         message: '',
@@ -200,10 +170,6 @@ export default {
     handleNewCommentAdded(newComment) {
       this.getComments(this.locationId);
 
-    },
-
-    changeCommentPage(index) {
-      this.commentPage = index
     },
 
 
