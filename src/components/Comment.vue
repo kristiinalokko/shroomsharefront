@@ -7,6 +7,7 @@
       <div class="col-md-8">
         <div class="card-body">
           <p class="card-text"> {{ comment.body }} </p>
+          <StarRating :avg-rating="comment.rating" />
           <p class="card-text"><small class="text-body-secondary">Lisatud: {{comment.created}}</small></p>
           <p class="card-text"><small class="text-body-secondary">Kommentaari lisas: {{comment.username}}</small></p>
         </div>
@@ -18,11 +19,12 @@
 <script>
 import defaultCommentImage from '@/assets/comment.png'
 import Image from "@/components/Image.vue";
+import StarRating from "@/components/rating/StarRating.vue";
 
 
 export default {
   name: 'Comment',
-  components: {Image: Image,},
+  components: {StarRating, Image: Image,},
   props: {
     comment: {
       username: String,

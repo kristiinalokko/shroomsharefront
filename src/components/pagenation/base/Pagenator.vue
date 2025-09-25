@@ -5,19 +5,22 @@
         :disabled="currentPage === 1"
         @click="changePage(currentPage - 1)"
     >
-      <slot name="prev">&laquo; Prev</slot>
+      <slot name="prev">&laquo; </slot>
     </button>
 
-    <span>
-      Page {{ currentPage }} of {{ totalPages }}
-    </span>
+    <div class="page-buttons">
+      <button v-for="page in totalPages" :key="page" :class="{ active: page === currentPage }"
+          @click="changePage(page)" class="page-number" >
+        {{ page }}
+      </button>
+    </div>
 
     <button
         class="next"
         :disabled="currentPage === totalPages"
         @click="changePage(currentPage + 1)"
     >
-      <slot name="next">Next &raquo;</slot>
+      <slot name="next"> &raquo;</slot>
     </button>
   </div>
 </template>
