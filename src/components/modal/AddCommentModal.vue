@@ -12,13 +12,15 @@
             <Image :image-data="comment.imageData" :default-image-data="defaultCommentImage" />
           </div>
           <div class="col">
-            <div class="input-group">
+            <div class="input-group justify-content-start">
               <span class="input-group-text">Lisa oma kommentaar:</span>
-              <textarea v-model="comment.body" class="form-control" aria-label="With textarea"></textarea>
+              <textarea v-model="comment.body" class="form-control mb-3" aria-label="With textarea"></textarea>
               <ImageInput :reset-file-input="resetFileInput"
                           @event-reset-image-select-complete="handleResetImageSelectComplete"
                           @event-new-image-selected="handleNewImageSelected"
               />
+              Anna oma hinnang viie palli süsteemis:
+              <input v-model.number="comment.rating" min="1" max="5" type="number" class="form-control" placeholder="">
             </div>
           </div>
         </div>
@@ -59,7 +61,7 @@ export default {
         userId: Number(sessionStorage.getItem("userId")),
         body: '',
         imageData: '',
-        rating: 0
+        rating: 1
       },
 
       errorResponse: {
@@ -80,6 +82,7 @@ export default {
       this.resetFileInput = false
     },
 
+    //tuleks mõelda läbi check, et kõik vajalikud väljad on olemas
     saveComment() {
       CommentService.postComment(this.comment)
           .then(() => this.handleCommentAdded())

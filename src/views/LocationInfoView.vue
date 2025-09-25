@@ -18,7 +18,8 @@
           {{ location.description }}
         </div>
         <div class="row m-5">
-          SEENE KOMPONENT
+          Selle asukoha seened:
+
         </div>
         <div class="row m-5">
           Lisatud: {{ location.createdAt }}
@@ -33,7 +34,13 @@
     </div>
     <div class="row justify-content-end">
       <div class="col">
-        TÄHEKESTE KOMPONENT
+        <StarRating :avg-rating="location.avgRating" />
+        <template>
+          <div>
+            <b-form-rating v-model="rating"></b-form-rating>
+            <p class="mt-2">rating: {{ rating }}</p>
+          </div>
+        </template>
       </div>
       <div class="col">
       </div>
@@ -68,10 +75,11 @@ import CommentService from "@/services/CommentService";
 import defaultForestImage from '@/assets/forest.jpg'
 import AddCommentModal from "@/components/modal/AddCommentModal.vue";
 import CommentPaginator from "@/components/pagenation/CommentPagenator.vue";
+import StarRating from "@/components/rating/StarRating.vue";
 
 export default {
   name: 'LocationView',
-  components: {AddCommentModal, Comment, CommentPaginator, Favorite, LocationImage: Image},
+  components: {StarRating, AddCommentModal, Comment, CommentPaginator, Favorite, LocationImage: Image},
   data() {
     return {
       locationId: Number(useRoute().query.locationId),
@@ -80,6 +88,7 @@ export default {
       isFavorite: false,
       forestImageData: defaultForestImage,
       addCommentModalIsOpen: false,
+      rating: 3,
 
       errorResponse: {
         message: '',
@@ -169,6 +178,7 @@ export default {
 
     handleNewCommentAdded(newComment) {
       this.getComments(this.locationId);
+      this.getLocation(this.locationId);
 
     },
 

@@ -110,3 +110,27 @@ button:disabled {
 .comment-item:last-child {
     border-bottom: none;
 }
+.paginator {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+.page-buttons {
+    display: flex;
+    gap: 5px;
+}
+
+button.page-number {
+    padding: 5px 10px;
+    cursor: pointer;
+    border: 1px solid #ccc;
+    background-color: #f9f9f9;
+}
+
+button.page-number.active {
+    background-color: #007bff;
+    color: white;
+    border-color: #007bff;
+}
