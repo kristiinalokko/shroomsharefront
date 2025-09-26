@@ -78,6 +78,7 @@ import defaultForestImage from "@/assets/forest.jpg";
 import defaultShroomImage from "@/assets/shroom.png";
 import ShroomDropdown from "@/components/ShroomDropdown.vue";
 import shroomService from "@/services/ShroomService";
+import SessionStorageService from "@/services/SessionStorageService";
 
 export default {
   name: 'LocationView',
@@ -87,6 +88,7 @@ export default {
       isEdit: false,
       resetFileInput: false,
       locationId: Number(useRoute().query.locationId),
+      userId: Number(sessionStorage.getItem("userId")),
       forestImageData: defaultForestImage,
       shroomImageData: defaultShroomImage,
 
@@ -127,6 +129,7 @@ export default {
       LocationService.sendLocationRequest(locationId)
           .then(response => this.handleGetLocationResponse(response))
           .catch(error => this.handleErrorResponse(error))
+      this.locationUnavailable()
     },
 
     handleGetLocationResponse(response) {
@@ -181,6 +184,16 @@ export default {
       shroomService.getLocationShrooms(this.locationId)
           .then(response => this.shrooms = response.data)
           .catch(error => this.handleErrorResponse(error))
+    }
+  },
+
+  locationUnavailable() {
+    if (this.location.status === "P") {
+      if (!(SessionStorageService.isAdmin()) || !(this.userId === this.location.userId)) {
+        NavigationService.navigateToError()
+      }
+    } else if (this.location.status === "D"){
+      NavigationService.navigateToError()
     }
   },
 

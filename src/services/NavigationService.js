@@ -7,7 +7,7 @@ export default {
     },
 
     navigateToError() {
-        alert("OOps, midagi läks valesti")
+        router.push({name: 'ErrorView'})
     },
 
     navigateToEdit(locationId) {

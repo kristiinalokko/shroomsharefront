@@ -232,7 +232,7 @@ export default {
     updateIsVisible() {
       if (this.location.status === "A") {
         this.isVisible = true
-      } else if (this.location === "P") {
+      } else if (this.location.status === "P") {
         if (SessionStorageService.isAdmin()) {
           this.isVisible = true
         } else if (SessionStorageService.isLoggedIn() || this.location.userId === this.userId) {
