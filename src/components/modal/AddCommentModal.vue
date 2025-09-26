@@ -55,13 +55,14 @@ export default {
     return {
       resetFileInput: false,
       defaultCommentImage: defaultCommentImage,
+      inputIsValid: false,
 
       comment: {
         locationId: this.locationId,
         userId: Number(sessionStorage.getItem("userId")),
         body: '',
         imageData: '',
-        rating: 1
+        rating: 5
       },
 
       errorResponse: {
@@ -84,10 +85,16 @@ export default {
 
     //tuleks mõelda läbi check, et kõik vajalikud väljad on olemas
     saveComment() {
-      CommentService.postComment(this.comment)
-          .then(() => this.handleCommentAdded())
-          .catch(error=> this.handleErrorResponse(error))
-      this.$emit('event-close-modal')
+      this.inputIsValid = this.comment.body.length > 0
+      if (this.inputIsValid) {
+        CommentService.postComment(this.comment)
+            .then(() => this.handleCommentAdded())
+            .catch(error => this.handleErrorResponse(error));
+        this.$emit('event-close-modal');
+      } else {
+        alert("Lisa kirjeldus!")
+      }
+
     },
 
     handleErrorResponse(error) {
