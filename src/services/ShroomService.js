@@ -33,5 +33,13 @@ export default {
                 shroomId: shroomId
             }
         })
+    },
+    deleteLocationShroom(locationId, shroomId){
+        return axios.delete("/location/shroom", {
+            params: {
+                locationId: locationId,
+                shroomId: shroomId
+            }
+        })
     }
 }

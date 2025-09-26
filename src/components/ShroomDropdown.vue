@@ -2,6 +2,7 @@
   <div class="mb-3">
     <label for="shroomDropdown" class="form-label">Vali seen</label>
     <input
+        ref="shroomInput"
         type="text"
         class="form-control mb-2"
         v-model="shroomSearch"
@@ -9,8 +10,8 @@
         @focus="dropdownOpen = true"
         @blur="dropdownOpen = false"
     />
-    <div class="dropdown" v-if="dropdownOpen && filteredShrooms.length">
-      <ul class="dropdown-menu w-100 show">
+    <div class="dropdown" >
+      <ul class="dropdown-menu w-100 show" v-if="dropdownOpen && filteredShrooms.length">
         <li
             v-for="shroom in filteredShrooms"
             :key="shroom.shroomId"
@@ -57,6 +58,8 @@ export default {
   methods: {
     selectShroom(shroomId) {
       this.$emit('event-new-shroom-selected', shroomId)
+      this.dropdownOpen = false
+      this.$refs.shroomInput.blur()
     },
     getAllShrooms() {
       ShroomService.getAllShrooms()
