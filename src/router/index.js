@@ -4,9 +4,11 @@ import LoginView from "@/views/LoginView.vue";
 import RegisterView from "@/views/RegisterView.vue";
 import LocationView from "@/views/LocationView.vue";
 import LocationInfoView from "@/views/LocationInfoView.vue";
-import ShroomView from "@/views/ShroomView.vue";
+import ShroomInfoView from "@/views/ShroomInfoView.vue";
 import LocationsView from "@/views/LocationsView.vue";
 import ErrorView from "@/views/ErrorView.vue";
+import ProfileView from "@/views/ProfileView.vue";
+import ShroomView from "@/views/ShroomView.vue";
 
 const routes = [
     {
@@ -35,9 +37,9 @@ const routes = [
         component: LocationInfoView
     },
     {
-        path: '/shroom',
-        name: 'shroom',
-        component: ShroomView
+        path: '/shroom-info',
+        name: 'shroomInfo',
+        component: ShroomInfoView
     },
     {
         path: '/locations',
@@ -48,6 +50,16 @@ const routes = [
         path: '/error',
         name: 'ErrorView',
         component: ErrorView
+    },
+    {
+        path: '/profile',
+        name: 'ProfileView',
+        component: ProfileView
+    },
+    {
+        path: '/shroom',
+        name: 'ShroomView',
+        component: ShroomView
     },
 
 
