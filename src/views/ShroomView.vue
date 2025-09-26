@@ -2,11 +2,30 @@
   <h1>Siia tuleb kõikide seente tabel</h1>
   <p>Tabel näitab kõigile ACTIVATED seeni, aga seene lisajale ja adminile ka PENDING seeni</p>
   <p>Hetkel näitab lihtsalt kõiki seeni meie databases:</p>
-  <div v-for="shroom in shrooms" class="row mb-3">
-    <router-link :to="{ path: '/shroom-info', query: { shroomId: shroom.shroomId } }">
-      {{ shroom.shroomName }}
-    </router-link>
-  </div>
+<!--  <router-link :to="{ path: '/shroom-info', query: { shroomId: shroom.shroomId } }">-->
+<!--    {{ shroom.shroomName }}-->
+<!--  </router-link>-->
+
+  <table class="table">
+    <thead>
+    <tr>
+      <th scope="col">Seene nimi</th>
+      <th scope="col">Kirjeldus</th>
+      <th scope="col">Lisas</th>
+      <th scope="col">Lisamise kuupäev</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr v-for="shroom in shrooms">
+      <th scope="row">{{shroom.shroomName}}</th>
+      <td>Mark</td>
+      <td>Otto</td>
+      <td>@mdo</td>
+    </tr>
+    </tbody>
+  </table>
+
+
 </template>
 
 <script>
