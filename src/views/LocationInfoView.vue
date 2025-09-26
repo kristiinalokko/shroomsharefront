@@ -187,7 +187,7 @@ export default {
 
     handleErrorResponse(error) {
       this.errorResponse = error.response.data
-      alert("ei kustuta")
+      alert(this.errorResponse.message)
     },
 
     handleDeleteFavorite() {
