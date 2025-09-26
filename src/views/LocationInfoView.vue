@@ -167,8 +167,8 @@ export default {
           .catch(error => this.handleErrorResponse(error))
     },
 
-    deleteLocation(locationId) {
-      LocationService.deactivateLocation(locationId)
+    deleteLocation() {
+      LocationService.deactivateLocation(this.locationId)
           .then(() => NavigationService.navigateToHome())
           .catch(error => this.handleErrorResponse(error))
     },
@@ -187,7 +187,7 @@ export default {
 
     handleErrorResponse(error) {
       this.errorResponse = error.response.data
-      alert(this.errorResponse.message)
+      alert("ei kustuta")
     },
 
     handleDeleteFavorite() {
