@@ -6,7 +6,7 @@
           :key="index"
           class="comment-item"
       >
-          <Comment :comment="comment"/>
+           <Comment :comment="comment"/>
       </li>
     </ul>
     <Pagenator

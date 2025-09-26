@@ -6,7 +6,9 @@
 
     <router-link to="/shroom">Seened | </router-link>
 
-    <router-link v-if="!isLoggedIn" to="/login">Login | </router-link>
+    <router-link v-if="!isLoggedIn" to="/login">Logi sisse | </router-link>
+
+    <router-link v-if="isLoggedIn" to="/profile">Profiil | </router-link>
 
     <router-link v-if="!isLoggedIn" to="/register">Registreeri </router-link>
 

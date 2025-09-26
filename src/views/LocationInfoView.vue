@@ -28,9 +28,9 @@
           <div class="row m-5">
             Lisatud: {{ location.createdAt }}
           </div>
-          <div class="row m-5 justify-content-center">
+          <div v-if="isLoggedIn" class="row m-5 justify-content-center">
             Lisa lemmikute hulka:
-            <Favorite v-if="isLoggedIn" :is-favorite="isFavorite"
+            <Favorite :is-favorite="isFavorite"
                       @event-delete-favorite="handleDeleteFavorite"
                       @event-add-favorite="handleAddFavorite"/>
           </div>
@@ -69,7 +69,7 @@
           <CommentPaginator :comments="comments"/>
 
         </div>
-        <font-awesome-icon @click="openAddCommentModal" icon="fa-solid fa-circle-plus" class="fa-3x"/>
+        <font-awesome-icon v-if="isLoggedIn" @click="openAddCommentModal" icon="fa-solid fa-circle-plus" class="fa-3x"/>
 
       </div>
     </div>
@@ -112,7 +112,6 @@ export default {
       isFavorite: false,
       forestImageData: defaultForestImage,
       addCommentModalIsOpen: false,
-      rating: 3,
       isVisible: false,
 
       errorResponse: {
