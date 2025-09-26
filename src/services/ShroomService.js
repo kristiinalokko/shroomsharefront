@@ -19,4 +19,19 @@ export default {
             }
         })
     },
+    getLocationShrooms(locationId) {
+        return axios.get("/location/shrooms", {
+            params: {
+                locationId: locationId
+            }
+        })
+    },
+    addLocationShroom(shroomId, locationId) {
+        return axios.post("/location/shroom", null, {
+            params: {
+                locationId: locationId,
+                shroomId: shroomId
+            }
+        })
+    }
 }
