@@ -50,7 +50,11 @@
     <div class="container text-center">
       <div class="row">
         <div class="col">
-          seene info?
+          <div v-for="shroom in shrooms" class="row mb-3">
+            <router-link :to="{ path: '/shroom', query: { shroomId: shroom.shroomId } }">
+              {{ shroom.shroomName }}
+            </router-link>
+          </div>
         </div>
         <div class="col">
           <ShroomDropdown @event-new-shroom-selected="handleNewShroomSelected" />
@@ -72,6 +76,7 @@ import locationService from "@/services/LocationService";
 import defaultForestImage from "@/assets/forest.jpg";
 import defaultShroomImage from "@/assets/shroom.png";
 import ShroomDropdown from "@/components/ShroomDropdown.vue";
+import shroomService from "@/services/ShroomService";
 
 export default {
   name: 'LocationView',
@@ -91,12 +96,20 @@ export default {
         longitude: 0,
         description: '',
         locationImage: '',
+        status: '',
       },
+
+      shrooms: [
+        {
+          shroomId: 0,
+          shroomName: ''
+        }
+      ],
 
       errorResponse: {
         message: '',
         errorCode: 0,
-      }
+      },
     }
   },
   methods:{
@@ -131,7 +144,10 @@ export default {
       if (this.inputIsValid()){
         this.location.userId = sessionStorage.getItem('userId')
         LocationService.sendNewLocationRequest(this.location)
-            .then(() => NavigationService.navigateToHome())
+            .then(response => {NavigationService.navigateToEdit(response.data)
+            this.locationId = response.data
+            this.isEdit = true
+            this.getLocationShrooms(this.locationId)})
             .catch(error => this.handleErrorResponse(error))
       } else {
         alert("täida kõik väljad")
@@ -148,14 +164,24 @@ export default {
     },
 
     handleNewShroomSelected(shroomId) {
+      shroomService.addLocationShroom(shroomId, this.locationId)
+          .then(() => this.getLocationShrooms())
+          .catch(error => this.handleErrorResponse(error))
 
+    },
+
+    getLocationShrooms() {
+      shroomService.getLocationShrooms(this.locationId)
+          .then(response => this.shrooms = response.data)
+          .catch(error => this.handleErrorResponse(error))
     }
   },
 
   mounted() {
     this.isEdit = this.locationId > 0;
-    if (this.isEdit){
+    if (this.isEdit && this.location.status !== 'D'){
       this.getLocation(this.locationId)
+      this.getLocationShrooms(this.locationId)
     }
   }
 }
