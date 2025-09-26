@@ -50,10 +50,11 @@
     <div class="container text-center">
       <div class="row">
         <div class="col">
-          <div v-for="shroom in shrooms" class="row mb-3">
+          <div v-for="shroom in shrooms" class="d-flex mb-3 align-items-center">
             <router-link :to="{ path: '/shroom', query: { shroomId: shroom.shroomId } }">
               {{ shroom.shroomName }}
             </router-link>
+            <font-awesome-icon @click="deleteLocationShroom(shroom.shroomId)" icon="fa-regular fa-trash-can" class="ms-2" />
           </div>
         </div>
         <div class="col">
@@ -168,6 +169,12 @@ export default {
           .then(() => this.getLocationShrooms())
           .catch(error => this.handleErrorResponse(error))
 
+    },
+
+    deleteLocationShroom(shroomId){
+      shroomService.deleteLocationShroom(this.locationId, shroomId)
+          .then(() => this.getLocationShrooms())
+          .catch(error => this.handleErrorResponse(error))
     },
 
     getLocationShrooms() {
