@@ -1,5 +1,5 @@
 <template>
-  <div v-if="locationExists">
+  <div v-if="isVisible">
     <h1>
       {{ location.locationName }}
     </h1>
@@ -49,10 +49,13 @@
         <div class="col">
         </div>
         <div class="col">
-          <button @click="NavigationService.navigateToEdit(locationId)" type="button"
+          <button v-if="(location.userId === userId) || (userId === 1)"
+                  @click="NavigationService.navigateToEdit(locationId)" type="button"
                   class="btn btn-secondary col-3 me-3">Muuda
           </button>
-          <button @click="deleteLocation" type="button" class="btn btn-secondary col-3 me-3">Kustuta</button>
+          <button v-if="(location.userId === userId) || (userId === 1)" @click="deleteLocation" type="button"
+                  class="btn btn-secondary col-3 me-3">Kustuta
+          </button>
           <button @click="$router.go(-1)" type="button" class="btn btn-secondary col-3">Tagasi</button>
 
         </div>
@@ -72,7 +75,7 @@
     </div>
   </div>
   <div v-else class="d-flex justify-content-center">
-    <AlertDanger :message="errorResponse.message" class="w-50" />
+    <AlertDanger :message="errorResponse.message" class="w-50"/>
   </div>
 </template>
 
@@ -110,7 +113,7 @@ export default {
       forestImageData: defaultForestImage,
       addCommentModalIsOpen: false,
       rating: 3,
-      locationExists: false,
+      isVisible: false,
 
       errorResponse: {
         message: '',
@@ -126,7 +129,8 @@ export default {
         locationImage: '',
         username: '',
         createdAt: '',
-        avgRating: 0
+        avgRating: 0,
+        status: ''
       },
 
       comments:
@@ -183,7 +187,7 @@ export default {
 
     handleGetLocationResponse(response) {
       this.location = response.data
-      this.locationExists = true
+      this.updateIsVisible();
     },
 
     handleGetFavoriteResponse(response) {
@@ -224,6 +228,22 @@ export default {
       this.getComments(this.locationId);
       this.getLocation(this.locationId);
 
+    },
+
+    updateIsVisible() {
+      if (this.location.status === "A") {
+        this.isVisible = true
+      } else if (this.location === "P") {
+        if (SessionStorageService.isAdmin()) {
+          this.isVisible = true
+        } else if (SessionStorageService.isLoggedIn() || this.location.userId === this.userId) {
+          this.isVisible = true;
+        } else {
+          this.isVisible = false
+        }
+      } else {
+        this.isVisible = false
+      }
     },
 
 

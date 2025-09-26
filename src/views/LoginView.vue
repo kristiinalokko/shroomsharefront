@@ -63,6 +63,7 @@ export default {
       this.loginResponse = response.data
       sessionStorage.setItem('userId', this.loginResponse.userId)
       sessionStorage.setItem('roleName', this.loginResponse.roleName)
+      this.$emit('event-logged-in')
       NavigationService.navigateToHome()
     },
 
