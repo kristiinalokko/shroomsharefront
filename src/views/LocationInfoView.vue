@@ -1,72 +1,78 @@
 <template>
-  <h1>
-    {{ location.locationName }}
-  </h1>
+  <div v-if="locationExists">
+    <h1>
+      {{ location.locationName }}
+    </h1>
+    <div class="container text-center">
+      <AddCommentModal :add-comment-modal-is-open="addCommentModalIsOpen" :location-id="locationId"
+                       @event-close-modal="closeAddCommentModal"
+                       @event-new-comment-added="handleNewCommentAdded"/>
 
-  <div class="container text-center">
-    <AddCommentModal :add-comment-modal-is-open="addCommentModalIsOpen" :location-id="locationId"
-                     @event-close-modal="closeAddCommentModal"
-                     @event-new-comment-added="handleNewCommentAdded"/>
-
-    <div class="row">
-      <div class="col">
-        <LocationImage :image-data="location.locationImage" :default-image-data="forestImageData"/>
-      </div>
-      <div class="col">
-        <div class="row m-5">
-          Kirjeldus:
-          {{ location.description }}
+      <div class="row">
+        <div class="col">
+          <LocationImage :image-data="location.locationImage" :default-image-data="forestImageData"/>
         </div>
-        <div class="row m-5">
-          Selle asukoha seened:
-          <div v-for="shroom in shrooms" class="row mb-3">
-            <router-link :to="{ path: '/shroom', query: { shroomId: shroom.shroomId } }">
-              {{ shroom.shroomName }}
-            </router-link>
+        <div class="col">
+          <div class="row m-5">
+            Kirjeldus:
+            {{ location.description }}
+          </div>
+          <div class="row m-5">
+            Selle asukoha seened:
+            <div v-for="shroom in shrooms" class="row mb-3">
+              <router-link :to="{ path: '/shroom', query: { shroomId: shroom.shroomId } }">
+                {{ shroom.shroomName }}
+              </router-link>
+            </div>
+          </div>
+          <div class="row m-5">
+            Lisatud: {{ location.createdAt }}
+          </div>
+          <div class="row m-5 justify-content-center">
+            Lisa lemmikute hulka:
+            <Favorite v-if="isLoggedIn" :is-favorite="isFavorite"
+                      @event-delete-favorite="handleDeleteFavorite"
+                      @event-add-favorite="handleAddFavorite"/>
           </div>
         </div>
-        <div class="row m-5">
-          Lisatud: {{ location.createdAt }}
+      </div>
+      <div class="row justify-content-end">
+        <div class="col">
+          <StarRating :avg-rating="location.avgRating"/>
+          <template>
+            <div>
+              <b-form-rating v-model="rating"></b-form-rating>
+              <p class="mt-2">rating: {{ rating }}</p>
+            </div>
+          </template>
         </div>
-        <div class="row m-5 justify-content-center">
-          Lisa lemmikute hulka:
-          <Favorite v-if="isLoggedIn" :is-favorite="isFavorite"
-                    @event-delete-favorite="handleDeleteFavorite"
-                    @event-add-favorite="handleAddFavorite"/>
+        <div class="col">
+        </div>
+        <div class="col">
+          <button @click="NavigationService.navigateToEdit(locationId)" type="button"
+                  class="btn btn-secondary col-3 me-3">Muuda
+          </button>
+          <button @click="deleteLocation" type="button" class="btn btn-secondary col-3 me-3">Kustuta</button>
+          <button @click="$router.go(-1)" type="button" class="btn btn-secondary col-3">Tagasi</button>
+
         </div>
       </div>
-    </div>
-    <div class="row justify-content-end">
-      <div class="col">
-        <StarRating :avg-rating="location.avgRating"/>
-        <template>
-          <div>
-            <b-form-rating v-model="rating"></b-form-rating>
-            <p class="mt-2">rating: {{ rating }}</p>
-          </div>
-        </template>
-      </div>
-      <div class="col">
-      </div>
-      <div class="col">
-        <button @click="NavigationService.navigateToEdit(locationId)" type="button" class="btn btn-secondary col-3 me-3">Muuda</button>
-        <button @click="deleteLocation" type="button" class="btn btn-secondary col-3 me-3">Kustuta</button>
-        <button @click="$router.go(-1)" type="button" class="btn btn-secondary col-3">Tagasi</button>
+      <div class="row justify-content-center">
+
+        <div v-if="comments.length > 0">
+
+          Kommentaarid asukoha kohta:
+
+          <CommentPaginator :comments="comments"/>
+
+        </div>
+        <font-awesome-icon @click="openAddCommentModal" icon="fa-solid fa-circle-plus" class="fa-3x"/>
 
       </div>
     </div>
-    <div class="row justify-content-center">
-
-      <div v-if="comments.length > 0">
-
-        Kommentaarid asukoha kohta:
-
-        <CommentPaginator :comments="comments"/>
-
-      </div>
-      <font-awesome-icon @click="openAddCommentModal" icon="fa-solid fa-circle-plus" class="fa-3x"/>
-
-    </div>
+  </div>
+  <div v-else class="d-flex justify-content-center">
+    <AlertDanger :message="errorResponse.message" class="w-50" />
   </div>
 </template>
 
@@ -85,6 +91,7 @@ import CommentPaginator from "@/components/pagenation/CommentPagenator.vue";
 import StarRating from "@/components/rating/StarRating.vue";
 import ShroomService from "@/services/ShroomService";
 import NavigationService from "@/services/NavigationService";
+import AlertDanger from "@/components/AlertDanger.vue";
 
 export default {
   name: 'LocationView',
@@ -93,7 +100,7 @@ export default {
       return NavigationService
     }
   },
-  components: {StarRating, AddCommentModal, Comment, CommentPaginator, Favorite, LocationImage: Image},
+  components: {AlertDanger, StarRating, AddCommentModal, Comment, CommentPaginator, Favorite, LocationImage: Image},
   data() {
     return {
       locationId: Number(useRoute().query.locationId),
@@ -103,6 +110,7 @@ export default {
       forestImageData: defaultForestImage,
       addCommentModalIsOpen: false,
       rating: 3,
+      locationExists: false,
 
       errorResponse: {
         message: '',
@@ -175,6 +183,7 @@ export default {
 
     handleGetLocationResponse(response) {
       this.location = response.data
+      this.locationExists = true
     },
 
     handleGetFavoriteResponse(response) {
@@ -187,7 +196,7 @@ export default {
 
     handleErrorResponse(error) {
       this.errorResponse = error.response.data
-      alert(this.errorResponse.message)
+      // alert(this.errorResponse.message)
     },
 
     handleDeleteFavorite() {
