@@ -53,7 +53,7 @@
           seene info?
         </div>
         <div class="col">
-          <ShroomDropdown @add-shroom="handleAddShroom" />
+          <ShroomDropdown @event-new-shroom-selected="handleNewShroomSelected" />
         </div>
       </div>
     </div>
@@ -147,7 +147,7 @@ export default {
       alert(this.errorResponse.message)
     },
 
-    handleAddShroom(shroom) {
+    handleNewShroomSelected(shroomId) {
 
     }
   },
