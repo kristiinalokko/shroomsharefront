@@ -10,10 +10,11 @@
 
     <router-link v-if="!isLoggedIn" to="/register">Registreeri </router-link>
 
-    <router-link v-if="isLoggedIn" @click="logOut" to="/">Logi välja</router-link>
-
+    <template v-if="isLoggedIn">
+      <font-awesome-icon @click="logOut" class="cursor-pointer" icon="fa-solid fa-right-from-bracket"/>
+    </template>
   </nav>
-  <router-view @event-user-logged-in="updateNavMenu"/>
+  <router-view @event-logged-in="updateNavMenu"/>
 
 </template>
 
