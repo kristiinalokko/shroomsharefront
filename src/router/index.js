@@ -6,6 +6,7 @@ import LocationView from "@/views/LocationView.vue";
 import LocationInfoView from "@/views/LocationInfoView.vue";
 import ShroomView from "@/views/ShroomView.vue";
 import LocationsView from "@/views/LocationsView.vue";
+import ErrorView from "@/views/ErrorView.vue";
 
 const routes = [
     {
@@ -42,6 +43,11 @@ const routes = [
         path: '/locations',
         name: 'LocationsView',
         component: LocationsView
+    },
+    {
+        path: '/error',
+        name: 'ErrorView',
+        component: ErrorView
     },
 
 
