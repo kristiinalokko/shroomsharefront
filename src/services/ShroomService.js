@@ -44,5 +44,8 @@ export default {
                 shroomId: shroomId
             }
         })
+    },
+    sendAddShroomRequest(shroom){
+        return axios.post("/shroom", shroom)
     }
 }

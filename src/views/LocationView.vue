@@ -38,6 +38,8 @@
         </div>
         <div class="row mb-3 justify-content-center">
           <button v-if="isEdit" @click="updateLocation" type="button" class="btn btn-primary col-3 me-3">Uuenda</button>
+          <button v-if="isEdit" @click="deactivateLocation" type="button" class="btn btn-primary col-3 me-3">Kustuta
+          </button>
           <button v-else @click="saveLocation" type="button" class="btn btn-primary col-3 me-3">Salvesta</button>
           <button @click="$router.go(-1)" type="button" class="btn btn-secondary col-3 me-3">Tagasi</button>
         </div>
@@ -60,6 +62,9 @@
         </div>
         <div class="col">
           <ShroomDropdown @event-new-shroom-selected="handleNewShroomSelected"/>
+          Ei leidnud seent?
+          <button @click="addShroomModalIsOpen=true" type="button" class="btn btn-primary col-3 me-3">Lisa uus seen</button>
+          <AddShroomModal :addShroomModalIsOpen="addShroomModalIsOpen" @event-close-modal="addShroomModalIsOpen = false" />
         </div>
       </div>
     </div>
@@ -80,12 +85,14 @@ import defaultShroomImage from "@/assets/shroom.png";
 import ShroomDropdown from "@/components/ShroomDropdown.vue";
 import shroomService from "@/services/ShroomService";
 import SessionStorageService from "@/services/SessionStorageService";
+import AddShroomModal from "@/components/modal/AddShroomModal.vue";
 
 export default {
   name: 'LocationView',
-  components: {ShroomDropdown, ImageInput, Image: Image},
+  components: {AddShroomModal, ShroomDropdown, ImageInput, Image: Image},
   data() {
     return {
+      addShroomModalIsOpen: false,
       isEdit: false,
       resetFileInput: false,
       locationId: Number(useRoute().query.locationId),
@@ -130,11 +137,11 @@ export default {
       LocationService.sendLocationRequest(locationId)
           .then(response => this.handleGetLocationResponse(response))
           .catch(error => this.handleErrorResponse(error))
-      this.locationUnavailable()
     },
 
     handleGetLocationResponse(response) {
       this.location = response.data
+      this.locationUnavailable()
     },
 
     setLocationImageData(imageData) {
@@ -187,7 +194,6 @@ export default {
       shroomService.getLocationShrooms(this.locationId)
           .then(response => this.shrooms = response.data)
           .catch(error => this.handleErrorResponse(error))
-
     },
 
     locationUnavailable() {
@@ -198,8 +204,11 @@ export default {
       } else if (this.location.status === "D") {
         NavigationService.navigateToError()
       }
-    }
-
+    },
+    deactivateLocation() {
+      locationService.deactivateLocation(this.locationId)
+      NavigationService.navigateToHome()
+    },
   },
 
   mounted() {
