@@ -131,3 +131,33 @@ button:disabled {
     gap: 5px;
 }
 
+.nav-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    border-bottom: 1px solid #ccc;
+    position: relative;
+}
+
+.nav-links {
+    display: flex;
+    gap: 10px;
+}
+
+/* Styles for the button in the top-right corner */
+.top-right-button {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.top-right-button:hover {
+    background-color: #0056b3;
+}

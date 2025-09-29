@@ -17,6 +17,10 @@
     <template v-if="isLoggedIn">
       <font-awesome-icon @click="logOut" class="cursor-pointer" icon="fa-solid fa-right-from-bracket"/>
     </template>
+
+    <button class="top-right-button">
+      Inbox
+    </button>
   </nav>
   <router-view @event-logged-in="updateNavMenu"/>
 
