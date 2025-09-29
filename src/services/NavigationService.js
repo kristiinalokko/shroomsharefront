@@ -18,4 +18,13 @@ export default {
         router.push({name: 'shroomInfo', query: {shroomId: shroomId}})
     },
 
+    navigateToLocationView(locationId) {
+        router.push({name: 'location', query: {locationId: locationId}})
+    },
+
+
+    navigateToLocationInfoView(locationId) {
+        router.push({name: 'location-info', query: {locationId: locationId}})
+    },
+
 };

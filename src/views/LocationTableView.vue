@@ -1,66 +1,66 @@
 <template>
-  <h1>Siin on vaja kõik ära muuta</h1>
+  <h1>Siin on kõik asukohad meie andmebaasis (mis on hetkel aktiivsed)</h1>
   <div class="row">
     <div class="col">
     </div>
     <div class="col">
-      <table v-if="shrooms.length>0" class="table">
+      <table v-if="locations.length>0" class="table">
         <thead>
         <tr>
-          <th scope="col">Seene nimi</th>
+          <th scope="col">Asukoha nimi</th>
           <th scope="col">Kirjeldus</th>
           <th scope="col">Lisas</th>
         </tr>
         </thead>
-        <tbody v-for="shroom in shrooms">
-        <tr v-if="shroom.status === 'A'">
+        <tbody v-for="location in locations">
+        <tr v-if="location.status === 'A'">
           <th scope="row">
-            <router-link :to="{ path: '/shroom-info', query: { shroomId: shroom.shroomId } }">
-              {{ shroom.name }}
+            <router-link :to="{ path: '/location-info', query: { locationId: location.locationId } }">
+              {{ location.locationName }}
             </router-link>
           </th>
-          <td>{{ shroom.description }}</td>
-          <td>{{ shroom.username }}</td>
+          <td>{{ location.description }}</td>
+          <td>{{ location.username }}</td>
         </tr>
         </tbody>
       </table>
-      <!--      todo: võiks olla vastus "Ei leidnud ühetgi seent", kui ta ei leidnud ühtegi aktiivset seent-->
-      <div v-else> Ei leidnud ühtegi seent!</div>
+      <!--      todo: võiks olla vastus "Ei leidnud ühetegi asukohta", kui ta ei leidnud ühtegi aktiivset asukohta-->
+      <div v-else> Ei leidnud ühtegi asukohta!</div>
     </div>
     <div class="col">
     </div>
   </div>
   <div v-if="isLoggedIn" class="row">
-    <h1 class="mt-5">Siin on sinu lisatud seened: </h1>
+    <h1 class="mt-5">Siin on sinu lisatud asukohad: </h1>
   </div>
   <div v-if="isLoggedIn" class="row">
     <div class="col">
     </div>
     <div class="col ms-5 me-5">
-      <table v-if="shrooms.length>0" class="table">
+      <table v-if="locations.length>0" class="table">
         <thead>
         <tr>
-          <th scope="col">Seene nimi</th>
+          <th scope="col">Asukoha nimi</th>
           <th scope="col">Kirjeldus</th>
           <th v-if="isAdmin" scope="col">Lisas</th>
           <th scope="col">Staatus</th>
           <th scope="col"></th>
         </tr>
         </thead>
-        <tbody v-for="shroom in shrooms">
-        <tr v-if="(userId===shroom.userId) || isAdmin">
+        <tbody v-for="location in locations">
+        <tr v-if="(userId===location.userId) || isAdmin">
           <th scope="row">
-            <router-link :to="{ path: '/shroom-info', query: { shroomId: shroom.shroomId } }">
-              {{ shroom.name }}
+            <router-link :to="{ path: '/location-info', query: { locationId: location.locationId } }">
+              {{ location.locationName }}
             </router-link>
           </th>
-          <td>{{ shroom.description }}</td>
-          <td v-if="isAdmin">{{ shroom.username }}</td>
-          <td>{{ shroom.status }}</td>
+          <td>{{ location.description }}</td>
+          <td v-if="isAdmin">{{ location.username }}</td>
+          <td>{{ location.status }}</td>
           <td>
-            <div v-if="shroom.status !== 'D'" class="btn-group" role="group" aria-label="Basic example">
-              <button @click="NavigationService.navigateToError()" type="button" class="btn btn-primary">Muuda</button>
-              <button @click="NavigationService.navigateToShroomInfoView(shroom.shroomId)" type="button" class="btn btn-secondary">Vaata lähemalt</button>
+            <div v-if="location.status !== 'D'" class="btn-group" role="group" aria-label="Basic example">
+              <button @click="NavigationService.navigateToLocationView(location.locationId)" type="button" class="btn btn-primary">Muuda</button>
+              <button @click="NavigationService.navigateToLocationInfoView(location.locationId)" type="button" class="btn btn-secondary">Vaata lähemalt</button>
             </div>
           </td>
         </tr>
@@ -78,6 +78,7 @@
 import ShroomService from "@/services/ShroomService";
 import SessionStorageService from "@/services/SessionStorageService";
 import NavigationService from "@/services/NavigationService";
+import locationService from "@/services/LocationService";
 
 export default {
   name: 'LocationTableView',
@@ -92,12 +93,12 @@ export default {
       isAdmin: SessionStorageService.isAdmin(),
       userId: Number(sessionStorage.getItem("userId")),
 
-      shrooms: [
+      locations: [
         {
-          shroomId: 0,
+          locationId: 0,
           userId: 0,
           username: '',
-          name: '',
+          locationName: '',
           description: '',
           status: ''
         }
@@ -112,14 +113,14 @@ export default {
   },
   methods: {
 
-    getAllShrooms() {
-      ShroomService.getAllShrooms()
+    getAllLocations() {
+      locationService.sendGetAllTableLocationsRequest()
           .then(response => this.handleGetAllResponse(response))
           .catch(error => this.handleErrorResponse(error))
     },
 
     handleGetAllResponse(response) {
-      this.shrooms = response.data
+      this.locations = response.data
     },
 
     handleErrorResponse(error) {
@@ -129,7 +130,7 @@ export default {
 
   },
   mounted() {
-    this.getAllShrooms()
+    this.getAllLocations()
   }
 }
 </script>

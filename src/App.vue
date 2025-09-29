@@ -10,9 +10,9 @@
 
     <router-link v-if="!isLoggedIn" to="/login">| Logi sisse |</router-link>
 
-    <router-link v-if="isLoggedIn" to="/profile">| Profiil </router-link>
+    <router-link v-if="isLoggedIn" to="/profile">| Profiil          </router-link>
 
-    <router-link v-if="!isLoggedIn" to="/register">| Registreeri </router-link>
+    <router-link v-if="!isLoggedIn" to="/register">| Registreeri           </router-link>
 
     <template v-if="isLoggedIn">
       <font-awesome-icon @click="logOut" class="cursor-pointer" icon="fa-solid fa-right-from-bracket"/>
