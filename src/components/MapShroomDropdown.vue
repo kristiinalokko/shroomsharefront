@@ -78,7 +78,7 @@ export default {
       this.$refs.shroomInput.blur();
     },
     getAllShrooms() {
-      ShroomService.getAllShrooms()
+      ShroomService.getShrooms()
           .then(response => {
             this.shrooms = response.data;
           })
