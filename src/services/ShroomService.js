@@ -4,7 +4,7 @@ export default {
 
     sendShroomRequest(shroomId) {
         return axios.get("/shroom", {
-            params:{
+            params: {
                 shroomId: shroomId
             }
         })
@@ -37,7 +37,7 @@ export default {
             }
         })
     },
-    deleteLocationShroom(locationId, shroomId){
+    deleteLocationShroom(locationId, shroomId) {
         return axios.delete("/location/shroom", {
             params: {
                 locationId: locationId,
@@ -45,7 +45,7 @@ export default {
             }
         })
     },
-    sendAddShroomRequest(shroom){
+    sendAddShroomRequest(userId, shroom) {
         return axios.post("/shroom", shroom)
     }
 }
