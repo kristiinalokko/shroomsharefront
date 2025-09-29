@@ -33,5 +33,8 @@ export default {
                     locationId: locationId
                 }
         })
+    },
+    sendGetFilteredMapLocationsRequest(params) {
+        return axios.get(`/map-locations/filtered`, { params });
     }
 }
