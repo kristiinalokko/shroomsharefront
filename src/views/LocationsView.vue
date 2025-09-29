@@ -7,13 +7,11 @@
       <!-- Left Column: Controls -->
       <div class="col-lg-4 col-md-5">
         <div class="controls-panel">
-          <!-- Shroom Dropdown -->
           <MapShroomDropdown
               :selected-shroom="filters.shroomId"
               :placeholder="selectedShroomName"
               @event-new-shroom-selected="setShroomId"
           />
-
           <!-- Filters Form -->
           <h3>Filtreeri asukohti</h3>
           <form @submit.prevent="applyFilters">
@@ -49,9 +47,7 @@
                   step="1"
               />
             </div>
-            <button type="submit" class="btn btn-primary mt-2">
-              Otsi
-            </button>
+            <button type="submit" class="btn btn-primary mt-2">Otsi</button>
           </form>
         </div>
       </div>
@@ -66,23 +62,35 @@
               :options="mapOptions"
               style="height: 100vh; width: 100%;"
           >
-            <l-tile-layer
-                :url="tileUrl"
-                :attribution="attribution"
-            ></l-tile-layer>
+            <l-tile-layer :url="tileUrl" :attribution="attribution"></l-tile-layer>
+
+            <!-- Show message if no locations are available -->
+            <div v-if="mapLocations.length === 0">No locations available.</div>
 
             <!-- Shroom location markers -->
             <l-marker
                 v-for="mapLocation in mapLocations"
                 :key="mapLocation.locationId"
                 :lat-lng="[mapLocation.latitude, mapLocation.longitude]"
+                @mouseover="showLocationName(mapLocation)"
+                @click="showPopup(mapLocation)"
             >
               <l-tooltip>{{ mapLocation.locationName }}</l-tooltip>
               <l-popup>
                 <div>
-                  <strong>{{ mapLocation.username }}</strong><br />
-                  Rating: {{ mapLocation.avgRating }}<br />
-                  Added: {{ mapLocation.createdAt }}
+                  <strong>{{ mapLocation.locationName }}</strong><br />
+                  <strong>Username:</strong> {{ mapLocation.username }}<br />
+                  <strong>Rating:</strong> {{ mapLocation.avgRating }}<br />
+                  <strong>Added:</strong> {{ mapLocation.createdAt }}<br />
+                  <strong>Description:</strong> {{ mapLocation.description }}<br />
+                  <div v-if="mapLocation.locationImage">
+                    <img :src="mapLocation.locationImage" alt="Location Image" width="100" />
+                  </div>
+                  <!-- Link to full location info -->
+                  <br />
+                  <button @click="goToLocationInfoPage(mapLocation)" class="btn btn-primary mt-2">
+                    Go to Full Info
+                  </button>
                 </div>
               </l-popup>
             </l-marker>
@@ -104,6 +112,8 @@
   </div>
 </template>
 
+
+
 <script>
 import { LMap, LTileLayer, LMarker, LTooltip, LPopup } from "@vue-leaflet/vue-leaflet";
 import { Icon } from "leaflet";
@@ -120,20 +130,18 @@ export default {
       tileUrl: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
       attribution: "© OpenStreetMap contributors",
       mapOptions: { zoomControl: true, scrollWheelZoom: true },
-      mapLocations: [],
+      mapLocations: [], // List of locations
       filters: {
-        shroomId: null,       // null means "all shrooms"
+        shroomId: null,
         minRating: 0,
         lastActive: "",
-        latitude: 58.7,       // default pin lat
-        longitude: 25.3,      // default pin lng
-        radiusKm: 400,        // default distance
-      },
-      clickPin: {
         latitude: 58.7,
         longitude: 25.3,
+        radiusKm: 400,
       },
-      selectedShroom: { shroomId: null, shroomName: "Kõik seened" }, // Initialize with default object
+      clickPin: { latitude: 58.7, longitude: 25.3 },
+      selectedShroom: { shroomId: null, shroomName: "Kõik seened" },
+      hoveredLocationName: null, // Store hovered location name for tooltip
     };
   },
   computed: {
@@ -159,13 +167,11 @@ export default {
   methods: {
     setShroomId(shroomId, shroomObj = null) {
       this.filters.shroomId = shroomId || null;
-      // Set selectedShroom: if shroomObj exists use it, otherwise use "Kõik seened"
       this.selectedShroom = shroomObj || { shroomId: null, shroomName: "Kõik seened" };
       this.applyFilters();
     },
     applyFilters() {
       const params = { ...this.filters };
-      // Remove shroomId from params if it's null (to search all shrooms)
       if (!params.shroomId) {
         delete params.shroomId;
       }
@@ -174,6 +180,19 @@ export default {
             this.mapLocations = response.data;
           })
           .catch((err) => console.error("Error loading filtered locations:", err));
+    },
+    showLocationName(mapLocation) {
+      this.hoveredLocationName = mapLocation.locationName; // Show location name on hover
+    },
+    showPopup(mapLocation) {
+      this.selectedLocation = mapLocation; // Store selected location data for popup
+    },
+    goToLocationInfoPage(mapLocation) {
+      // Navigate to the full location info page
+      this.$router.push({
+        path: "/location-info",
+        query: { locationId: mapLocation.locationId },
+      });
     },
     onPinDrag(newLatLng) {
       this.clickPin.latitude = newLatLng.lat;
@@ -186,16 +205,4 @@ export default {
 };
 </script>
 
-<style scoped>
-.map-wrapper {
-  height: 100vh;
-  width: 100%;
-}
-.controls-panel {
-  padding: 20px;
-  height: 100vh;
-  overflow-y: auto;
-  background-color: #f8f9fa;
-  border-right: 1px solid #dee2e6;
-}
-</style>
+
