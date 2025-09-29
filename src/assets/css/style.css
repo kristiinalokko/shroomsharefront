@@ -46,7 +46,7 @@ nav a.router-link-exact-active {
 .modal-container {
     background: white;
     width: 90%;
-    max-width: 500px;
+    max-width: 900px;
     border-radius: 8px;
     box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
     overflow: hidden;
