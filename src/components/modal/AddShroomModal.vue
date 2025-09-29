@@ -17,7 +17,7 @@
               </div>
               <div class="row mb-5">
                 <label>Kirjeldus:</label>
-                  <textarea v-model="shroom.description" class="form-control" placeholder="väga hea seen"/>
+                <textarea v-model="shroom.description" class="form-control" placeholder="väga hea seen"/>
               </div>
               <div class="row">
                 <label>Lisa pilt:</label>
@@ -60,9 +60,9 @@ export default {
       resetFileInput: false,
       defaultShroomImage: defaultShroomImage,
       inputIsValid: false,
+      userId: Number(sessionStorage.getItem("userId")),
 
       shroom: {
-        userId: Number(sessionStorage.getItem("userId")),
         name: '',
         description: '',
         shroomImage: '',
@@ -90,8 +90,7 @@ export default {
     saveShroom() {
       this.inputIsValid = this.shroom.description.length > 0 && this.shroom.name.length > 0
       if (this.inputIsValid) {
-        alert(this.shroom.name + this.shroom.description + this.shroom.userId)
-        ShroomService.sendAddShroomRequest(this.shroom)
+        ShroomService.sendAddShroomRequest(this.userId, this.shroom)
             .then(() => this.handleShroomAdded())
             .catch(error => this.handleErrorResponse(error));
         this.$emit('event-close-modal');

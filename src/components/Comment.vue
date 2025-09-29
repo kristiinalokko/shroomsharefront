@@ -9,7 +9,9 @@
           <p class="card-text"> {{ comment.body }} </p>
           <StarRating :avg-rating="comment.rating" />
           <p class="card-text"><small class="text-body-secondary">Lisatud: {{comment.created}}</small></p>
-          <p class="card-text"><small class="text-body-secondary">Kommentaari lisas: {{comment.username}}</small></p>
+          <p class="card-text"><small class="text-body-secondary">
+            Kommentaari lisas: {{comment.username}}
+          </small></p>
         </div>
       </div>
     </div>
