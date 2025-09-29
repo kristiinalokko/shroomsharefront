@@ -54,11 +54,12 @@
             <router-link :to="{ path: '/shroom', query: { shroomId: shroom.shroomId } }">
               {{ shroom.shroomName }}
             </router-link>
-            <font-awesome-icon @click="deleteLocationShroom(shroom.shroomId)" icon="fa-regular fa-trash-can" class="ms-2" />
+            <font-awesome-icon @click="deleteLocationShroom(shroom.shroomId)" icon="fa-regular fa-trash-can"
+                               class="ms-2"/>
           </div>
         </div>
         <div class="col">
-          <ShroomDropdown @event-new-shroom-selected="handleNewShroomSelected" />
+          <ShroomDropdown @event-new-shroom-selected="handleNewShroomSelected"/>
         </div>
       </div>
     </div>
@@ -71,9 +72,9 @@
 import Image from "@/components/Image.vue";
 import ImageInput from "@/components/ImageInput.vue";
 import LocationService from "@/services/LocationService";
+import locationService from "@/services/LocationService";
 import NavigationService from "@/services/NavigationService";
 import {useRoute} from "vue-router";
-import locationService from "@/services/LocationService";
 import defaultForestImage from "@/assets/forest.jpg";
 import defaultShroomImage from "@/assets/shroom.png";
 import ShroomDropdown from "@/components/ShroomDropdown.vue";
@@ -92,7 +93,7 @@ export default {
       forestImageData: defaultForestImage,
       shroomImageData: defaultShroomImage,
 
-      location:{
+      location: {
         userId: 0,
         locationName: '',
         latitude: 0,
@@ -115,17 +116,17 @@ export default {
       },
     }
   },
-  methods:{
+  methods: {
 
-    updateLocation(){
-      if (this.inputIsValid()){
+    updateLocation() {
+      if (this.inputIsValid()) {
         locationService.sendUpdateLocationRequest(this.location)
             .then(() => NavigationService.navigateToHome())
             .catch(error => this.handleErrorResponse(error))
       }
     },
 
-    getLocation(locationId){
+    getLocation(locationId) {
       LocationService.sendLocationRequest(locationId)
           .then(response => this.handleGetLocationResponse(response))
           .catch(error => this.handleErrorResponse(error))
@@ -136,22 +137,24 @@ export default {
       this.location = response.data
     },
 
-    setLocationImageData(imageData){
+    setLocationImageData(imageData) {
       this.location.locationImage = imageData
     },
 
-    setResetFileInputToFalse(){
+    setResetFileInputToFalse() {
       this.resetFileInput = false
     },
 
-    saveLocation(){
-      if (this.inputIsValid()){
+    saveLocation() {
+      if (this.inputIsValid()) {
         this.location.userId = sessionStorage.getItem('userId')
         LocationService.sendNewLocationRequest(this.location)
-            .then(response => {NavigationService.navigateToEdit(response.data)
-            this.locationId = response.data
-            this.isEdit = true
-            this.getLocationShrooms(this.locationId)})
+            .then(response => {
+              NavigationService.navigateToEdit(response.data)
+              this.locationId = response.data
+              this.isEdit = true
+              this.getLocationShrooms(this.locationId)
+            })
             .catch(error => this.handleErrorResponse(error))
       } else {
         alert("täida kõik väljad")
@@ -159,7 +162,7 @@ export default {
     },
 
     inputIsValid() {
-      return this.location.locationName.length > 0 && this.location.description.length > 0 ;
+      return this.location.locationName.length > 0 && this.location.description.length > 0;
     },
 
     handleErrorResponse(error) {
@@ -174,7 +177,7 @@ export default {
 
     },
 
-    deleteLocationShroom(shroomId){
+    deleteLocationShroom(shroomId) {
       shroomService.deleteLocationShroom(this.locationId, shroomId)
           .then(() => this.getLocationShrooms())
           .catch(error => this.handleErrorResponse(error))
@@ -184,22 +187,24 @@ export default {
       shroomService.getLocationShrooms(this.locationId)
           .then(response => this.shrooms = response.data)
           .catch(error => this.handleErrorResponse(error))
-    }
-  },
 
-  locationUnavailable() {
-    if (this.location.status === "P") {
-      if (!(SessionStorageService.isAdmin()) || !(this.userId === this.location.userId)) {
+    },
+
+    locationUnavailable() {
+      if (this.location.status === "P") {
+        if (!(SessionStorageService.isAdmin()) || !(this.userId === this.location.userId)) {
+          NavigationService.navigateToError()
+        }
+      } else if (this.location.status === "D") {
         NavigationService.navigateToError()
       }
-    } else if (this.location.status === "D"){
-      NavigationService.navigateToError()
     }
+
   },
 
   mounted() {
     this.isEdit = this.locationId > 0;
-    if (this.isEdit && this.location.status !== 'D'){
+    if (this.isEdit && this.location.status !== 'D') {
       this.getLocation(this.locationId)
       this.getLocationShrooms(this.locationId)
     }
