@@ -8,7 +8,8 @@ import ShroomInfoView from "@/views/ShroomInfoView.vue";
 import LocationsView from "@/views/LocationsView.vue";
 import ErrorView from "@/views/ErrorView.vue";
 import ProfileView from "@/views/ProfileView.vue";
-import ShroomsView from "@/views/ShroomsView.vue";
+import ShroomTableView from "@/views/ShroomTableView.vue";
+import LocationTableView from "@/views/LocationTableView.vue";
 
 const routes = [
     {
@@ -57,9 +58,14 @@ const routes = [
         component: ProfileView
     },
     {
-        path: '/shrooms',
-        name: 'shrooms',
-        component: ShroomsView
+        path: '/shroom-table',
+        name: 'shroomTable',
+        component: ShroomTableView
+    },
+    {
+        path: '/location-table',
+        name: 'locationTable',
+        component: LocationTableView
     },
 
 

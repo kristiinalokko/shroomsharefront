@@ -1,0 +1,135 @@
+<template>
+  <h1>Siin on vaja kõik ära muuta</h1>
+  <div class="row">
+    <div class="col">
+    </div>
+    <div class="col">
+      <table v-if="shrooms.length>0" class="table">
+        <thead>
+        <tr>
+          <th scope="col">Seene nimi</th>
+          <th scope="col">Kirjeldus</th>
+          <th scope="col">Lisas</th>
+        </tr>
+        </thead>
+        <tbody v-for="shroom in shrooms">
+        <tr v-if="shroom.status === 'A'">
+          <th scope="row">
+            <router-link :to="{ path: '/shroom-info', query: { shroomId: shroom.shroomId } }">
+              {{ shroom.name }}
+            </router-link>
+          </th>
+          <td>{{ shroom.description }}</td>
+          <td>{{ shroom.username }}</td>
+        </tr>
+        </tbody>
+      </table>
+      <!--      todo: võiks olla vastus "Ei leidnud ühetgi seent", kui ta ei leidnud ühtegi aktiivset seent-->
+      <div v-else> Ei leidnud ühtegi seent!</div>
+    </div>
+    <div class="col">
+    </div>
+  </div>
+  <div v-if="isLoggedIn" class="row">
+    <h1 class="mt-5">Siin on sinu lisatud seened: </h1>
+  </div>
+  <div v-if="isLoggedIn" class="row">
+    <div class="col">
+    </div>
+    <div class="col ms-5 me-5">
+      <table v-if="shrooms.length>0" class="table">
+        <thead>
+        <tr>
+          <th scope="col">Seene nimi</th>
+          <th scope="col">Kirjeldus</th>
+          <th v-if="isAdmin" scope="col">Lisas</th>
+          <th scope="col">Staatus</th>
+          <th scope="col"></th>
+        </tr>
+        </thead>
+        <tbody v-for="shroom in shrooms">
+        <tr v-if="(userId===shroom.userId) || isAdmin">
+          <th scope="row">
+            <router-link :to="{ path: '/shroom-info', query: { shroomId: shroom.shroomId } }">
+              {{ shroom.name }}
+            </router-link>
+          </th>
+          <td>{{ shroom.description }}</td>
+          <td v-if="isAdmin">{{ shroom.username }}</td>
+          <td>{{ shroom.status }}</td>
+          <td>
+            <div v-if="shroom.status !== 'D'" class="btn-group" role="group" aria-label="Basic example">
+              <button @click="NavigationService.navigateToError()" type="button" class="btn btn-primary">Muuda</button>
+              <button @click="NavigationService.navigateToShroomInfoView(shroom.shroomId)" type="button" class="btn btn-secondary">Vaata lähemalt</button>
+            </div>
+          </td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="col">
+    </div>
+  </div>
+
+
+</template>
+
+<script>
+import ShroomService from "@/services/ShroomService";
+import SessionStorageService from "@/services/SessionStorageService";
+import NavigationService from "@/services/NavigationService";
+
+export default {
+  name: 'LocationTableView',
+  computed: {
+    NavigationService() {
+      return NavigationService
+    }
+  },
+  data() {
+    return {
+      isLoggedIn: SessionStorageService.isLoggedIn(),
+      isAdmin: SessionStorageService.isAdmin(),
+      userId: Number(sessionStorage.getItem("userId")),
+
+      shrooms: [
+        {
+          shroomId: 0,
+          userId: 0,
+          username: '',
+          name: '',
+          description: '',
+          status: ''
+        }
+      ],
+
+      errorResponse: {
+        message: '',
+        errorCode: 0
+      },
+
+    }
+  },
+  methods: {
+
+    getAllShrooms() {
+      ShroomService.getAllShrooms()
+          .then(response => this.handleGetAllResponse(response))
+          .catch(error => this.handleErrorResponse(error))
+    },
+
+    handleGetAllResponse(response) {
+      this.shrooms = response.data
+    },
+
+    handleErrorResponse(error) {
+      this.errorResponse = error.response.data
+      // alert(this.errorResponse.message)
+    },
+
+  },
+  mounted() {
+    this.getAllShrooms()
+  }
+}
+</script>

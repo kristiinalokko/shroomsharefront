@@ -80,7 +80,7 @@ import SessionStorageService from "@/services/SessionStorageService";
 import NavigationService from "@/services/NavigationService";
 
 export default {
-  name: 'ShroomsView',
+  name: 'ShroomTableView',
   computed: {
     NavigationService() {
       return NavigationService

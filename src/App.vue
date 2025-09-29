@@ -4,7 +4,9 @@
 
     <router-link to="/">| Home |</router-link>
 
-    <router-link to="/shrooms">| Seened |</router-link>
+    <router-link to="/shroom-table">| Seened |</router-link>
+
+    <router-link to="/location-table">| Asukohad |</router-link>
 
     <router-link v-if="!isLoggedIn" to="/login">| Logi sisse |</router-link>
 
