@@ -9,8 +9,11 @@ export default {
             }
         })
     },
-    getAllShrooms() {
+    getShrooms() {
         return axios.get("/shrooms");
+    },
+    getAllShrooms() {
+        return axios.get("/allShrooms");
     },
     getShroomsByLocationId(locationId) {
         return axios.get("/location/shrooms", {

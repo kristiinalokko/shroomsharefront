@@ -51,7 +51,7 @@
       <div class="row">
         <div class="col">
           <div v-for="shroom in shrooms" class="d-flex mb-3 align-items-center">
-            <router-link :to="{ path: '/shroom', query: { shroomId: shroom.shroomId } }">
+            <router-link :to="{ path: '/shroom-info', query: { shroomId: shroom.shroomId } }">
               {{ shroom.shroomName }}
             </router-link>
             <font-awesome-icon @click="deleteLocationShroom(shroom.shroomId)" icon="fa-regular fa-trash-can"

@@ -7,11 +7,15 @@ export default {
     },
 
     navigateToError() {
-        router.push({name: 'ErrorView'})
+        router.push({name: 'error'})
     },
 
     navigateToEdit(locationId) {
         router.push({name: 'location', query: {locationId:locationId}})
+    },
+
+    navigateToShroomInfoView(shroomId) {
+        router.push({name: 'shroomInfo', query: {shroomId: shroomId}})
     },
 
 };

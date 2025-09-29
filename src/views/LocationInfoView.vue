@@ -20,7 +20,7 @@
           <div class="row m-5">
             Selle asukoha seened:
             <div v-for="shroom in shrooms" class="row mb-3">
-              <router-link :to="{ path: '/shroom', query: { shroomId: shroom.shroomId } }">
+              <router-link :to="{ path: '/shroom-info', query: { shroomId: shroom.shroomId } }">
                 {{ shroom.shroomName }}
               </router-link>
             </div>

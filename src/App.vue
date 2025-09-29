@@ -4,7 +4,7 @@
 
     <router-link to="/">| Home |</router-link>
 
-    <router-link to="/shroom">| Seened |</router-link>
+    <router-link to="/shrooms">| Seened |</router-link>
 
     <router-link v-if="!isLoggedIn" to="/login">| Logi sisse |</router-link>
 

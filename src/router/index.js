@@ -8,7 +8,7 @@ import ShroomInfoView from "@/views/ShroomInfoView.vue";
 import LocationsView from "@/views/LocationsView.vue";
 import ErrorView from "@/views/ErrorView.vue";
 import ProfileView from "@/views/ProfileView.vue";
-import ShroomView from "@/views/ShroomView.vue";
+import ShroomsView from "@/views/ShroomsView.vue";
 
 const routes = [
     {
@@ -43,23 +43,23 @@ const routes = [
     },
     {
         path: '/locations',
-        name: 'LocationsView',
+        name: 'locations',
         component: LocationsView
     },
     {
         path: '/error',
-        name: 'ErrorView',
+        name: 'error',
         component: ErrorView
     },
     {
         path: '/profile',
-        name: 'ProfileView',
+        name: 'profile',
         component: ProfileView
     },
     {
-        path: '/shroom',
-        name: 'ShroomView',
-        component: ShroomView
+        path: '/shrooms',
+        name: 'shrooms',
+        component: ShroomsView
     },
 
 

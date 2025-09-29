@@ -29,7 +29,7 @@ import Image from "@/components/Image.vue";
 import AlertDanger from "@/components/AlertDanger.vue";
 
 export default {
-  name: 'ShroomView',
+  name: 'ShroomInfoView',
   components: {
     AlertDanger,
     Image
