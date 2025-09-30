@@ -12,9 +12,6 @@ export default {
     getShrooms() {
         return axios.get("/shrooms");
     },
-    getAllShrooms() {
-        return axios.get("/allShrooms");
-    },
     getShroomsByLocationId(locationId) {
         return axios.get("/location/shrooms", {
             params: {
@@ -47,5 +44,9 @@ export default {
     },
     sendAddShroomRequest(userId, shroom) {
         return axios.post("/shroom", shroom)
-    }
+    },
+    sendGetAllShroomsDetailedInfo() {
+        return axios.get('/shrooms/detailed/all')
+    },
+
 }
