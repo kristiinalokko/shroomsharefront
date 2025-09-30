@@ -16,7 +16,7 @@
         <tr v-if="shroom.status === 'A'">
           <th scope="row">
             <router-link :to="{ path: '/shroom-info', query: { shroomId: shroom.shroomId } }">
-              {{ shroom.name }}
+              {{ shroom.shroomName }}
             </router-link>
           </th>
           <td>{{ shroom.description }}</td>
@@ -51,7 +51,7 @@
         <tr v-if="(userId===shroom.userId) || isAdmin">
           <th scope="row">
             <router-link :to="{ path: '/shroom-info', query: { shroomId: shroom.shroomId } }">
-              {{ shroom.name }}
+              {{ shroom.shroomName }}
             </router-link>
           </th>
           <td>{{ shroom.description }}</td>
@@ -97,7 +97,7 @@ export default {
           shroomId: 0,
           userId: 0,
           username: '',
-          name: '',
+          shroomName: '',
           description: '',
           status: ''
         }
@@ -113,7 +113,7 @@ export default {
   methods: {
 
     getAllShrooms() {
-      ShroomService.getAllShrooms()
+      ShroomService.getAllShroomsDetailedInfo()
           .then(response => this.handleGetAllResponse(response))
           .catch(error => this.handleErrorResponse(error))
     },

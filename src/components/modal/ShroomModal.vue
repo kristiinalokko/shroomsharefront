@@ -118,7 +118,7 @@ export default {
       if (!this.shroomId || this.shroomId <= 0) {
         return;
       }
-      ShroomService.getShroom(this.shroomId)
+      ShroomService.getShroomDetailedInfo(this.shroomId)
           .then(response => this.shroom = response.data)
           .catch(error => this.handleErrorResponse(error))
     }

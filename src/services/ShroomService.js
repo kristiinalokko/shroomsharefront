@@ -2,8 +2,8 @@ import axios from "axios";
 
 export default {
 
-    getShroom(shroomId) {
-        return axios.get("/shroom", {
+    getShroomDetailedInfo(shroomId) {
+        return axios.get("/shroom/detailed", {
             params: {
                 shroomId: shroomId
             }
@@ -12,8 +12,8 @@ export default {
     getShrooms() {
         return axios.get("/shrooms");
     },
-    getAllShrooms() {
-        return axios.get("/allShrooms");
+    getAllShroomsDetailedInfo() {
+        return axios.get("/shrooms/detailed/all");
     },
     getShroomsByLocationId(locationId) {
         return axios.get("/location/shrooms", {
