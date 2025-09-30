@@ -6,7 +6,7 @@
     </div>
     <div class="row">
       <div class="col">
-        <Map :map-locations="mapLocations"/>
+        map
       </div>
       <div class="col-4">
         <div class="row mb-3">
@@ -87,11 +87,10 @@ import ShroomDropdown from "@/components/ShroomDropdown.vue";
 import shroomService from "@/services/ShroomService";
 import SessionStorageService from "@/services/SessionStorageService";
 import ShroomModal from "@/components/modal/ShroomModal.vue";
-import Map from "@/components/Map.vue";
 
 export default {
   name: 'LocationView',
-  components: {Map, ShroomModal, ShroomDropdown, ImageInput, Image: Image},
+  components: {ShroomModal, ShroomDropdown, ImageInput, Image: Image},
   data() {
     return {
       shroomModalIsOpen: false,
@@ -111,18 +110,6 @@ export default {
         locationImage: '',
         status: '',
       },
-
-      mapLocations: [
-        {
-          locationId: Number,
-          locationName: String,
-          latitude: Number,
-          longitude: Number,
-          username: String,
-          createdAt: String,
-          avgRating: Number
-        },
-      ],
 
       shrooms: [
         {
@@ -223,23 +210,18 @@ export default {
       locationService.deactivateLocation(this.locationId)
       NavigationService.navigateToHome()
     },
-
-    getMapLocations(shroomId) {
-      LocationService.sendGetShroomLocationsRequest(shroomId)
-          .then(response => this.mapLocations = response.data)
-          .catch(error => this.handleErrorResponse(error))
-    }
-
   },
 
-  beforeMount() {
+  mounted() {
     this.isEdit = this.locationId > 0;
     if (this.isEdit && this.location.status !== 'D') {
       this.getLocation(this.locationId)
       this.getLocationShrooms(this.locationId)
     }
 
-    this.getMapLocations(1)
+
+
+
   }
 }
 </script>

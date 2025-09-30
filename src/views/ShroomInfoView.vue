@@ -26,6 +26,9 @@
         </div>
       </div>
     </div>
+    <div class="row">
+      <Map :map-locations="locations"/>
+    </div>
   </div>
 </template>
 
@@ -40,6 +43,7 @@ import SessionStorageService from "@/services/SessionStorageService";
 import ImageService from "@/services/ImageService";
 import LocationService from "@/services/LocationService";
 import NavigationService from "@/services/NavigationService";
+import Map from "@/components/Map.vue";
 
 export default {
   name: 'ShroomInfoView',
@@ -49,10 +53,10 @@ export default {
     }
   },
   components: {
+    Map,
     ShroomModal,
     AlertDanger,
-    Image
-
+    Image,
   },
   data() {
     return {
@@ -73,7 +77,7 @@ export default {
         status: ''
       },
 
-      locations:[
+      locations: [
         {
           locationId: 0,
           locationName: '',
@@ -84,6 +88,7 @@ export default {
           avgRating: 0
         }
       ],
+
 
       errorResponse: {
         message: '',
@@ -122,21 +127,23 @@ export default {
       this.errorMessage = ''
     },
 
-    hasAccess(){
-      if(this.shroom.status === "A" || (this.shroom.status === "P" && (SessionStorageService.isAdmin() || this.userId === this.shroom.userId))){
+    hasAccess() {
+      if (this.shroom.status === "A" || (this.shroom.status === "P" && (SessionStorageService.isAdmin() || this.userId === this.shroom.userId))) {
       } else {
         NavigationService.navigateToError();
       }
-    }
-  }
-  ,
-  mounted() {
+    },
+
+  },
+
+  beforeMount() {
     this.resetErrorMessage()
     if (this.shroomId > 0) {
       this.getShroom(this.shroomId)
     } else {
       this.handleErrorMessage()
     }
-  }
+
+  },
 }
 </script>
