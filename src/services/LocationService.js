@@ -36,5 +36,13 @@ export default {
     },
     sendGetFilteredMapLocationsRequest(params) {
         return axios.get(`/map-locations/filtered`, { params });
-    }
+    },
+    sendGetShroomLocationsRequest(shroomId) {
+        return axios.get('/map-locations/shroom', {
+            params:
+                {
+                    shroomId: shroomId
+                }
+        })
+    },
 }

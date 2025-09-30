@@ -6,7 +6,7 @@
     </div>
     <div class="row">
       <div class="col">
-        map
+        <Map :map-locations="mapLocations"/>
       </div>
       <div class="col-4">
         <div class="row mb-3">
@@ -63,8 +63,9 @@
         <div class="col">
           <ShroomDropdown @event-new-shroom-selected="handleNewShroomSelected"/>
           Ei leidnud seent?
-          <button @click="shroomModalIsOpen=true" type="button" class="btn btn-primary col-3 me-3">Lisa uus seen</button>
-          <ShroomModal :shroomModalIsOpen="shroomModalIsOpen" @event-close-modal="shroomModalIsOpen = false" />
+          <button @click="shroomModalIsOpen=true" type="button" class="btn btn-primary col-3 me-3">Lisa uus seen
+          </button>
+          <ShroomModal :shroomModalIsOpen="shroomModalIsOpen" @event-close-modal="shroomModalIsOpen = false"/>
         </div>
       </div>
     </div>
@@ -86,10 +87,11 @@ import ShroomDropdown from "@/components/ShroomDropdown.vue";
 import shroomService from "@/services/ShroomService";
 import SessionStorageService from "@/services/SessionStorageService";
 import ShroomModal from "@/components/modal/ShroomModal.vue";
+import Map from "@/components/Map.vue";
 
 export default {
   name: 'LocationView',
-  components: {ShroomModal, ShroomDropdown, ImageInput, Image: Image},
+  components: {Map, ShroomModal, ShroomDropdown, ImageInput, Image: Image},
   data() {
     return {
       shroomModalIsOpen: false,
@@ -109,6 +111,18 @@ export default {
         locationImage: '',
         status: '',
       },
+
+      mapLocations: [
+        {
+          locationId: Number,
+          locationName: String,
+          latitude: Number,
+          longitude: Number,
+          username: String,
+          createdAt: String,
+          avgRating: Number
+        },
+      ],
 
       shrooms: [
         {
@@ -209,14 +223,23 @@ export default {
       locationService.deactivateLocation(this.locationId)
       NavigationService.navigateToHome()
     },
+
+    getMapLocations(shroomId) {
+      LocationService.sendGetShroomLocationsRequest(shroomId)
+          .then(response => this.mapLocations = response.data)
+          .catch(error => this.handleErrorResponse(error))
+    }
+
   },
 
-  mounted() {
+  beforeMount() {
     this.isEdit = this.locationId > 0;
     if (this.isEdit && this.location.status !== 'D') {
       this.getLocation(this.locationId)
       this.getLocationShrooms(this.locationId)
     }
+
+    this.getMapLocations(1)
   }
 }
 </script>

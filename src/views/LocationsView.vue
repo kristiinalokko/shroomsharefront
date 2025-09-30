@@ -161,9 +161,7 @@ export default {
       });
     },
   },
-  mounted() {
-    this.applyFilters();
-  },
+
   methods: {
     setShroomId(shroomId, shroomObj = null) {
       this.filters.shroomId = shroomId || null;
