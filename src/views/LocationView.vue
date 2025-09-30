@@ -65,7 +65,7 @@
           Ei leidnud seent?
           <button @click="shroomModalIsOpen=true" type="button" class="btn btn-primary col-3 me-3">Lisa uus seen
           </button>
-          <ShroomModal :shroomModalIsOpen="shroomModalIsOpen" @event-close-modal="shroomModalIsOpen = false"/>
+          <ShroomModal :shroomModalIsOpen="shroomModalIsOpen" :shroom-id="0" @event-close-modal="shroomModalIsOpen = false"/>
         </div>
       </div>
     </div>

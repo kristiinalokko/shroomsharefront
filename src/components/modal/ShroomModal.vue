@@ -66,6 +66,11 @@ export default {
       }
     },
   },
+  computed:{
+    isEdit(){
+      return this.shroomId > 0
+    },
+  },
   data() {
     return {
       resetFileInput: false,
@@ -145,10 +150,6 @@ export default {
     handleShroomUpdated() {
       alert("Seen edukalt uuendatud")
       this.$emit('event-close-modal');
-    },
-
-    isEdit(){
-      return this.shroomId > 0
     },
 
     onModalOpen() {
