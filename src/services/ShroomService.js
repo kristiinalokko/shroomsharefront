@@ -2,7 +2,7 @@ import axios from "axios";
 
 export default {
 
-    sendShroomRequest(shroomId) {
+    getShroom(shroomId) {
         return axios.get("/shroom", {
             params:{
                 shroomId: shroomId

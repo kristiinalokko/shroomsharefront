@@ -1,5 +1,5 @@
 <template>
-  <Modal :modal-is-open="addShroomModalIsOpen" @event-close-modal="$emit('event-close-modal')">
+  <Modal :modal-is-open="shroomModalIsOpen" @event-close-modal="$emit('event-close-modal')">
     <template #title>
       Lisa uus seen:
     </template>
@@ -17,7 +17,7 @@
               </div>
               <div class="row mb-5">
                 <label>Kirjeldus:</label>
-                  <textarea v-model="shroom.description" class="form-control" placeholder="väga hea seen"/>
+                <textarea v-model="shroom.description" class="form-control" placeholder="väga hea seen"/>
               </div>
               <div class="row">
                 <label>Lisa pilt:</label>
@@ -50,10 +50,18 @@ import Image from "@/components/Image.vue";
 import ShroomService from "@/services/ShroomService";
 
 export default {
-  name: 'AddShroomModal',
+  name: 'ShroomModal',
   components: {Image, LocationImage: LocationImage, ImageInput, Modal},
   props: {
-    addShroomModalIsOpen: Boolean,
+    shroomModalIsOpen: Boolean,
+    shroomId: Number,
+  },
+  watch: {
+    shroomModalIsOpen(newVal) {
+      if (newVal) {
+        this.onModalOpen();
+      }
+    },
   },
   data() {
     return {
@@ -90,7 +98,6 @@ export default {
     saveShroom() {
       this.inputIsValid = this.shroom.description.length > 0 && this.shroom.name.length > 0
       if (this.inputIsValid) {
-        alert(this.shroom.name + this.shroom.description + this.shroom.userId)
         ShroomService.sendAddShroomRequest(this.shroom)
             .then(() => this.handleShroomAdded())
             .catch(error => this.handleErrorResponse(error));
@@ -107,7 +114,15 @@ export default {
     handleShroomAdded() {
       alert("Seen edukalt lisatud")
     },
-
-  }
+    onModalOpen() {
+      if (!this.shroomId || this.shroomId <= 0) {
+        return;
+      }
+      ShroomService.getShroom(this.shroomId)
+          .then(response => this.shroom = response.data)
+          .catch(error => this.handleErrorResponse(error))
+    }
+  },
 }
+
 </script>

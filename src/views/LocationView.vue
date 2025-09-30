@@ -63,8 +63,8 @@
         <div class="col">
           <ShroomDropdown @event-new-shroom-selected="handleNewShroomSelected"/>
           Ei leidnud seent?
-          <button @click="addShroomModalIsOpen=true" type="button" class="btn btn-primary col-3 me-3">Lisa uus seen</button>
-          <AddShroomModal :addShroomModalIsOpen="addShroomModalIsOpen" @event-close-modal="addShroomModalIsOpen = false" />
+          <button @click="shroomModalIsOpen=true" type="button" class="btn btn-primary col-3 me-3">Lisa uus seen</button>
+          <ShroomModal :shroomModalIsOpen="shroomModalIsOpen" @event-close-modal="shroomModalIsOpen = false" />
         </div>
       </div>
     </div>
@@ -85,14 +85,14 @@ import defaultShroomImage from "@/assets/shroom.png";
 import ShroomDropdown from "@/components/ShroomDropdown.vue";
 import shroomService from "@/services/ShroomService";
 import SessionStorageService from "@/services/SessionStorageService";
-import AddShroomModal from "@/components/modal/AddShroomModal.vue";
+import ShroomModal from "@/components/modal/ShroomModal.vue";
 
 export default {
   name: 'LocationView',
-  components: {AddShroomModal, ShroomDropdown, ImageInput, Image: Image},
+  components: {ShroomModal, ShroomDropdown, ImageInput, Image: Image},
   data() {
     return {
-      addShroomModalIsOpen: false,
+      shroomModalIsOpen: false,
       isEdit: false,
       resetFileInput: false,
       locationId: Number(useRoute().query.locationId),
