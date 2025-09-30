@@ -38,8 +38,7 @@ export default {
   },
   methods: {
 
-    getAllLocations()
-    {
+    getAllLocations() {
       LocationService.sendGetMapLocationsAllRequest()
           .then(response => this.locations = response.data)
           .catch(error => alert(error.response.data))
