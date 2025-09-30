@@ -1,7 +1,8 @@
 <template>
   <Modal :modal-is-open="shroomModalIsOpen" @event-close-modal="$emit('event-close-modal')">
     <template #title>
-      Lisa uus seen:
+      <span v-if="isEdit" >Uuenda seent:</span>
+      <span v-else >Lisa uus seen:</span>
     </template>
     <template #body>
       <div class="container text-center">
@@ -34,7 +35,8 @@
     </template>
 
     <template #buttons>
-      <button @click="saveShroom" type="button" class="btn btn-outline-success me-3">Salvesta</button>
+      <button v-if="this.isEdit" @click="updateShroom" type="button" class="btn btn-outline-success me-3">Uuenda</button>
+      <button v-else @click="addShroom" type="button" class="btn btn-outline-success me-3">Lisa</button>
       <button @click="$emit('event-close-modal')" type="button" class="btn btn-outline-danger">Sulge</button>
     </template>
 
@@ -99,11 +101,32 @@ export default {
     },
 
 
-    saveShroom() {
+    shroomData() {
+      return {
+        name: this.shroom.shroomName,
+        description: this.shroom.description,
+        shroomImage: this.imageData
+      };
+    },
+
+    addShroom() {
       this.inputIsValid = this.shroom.description.length > 0 && this.shroom.shroomName.length > 0
       if (this.inputIsValid) {
-        ShroomService.sendAddShroomRequest(this.shroom)
+        let shroomData = this.shroomData();
+        ShroomService.sendAddShroomRequest(this.userId, shroomData)
             .then(() => this.handleShroomAdded())
+            .catch(error => this.handleErrorResponse(error));
+      } else {
+        alert("täida väljad")
+      }
+    },
+
+    updateShroom() {
+      this.inputIsValid = this.shroom.description.length > 0 && this.shroom.shroomName.length > 0
+      if (this.inputIsValid) {
+        let shroomData = this.shroomData();
+        ShroomService.sendUpdateShroomRequest(this.shroomId, shroomData)
+            .then(() => this.handleShroomUpdated())
             .catch(error => this.handleErrorResponse(error));
       } else {
         alert("täida väljad")
@@ -118,17 +141,26 @@ export default {
       alert("Seen edukalt lisatud")
       this.$emit('event-close-modal');
     },
+
+    handleShroomUpdated() {
+      alert("Seen edukalt uuendatud")
+      this.$emit('event-close-modal');
+    },
+
+    isEdit(){
+      return this.shroomId > 0
+    },
+
     onModalOpen() {
-      if (!this.shroomId || this.shroomId <= 0) {
-        return;
+      if (this.isEdit) {
+        ShroomService.getShroomDetailedInfo(this.shroomId)
+            .then(response => this.shroom = response.data)
+            .catch(error => this.handleErrorResponse(error))
+        ImageService.getShroomImage(this.shroomId)
+            .then(response => this.imageData = response.data)
+            .catch(() => {
+            })
       }
-      ShroomService.getShroomDetailedInfo(this.shroomId)
-          .then(response => this.shroom = response.data)
-          .catch(error => this.handleErrorResponse(error))
-      ImageService.getShroomImage(this.shroomId)
-          .then(response => this.imageData = response.data)
-          .catch(() => {
-          })
     }
   },
 }

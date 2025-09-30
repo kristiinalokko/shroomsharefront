@@ -45,7 +45,18 @@ export default {
             }
         })
     },
-    sendAddShroomRequest(userId, shroom) {
-        return axios.post("/shroom", shroom)
+    sendAddShroomRequest(userId, shroomData) {
+        return axios.post("/shroom", shroomData, {
+            params:{
+                userId:userId
+            }
+        })
+    },
+    sendUpdateShroomRequest(shroomId, shroomData) {
+        return axios.post("/shroom", shroomData, {
+            params:{
+                shoomId:shroomId
+            }
+        })
     }
 }
