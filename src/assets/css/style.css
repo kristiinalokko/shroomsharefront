@@ -161,3 +161,13 @@ button:disabled {
 .top-right-button:hover {
     background-color: #0056b3;
 }
+
+.status-label {
+    display: block;
+    margin-top: 0;
+    margin-bottom: 0.3em;
+    font-size: 0.95em;
+}
+h1 {
+    margin-bottom: 0.1em;
+}

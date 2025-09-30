@@ -6,15 +6,18 @@
       </div>
       <div class="col">
         <h1>{{ shroom.shroomName }}</h1>
+        <small class="status-label" :class="shroom.status === 'A' ? 'text-success' : 'text-warning'">
+          {{ shroom.status === 'A' ? 'active' : 'pending' }}
+        </small>
         <div class="row mb-3 justify-content-center">{{ shroom.description }}</div>
-        <div v-for="location in shroom.locations" class="row mb-3">
+        <div v-for="location in locations" key="location.locationId" class="row mb-3">
           <router-link :to="{ path: '/location-info', query: { locationId: location.locationId } }">
             {{ location.locationName }}
           </router-link>
         </div>
         <div class="row justify-content-center mt-3">
           <AlertDanger :message="errorMessage"/>
-          <button @click="$router.go(-1)" type="button" class="btn btn-secondary col-3">Tagasi</button>
+          <button @click="$router.go(-1)" type="button" class="btn btn-secondary col-3 me-3">Tagasi</button>
           <button v-if="SessionStorageService.isAdmin() || userId === shroom.userId" @click="shroomModalIsOpen=true"
                   type="button" class="btn btn-primary col-3 me-3">Muuda seent
           </button>
@@ -35,6 +38,8 @@ import AlertDanger from "@/components/AlertDanger.vue";
 import ShroomModal from "@/components/modal/ShroomModal.vue";
 import SessionStorageService from "@/services/SessionStorageService";
 import ImageService from "@/services/ImageService";
+import LocationService from "@/services/LocationService";
+import NavigationService from "@/services/NavigationService";
 
 export default {
   name: 'ShroomInfoView',
@@ -67,12 +72,6 @@ export default {
         description: '',
         status: ''
       },
-      // locations: [
-      //   {
-      //     locationId: 0,
-      //     locationName: ''
-      //   }
-      // ]
 
       locations:[
         {
@@ -101,6 +100,9 @@ export default {
           .then(response => this.imageData = response.data)
           .catch(() => {
           })
+      LocationService.getShroomLocations(shroomId)
+          .then(response => this.locations = response.data)
+          .catch(error => this.handleErrorResponse(error))
     },
 
 
@@ -110,6 +112,7 @@ export default {
     },
     handleGetShroomResponse(response) {
       this.shroom = response.data
+      this.hasAccess()
     },
     handleErrorMessage() {
       this.errorMessage = "Ei leitud seent."
@@ -117,6 +120,13 @@ export default {
     },
     resetErrorMessage() {
       this.errorMessage = ''
+    },
+
+    hasAccess(){
+      if(this.shroom.status === "A" || (this.shroom.status === "P" && (SessionStorageService.isAdmin() || this.userId === this.shroom.userId))){
+      } else {
+        NavigationService.navigateToError();
+      }
     }
   }
   ,

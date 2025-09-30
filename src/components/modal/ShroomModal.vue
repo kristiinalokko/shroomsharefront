@@ -7,13 +7,13 @@
       <div class="container text-center">
         <div class="row">
           <div class="col">
-            <Image :image-data="shroom.shroomImage" :default-image-data="defaultShroomImage"/>
+            <Image :image-data="imageData" :default-image-data="defaultShroomImage"/>
           </div>
           <div class="col">
             <div class="input-group justify-content-start">
               <div class="row">
                 <label>Seene nimi:</label>
-                <input v-model="shroom.name" type="text" class="form-control" placeholder="kukeseen">
+                <input v-model="shroom.shroomName" type="text" class="form-control" placeholder="kukeseen">
               </div>
               <div class="row mb-5">
                 <label>Kirjeldus:</label>
@@ -48,6 +48,7 @@ import ImageInput from "@/components/ImageInput.vue";
 import LocationImage from "@/components/Image.vue";
 import Image from "@/components/Image.vue";
 import ShroomService from "@/services/ShroomService";
+import ImageService from "@/services/ImageService";
 
 export default {
   name: 'ShroomModal',
@@ -68,12 +69,15 @@ export default {
       resetFileInput: false,
       defaultShroomImage: defaultShroomImage,
       inputIsValid: false,
+      userId: Number(sessionStorage.getItem("userId")),
+      imageData: '',
 
       shroom: {
-        userId: Number(sessionStorage.getItem("userId")),
-        name: '',
+        userId: 0,
+        shroomId: 0,
+        shroomName: '',
         description: '',
-        shroomImage: '',
+        status: ''
       },
 
       errorResponse: {
@@ -86,22 +90,21 @@ export default {
   methods: {
 
     handleNewImageSelected(imageData) {
-      this.shroom.shroomImage = imageData
+      this.imageData = imageData
     },
 
     handleResetImageSelectComplete() {
-      this.shroomImage = ''
+      this.imageData = ''
       this.resetFileInput = false
     },
 
 
     saveShroom() {
-      this.inputIsValid = this.shroom.description.length > 0 && this.shroom.name.length > 0
+      this.inputIsValid = this.shroom.description.length > 0 && this.shroom.shroomName.length > 0
       if (this.inputIsValid) {
         ShroomService.sendAddShroomRequest(this.shroom)
             .then(() => this.handleShroomAdded())
             .catch(error => this.handleErrorResponse(error));
-        this.$emit('event-close-modal');
       } else {
         alert("täida väljad")
       }
@@ -113,6 +116,7 @@ export default {
 
     handleShroomAdded() {
       alert("Seen edukalt lisatud")
+      this.$emit('event-close-modal');
     },
     onModalOpen() {
       if (!this.shroomId || this.shroomId <= 0) {
@@ -121,6 +125,10 @@ export default {
       ShroomService.getShroomDetailedInfo(this.shroomId)
           .then(response => this.shroom = response.data)
           .catch(error => this.handleErrorResponse(error))
+      ImageService.getShroomImage(this.shroomId)
+          .then(response => this.imageData = response.data)
+          .catch(() => {
+          })
     }
   },
 }
