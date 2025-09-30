@@ -6,7 +6,8 @@
     </div>
     <div class="row">
       <div class="col">
-        map
+
+        <ChooseLocationMap @event-new-location-selected="handleUpdateLocationLatLng"/>
       </div>
       <div class="col-4">
         <div class="row mb-3">
@@ -26,7 +27,12 @@
           vali asukoht kaardil
         </div>
         <div class="row mb-3">
-          "valitud asukoht"
+          <div class="m-3">
+            laius: {{ location.latitude}}
+          </div>
+          <div class="m-3">
+            pikkus: {{ location.latitude}}
+          </div>
         </div>
         <div class="row mb-3">
           <div class="mb-3">
@@ -87,10 +93,12 @@ import ShroomDropdown from "@/components/ShroomDropdown.vue";
 import shroomService from "@/services/ShroomService";
 import SessionStorageService from "@/services/SessionStorageService";
 import ShroomModal from "@/components/modal/ShroomModal.vue";
+import ShowLocationsMap from "@/components/map/ShowLocationsMap.vue";
+import ChooseLocationMap from "@/components/map/ChooseLocationMap.vue";
 
 export default {
   name: 'LocationView',
-  components: {ShroomModal, ShroomDropdown, ImageInput, Image: Image},
+  components: {ChooseLocationMap, ShowLocationsMap, ShroomModal, ShroomDropdown, ImageInput, Image: Image},
   data() {
     return {
       shroomModalIsOpen: false,
@@ -109,6 +117,10 @@ export default {
         description: '',
         locationImage: '',
         status: '',
+      },
+
+      temp: {
+
       },
 
       shrooms: [
@@ -209,6 +221,12 @@ export default {
     deactivateLocation() {
       locationService.deactivateLocation(this.locationId)
       NavigationService.navigateToHome()
+    },
+
+    handleUpdateLocationLatLng(latLng) {
+      this.location.latitude = latLng.lat
+      this.location.longitude = latLng.lng
+
     },
   },
 
