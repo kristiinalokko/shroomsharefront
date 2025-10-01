@@ -64,24 +64,17 @@
           >
             <l-tile-layer :url="tileUrl" :attribution="attribution"></l-tile-layer>
 
-            <!-- Show message if no locations are available -->
-            <div v-if="mapLocations.length === 0">No locations available.</div>
-
             <!-- Shroom location markers -->
             <l-marker
                 v-for="mapLocation in mapLocations"
                 :key="mapLocation.locationId"
                 :lat-lng="[mapLocation.latitude, mapLocation.longitude]"
-                @mouseover="showLocationName(mapLocation)"
                 @click="showPopup(mapLocation)"
-
             >
               <l-tooltip>{{ mapLocation.locationName }}</l-tooltip>
               <l-popup>
                 <div>
                   <strong>{{ mapLocation.locationName }}</strong><br />
-
-
                   <StarRating :avg-rating="mapLocation.avgRating"/>
 
                   <!-- Display shrooms -->
@@ -91,7 +84,6 @@
                       {{ shroom.shroomName }}
                     </div>
                   </div>
-
 
                   <strong>Lisas:</strong> {{ mapLocation.username }}<br />
                   <strong>Lisatud:</strong> {{ mapLocation.createdAt }}<br />
@@ -120,8 +112,6 @@
   </div>
 </template>
 
-
-
 <script>
 import { LMap, LTileLayer, LMarker, LTooltip, LPopup } from "@vue-leaflet/vue-leaflet";
 import { Icon } from "leaflet";
@@ -132,15 +122,15 @@ import ShroomService from "@/services/ShroomService";
 
 export default {
   name: "LocationsView",
-  components: {StarRating, MapShroomDropdown, LMap, LTileLayer, LMarker, LTooltip, LPopup },
+  components: { StarRating, MapShroomDropdown, LMap, LTileLayer, LMarker, LTooltip, LPopup },
   data() {
     return {
       zoom: 7,
-      center: [58.7, 25.3], // Estonia center
+      center: [58.7, 25.3],
       tileUrl: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
       attribution: "© OpenStreetMap contributors",
       mapOptions: { zoomControl: true, scrollWheelZoom: true },
-      mapLocations: [], // List of locations
+      mapLocations: [],
       filters: {
         shroomId: null,
         minRating: 0,
@@ -151,7 +141,7 @@ export default {
       },
       clickPin: { latitude: 58.7, longitude: 25.3 },
       selectedShroom: { shroomId: null, shroomName: "Kõik seened" },
-      hoveredLocationName: null, // Store hovered location name for tooltip
+      selectedLocation: null,
     };
   },
   computed: {
@@ -160,10 +150,8 @@ export default {
     },
     myLocationIcon() {
       return new Icon({
-        iconUrl:
-            "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-red.png",
-        shadowUrl:
-            "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png",
+        iconUrl: "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-red.png",
+        shadowUrl: "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png",
         iconSize: [25, 41],
         iconAnchor: [12, 41],
         popupAnchor: [1, -34],
@@ -172,45 +160,39 @@ export default {
     },
   },
   mounted() {
-    this.getMapLocations()
+    this.applyFilters();
   },
-
-
-
-
-
-
-    methods: {
-
-
-
-      getMapLocations() {
-        LocationService.sendGetMapLocationsAllRequest()
-            .then(response => this.mapLocations = response.data)
-            .catch()
-      },
+  methods: {
     setShroomId(shroomId, shroomObj = null) {
       this.filters.shroomId = shroomId || null;
       this.selectedShroom = shroomObj || { shroomId: null, shroomName: "Kõik seened" };
       this.applyFilters();
     },
     applyFilters() {
-      const params = { ...this.filters };
-      if (!params.shroomId) {
-        delete params.shroomId;
+      const params = {
+        latitude: this.filters.latitude,
+        longitude: this.filters.longitude,
+        radiusKm: this.filters.radiusKm,
+        minRating: this.filters.minRating || 0,
+        lastActive: this.filters.lastActive || '',
+      };
+
+      if (this.filters.shroomId) {
+        params.shroomId = this.filters.shroomId;
       }
+
       LocationService.sendGetFilteredMapLocationsRequest(params)
           .then((response) => {
             this.mapLocations = response.data;
           })
-          .catch((err) => console.error("Error loading filtered locations:", err));
+          .catch((err) => {
+            console.error("Error loading filtered locations:", err);
+            if (err.response) {
+              console.error("Response data:", err.response.data);
+            }
+          });
     },
-    showLocationName(mapLocation) {
-      this.hoveredLocationName = mapLocation.locationName; // Show location name on hover
-    },
-
     goToLocationInfoPage(mapLocation) {
-      // Navigate to the full location info page
       this.$router.push({
         path: "/location-info",
         query: { locationId: mapLocation.locationId },
@@ -223,26 +205,35 @@ export default {
       this.filters.longitude = newLatLng.lng;
       this.applyFilters();
     },
-      async fetchShroomsForLocation(mapLocation) {
-        try {
-          const response = await ShroomService.getShroomsByLocationId(mapLocation.locationId);
-          // Direct assignment works in Vue 3
-          mapLocation.shrooms = response.data;
-        } catch (error) {
-          console.error('Error fetching shrooms:', error);
-          mapLocation.shrooms = [];
-        }
-      },
-
-      async showPopup(mapLocation) {
-        this.selectedLocation = mapLocation;
-        // Fetch shrooms if not already loaded
-        if (!mapLocation.shrooms) {
-          await this.fetchShroomsForLocation(mapLocation);
-        }
-      },
-    }
+    async fetchShroomsForLocation(mapLocation) {
+      try {
+        const response = await ShroomService.getShroomsByLocationId(mapLocation.locationId);
+        mapLocation.shrooms = response.data;
+      } catch (error) {
+        console.error('Error fetching shrooms:', error);
+        mapLocation.shrooms = [];
+      }
+    },
+    async showPopup(mapLocation) {
+      this.selectedLocation = mapLocation;
+      if (!mapLocation.shrooms) {
+        await this.fetchShroomsForLocation(mapLocation);
+      }
+    },
+  }
 };
 </script>
 
-
+<style scoped>
+.map-wrapper {
+  height: 100vh;
+  width: 100%;
+}
+.controls-panel {
+  padding: 20px;
+  height: 100vh;
+  overflow-y: auto;
+  background-color: #f8f9fa;
+  border-right: 1px solid #dee2e6;
+}
+</style>
