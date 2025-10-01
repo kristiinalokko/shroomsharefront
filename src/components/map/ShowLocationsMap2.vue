@@ -1,20 +1,8 @@
 <template>
-  <div class="col-lg-8 col-md-7">
-    <div class="map-wrapper">
-      <l-map
-          ref="mapRef"
-          :zoom="zoom"
-          :center="center"
-          @ready="onMapReady"
-          :options="mapOptions"
-          style="height: 100vh; width: 100%;"
-      >
-        <l-tile-layer :url="tileUrl" :attribution="attribution"></l-tile-layer>
+  <div>
+    <MapBase>
+      <template #insideMap>
 
-        <!-- Show message if no locations are available -->
-<!--        <div v-if="mapLocations.length === 0">No locations available.</div>-->
-
-        <!-- Shroom location markers -->
         <l-marker
             v-for="mapLocation in mapLocations"
             :key="mapLocation.locationId"
@@ -25,35 +13,31 @@
           <l-tooltip>{{ mapLocation.locationName }}</l-tooltip>
           <l-popup>
             <div>
-              <strong>{{ mapLocation.locationName }}</strong><br />
-              <strong>Username:</strong> {{ mapLocation.username }}<br />
-              <strong>Rating:</strong> {{ mapLocation.avgRating }}<br />
-              <strong>Added:</strong> {{ mapLocation.createdAt }}<br />
-              <strong>Description:</strong> {{ mapLocation.description }}<br />
-              <!--              <div v-if="mapLocation.locationImage">-->
-              <!--                <img :src="mapLocation.locationImage" alt="Location Image" width="100" />-->
-              <!--              </div>-->
-              <!-- Link to full location info -->
-              <br />
+              <strong>{{ mapLocation.locationName }}</strong><br/>
+              <strong>Username:</strong> {{ mapLocation.username }}<br/>
+              <strong>Rating:</strong> {{ mapLocation.avgRating }}<br/>
+              <strong>Added:</strong> {{ mapLocation.createdAt }}<br/>
+              <strong>Description:</strong> {{ mapLocation.description }}<br/>
+              <br/>
               <button @click="goToLocationInfoPage(mapLocation)" class="btn btn-primary mt-2">
                 Go to Full Info
               </button>
             </div>
           </l-popup>
         </l-marker>
-
-      </l-map>
-    </div>
+      </template>
+    </MapBase>
   </div>
 
 </template>
 
 <script>
 import {LMap, LMarker, LPopup, LTileLayer, LTooltip} from "@vue-leaflet/vue-leaflet";
+import MapBase from "@/components/map/base/MapBase.vue";
 
 export default {
   name: 'ShowLocationsMap',
-  components: {LMap, LTileLayer, LMarker, LTooltip, LPopup },
+  components: {MapBase, LMap, LTileLayer, LMarker, LTooltip, LPopup},
 
   props: {
     mapLocations: {
@@ -68,7 +52,7 @@ export default {
       center: [58.7, 25.3], // Estonia center
       tileUrl: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
       attribution: "© OpenStreetMap contributors",
-      mapOptions: { zoomControl: true, scrollWheelZoom: true },
+      mapOptions: {zoomControl: true, scrollWheelZoom: true},
 
     }
   },
@@ -84,7 +68,7 @@ export default {
       // Navigate to the full location info page
       this.$router.push({
         path: "/location-info",
-        query: { locationId: mapLocation.locationId },
+        query: {locationId: mapLocation.locationId},
       });
     },
     onMapReady(event) {

@@ -1,9 +1,8 @@
 <template>
   <div>
-    <Map>
+    <MapBase>
       <template #insideMap>
 
-        <l-tile-layer :url="tileUrl" :attribution="attribution"></l-tile-layer>
 
         <l-marker
             v-if="clickPin"
@@ -14,8 +13,9 @@
         >
           <l-tooltip direction="top" :permanent="false">Minu asukoht</l-tooltip>
         </l-marker>
+
       </template>
-    </Map>
+    </MapBase>
   </div>
 
 </template>
@@ -23,11 +23,11 @@
 <script>
 import {LMap, LMarker, LPopup, LTileLayer, LTooltip} from "@vue-leaflet/vue-leaflet";
 import {Icon} from "leaflet";
-import Map from "@/components/Map.vue";
+import MapBase from "@/components/map/base/MapBase.vue";
 
 export default {
-  name: 'ChooseLocationMap',
-  components: {Map, LMap, LTileLayer, LMarker, LTooltip, LPopup},
+  name: 'ChooseLocationMap2',
+  components: {MapBase, Map, LMap, LTileLayer, LMarker, LTooltip, LPopup},
 
   props: {
     mapLocations: {
@@ -47,7 +47,7 @@ export default {
       attribution: "© OpenStreetMap contributors",
       mapOptions: {zoomControl: true, scrollWheelZoom: true},
       clickPin: {
-        latitude:  0,
+        latitude: 0,
         longitude: 0
       },
 

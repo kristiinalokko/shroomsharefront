@@ -27,7 +27,7 @@
       </div>
     </div>
     <div class="row">
-      <ShowLocationsMap :map-locations="locations"/>
+      <ShowLocationsMap2 :map-locations="locations"/>
     </div>
   </div>
 </template>
@@ -43,9 +43,9 @@ import SessionStorageService from "@/services/SessionStorageService";
 import ImageService from "@/services/ImageService";
 import LocationService from "@/services/LocationService";
 import NavigationService from "@/services/NavigationService";
-import Map from "@/components/Map.vue";
 import ChooseLocationMap from "@/components/map/ChooseLocationMap.vue";
 import ShowLocationsMap from "@/components/map/ShowLocationsMap.vue";
+import ShowLocationsMap2 from "@/components/map/ShowLocationsMap2.vue";
 
 export default {
   name: 'ShroomInfoView',
@@ -56,8 +56,8 @@ export default {
   },
   components: {
     ShowLocationsMap,
+    ShowLocationsMap2,
     ChooseLocationMap,
-    Map,
     ShroomModal,
     AlertDanger,
     Image,

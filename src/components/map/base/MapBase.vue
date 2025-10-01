@@ -22,7 +22,7 @@
 import {LMap, LMarker, LPopup, LTileLayer, LTooltip} from "@vue-leaflet/vue-leaflet";
 
 export default {
-  name: 'Map',
+  name: 'MapBase',
   components: {LMap, LTileLayer, LMarker, LTooltip, LPopup},
   data() {
     return {
@@ -33,9 +33,7 @@ export default {
       mapOptions: {zoomControl: true, scrollWheelZoom: true},
     }
   },
-  methods: {
-
-  },
+  methods: {},
   mounted() {
   }
 }
