@@ -53,7 +53,7 @@ export default {
         })
     },
     sendUpdateShroomRequest(shroomId, shroomData) {
-        return axios.post("/shroom", shroomData, {
+        return axios.put("/shroom", shroomData, {
             params:{
                 shroomId:shroomId
             }
