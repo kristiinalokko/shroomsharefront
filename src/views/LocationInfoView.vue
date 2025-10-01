@@ -49,15 +49,18 @@
         <div class="col">
         </div>
         <div class="col">
-          <button v-if="(location.userId === userId) || (userId === 1)"
+          <button v-if="(location.userId === userId) || SessionStorageService.isAdmin()"
                   @click="NavigationService.navigateToEdit(locationId)" type="button"
                   class="btn btn-secondary col-3 me-3">Muuda
           </button>
-          <button v-if="(location.userId === userId) || (userId === 1)" @click="deleteLocation" type="button"
+          <button v-if="(location.userId === userId) || SessionStorageService.isAdmin()"
+                  @click="confirmationModalIsOpen=true" type="button"
                   class="btn btn-secondary col-3 me-3">Kustuta
           </button>
           <button @click="$router.go(-1)" type="button" class="btn btn-secondary col-3">Tagasi</button>
-
+          <DeleteConfirmationModal :confirmationModalIsOpen="confirmationModalIsOpen"
+                                   @event-delete="deleteLocation"
+                                   @event-close-modal="confirmationModalIsOpen=false" />
         </div>
       </div>
       <div class="row justify-content-center">
@@ -95,17 +98,24 @@ import StarRating from "@/components/rating/StarRating.vue";
 import ShroomService from "@/services/ShroomService";
 import NavigationService from "@/services/NavigationService";
 import AlertDanger from "@/components/AlertDanger.vue";
+import DeleteConfirmationModal from "@/components/modal/DeleteConfirmationModal.vue";
 
 export default {
   name: 'LocationView',
   computed: {
+    SessionStorageService() {
+      return SessionStorageService
+    },
     NavigationService() {
       return NavigationService
     }
   },
-  components: {AlertDanger, StarRating, AddCommentModal, Comment, CommentPaginator, Favorite, LocationImage: Image},
+  components: {
+    DeleteConfirmationModal,
+    AlertDanger, StarRating, AddCommentModal, Comment, CommentPaginator, Favorite, LocationImage: Image},
   data() {
     return {
+      confirmationModalIsOpen: false,
       locationId: Number(useRoute().query.locationId),
       userId: Number(sessionStorage.getItem("userId")),
       isLoggedIn: false,

@@ -27,4 +27,8 @@ export default {
         router.push({name: 'locationInfo', query: {locationId: locationId}})
     },
 
+    navigateToShroomTable(){
+        router.push({name:'shroomTable'})
+    }
+
 };
