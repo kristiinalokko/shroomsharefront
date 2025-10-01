@@ -58,5 +58,12 @@ export default {
                 shoomId:shroomId
             }
         })
+    },
+    sendDeleteRequest(shroomId) {
+        return axios.delete("/shroom", {
+            params:{
+                shroomId:shroomId
+            }
+        })
     }
 }
