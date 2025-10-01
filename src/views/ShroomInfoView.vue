@@ -19,7 +19,7 @@
           <button v-if="SessionStorageService.isAdmin() " @click="confirmationModalIsOpen=true"
                   type="button" class="btn btn-primary col-3 me-3">Kustuta seen
           </button>
-          <ShroomModal :shroomModalIsOpen="shroomModalIsOpen" :shroomId="shroomId"
+          <ShroomModal :shroomModalIsOpen="shroomModalIsOpen" :shroomId="shroom.shroomId"
                        @event-close-modal="shroomModalIsOpen = false"/>
           <DeleteConfirmationModal :confirmationModalIsOpen="confirmationModalIsOpen"
                                    @event-delete="deleteShroom"

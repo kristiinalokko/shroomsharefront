@@ -161,6 +161,16 @@ export default {
             .then(response => this.imageData = response.data)
             .catch(() => {
             })
+      } else {
+        this.shroom ={
+          userId: 0,
+          shroomId: 0,
+          shroomName: '',
+          description: '',
+          status: ''
+        };
+        this.imageData = '';
+        this.resetFileInput = true
       }
     }
   },
