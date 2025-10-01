@@ -10,11 +10,6 @@
           {{ shroom.status === 'A' ? 'active' : 'pending' }}
         </small>
         <div class="row mb-3 justify-content-center">{{ shroom.description }}</div>
-        <div v-for="location in locations" key="location.locationId" class="row mb-3">
-          <router-link :to="{ path: '/location-info', query: { locationId: location.locationId } }">
-            {{ location.locationName }}
-          </router-link>
-        </div>
         <div class="row justify-content-center mt-3">
           <AlertDanger :message="errorMessage"/>
           <button @click="$router.go(-1)" type="button" class="btn btn-secondary col-3 me-3">Tagasi</button>
