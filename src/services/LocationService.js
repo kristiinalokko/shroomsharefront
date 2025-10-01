@@ -23,8 +23,8 @@ export default {
         return axios.get('/map-locations/all');
     },
 
-    sendGetAllTableLocationsRequest() {
-        return axios.get('/locationsTable');
+    sendGetAllTableLocationsRequest(userId) {
+        return axios.get('/locationsExtendedInfos', { params: {userId: userId}});
     },
 
     sendDeactivateLocationRequest(locationId) {
