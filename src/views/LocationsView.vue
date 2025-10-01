@@ -12,6 +12,7 @@
               :placeholder="selectedShroomName"
               @event-new-shroom-selected="setShroomId"
           />
+
           <!-- Filters Form -->
           <h3>Filtreeri asukohti</h3>
           <form @submit.prevent="applyFilters">
@@ -27,6 +28,7 @@
                   class="form-control"
               />
             </div>
+
             <div class="mb-2">
               <label for="lastActiveAfter">Viimane aktiivsus pärast:</label>
               <input
@@ -36,6 +38,7 @@
                   class="form-control"
               />
             </div>
+
             <div class="mb-2">
               <label for="radius">Otsi kaugusel (km):</label>
               <input
@@ -47,6 +50,7 @@
                   step="1"
               />
             </div>
+
             <button type="submit" class="btn btn-primary mt-2">Otsi</button>
           </form>
         </div>
@@ -75,7 +79,7 @@
               <l-popup>
                 <div>
                   <strong>{{ mapLocation.locationName }}</strong><br />
-                  <StarRating :avg-rating="mapLocation.avgRating"/>
+                  <StarRating :avg-rating="mapLocation.avgRating" />
 
                   <!-- Display shrooms -->
                   <div v-if="mapLocation.shrooms && mapLocation.shrooms.length > 0">
@@ -88,7 +92,10 @@
                   <strong>Lisas:</strong> {{ mapLocation.username }}<br />
                   <strong>Lisatud:</strong> {{ mapLocation.createdAt }}<br />
 
-                  <button @click="goToLocationInfoPage(mapLocation)" class="btn btn-primary mt-2">
+                  <button
+                      @click="goToLocationInfoPage(mapLocation)"
+                      class="btn btn-primary mt-2"
+                  >
                     Vaata kogu infot
                   </button>
                 </div>
@@ -168,7 +175,7 @@ export default {
       this.selectedShroom = shroomObj || { shroomId: null, shroomName: "Kõik seened" };
       this.applyFilters();
     },
-    applyFilters() {
+    async applyFilters() {
       const params = {
         latitude: this.filters.latitude,
         longitude: this.filters.longitude,
@@ -176,21 +183,34 @@ export default {
         minRating: this.filters.minRating || 0,
         lastActive: this.filters.lastActive || '',
       };
-
       if (this.filters.shroomId) {
         params.shroomId = this.filters.shroomId;
       }
 
-      LocationService.sendGetFilteredMapLocationsRequest(params)
-          .then((response) => {
-            this.mapLocations = response.data;
-          })
-          .catch((err) => {
-            console.error("Error loading filtered locations:", err);
-            if (err.response) {
-              console.error("Response data:", err.response.data);
-            }
-          });
+      try {
+        const response = await LocationService.sendGetFilteredMapLocationsRequest(params);
+
+        // ensure each location has shrooms initialized
+        this.mapLocations = response.data.map(loc => ({
+          ...loc,
+          shrooms: []
+        }));
+
+        // preload shrooms for each location
+        for (const loc of this.mapLocations) {
+          try {
+            const shroomRes = await ShroomService.getShroomsByLocationId(loc.locationId);
+            loc.shrooms = shroomRes.data;
+          } catch (e) {
+            loc.shrooms = [];
+          }
+        }
+      } catch (err) {
+        console.error("Error loading filtered locations:", err);
+        if (err.response) {
+          console.error("Response data:", err.response.data);
+        }
+      }
     },
     goToLocationInfoPage(mapLocation) {
       this.$router.push({
@@ -205,21 +225,9 @@ export default {
       this.filters.longitude = newLatLng.lng;
       this.applyFilters();
     },
-    async fetchShroomsForLocation(mapLocation) {
-      try {
-        const response = await ShroomService.getShroomsByLocationId(mapLocation.locationId);
-        mapLocation.shrooms = response.data;
-      } catch (error) {
-        console.error('Error fetching shrooms:', error);
-        mapLocation.shrooms = [];
-      }
-    },
-    async showPopup(mapLocation) {
+    showPopup(mapLocation) {
       this.selectedLocation = mapLocation;
-      if (!mapLocation.shrooms) {
-        await this.fetchShroomsForLocation(mapLocation);
-      }
-    },
+    }
   }
 };
 </script>
