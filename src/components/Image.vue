@@ -1,5 +1,5 @@
 <template>
-  <img v-if="imageData === ''" :src="defaultImageData" class="img-thumbnail" alt="Default pilt">
+  <img v-if="imageData === '' || imageData === undefined" :src="defaultImageData" class="img-thumbnail" alt="Default pilt">
   <img v-else :src="imageData" class="img-thumbnail" alt="Pilt">
 </template>
 
