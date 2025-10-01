@@ -6,7 +6,7 @@
     </div>
     <div class="row">
       <div class="col">
-        <ChooseLocationMap2 :lat="location.latitude" :lng="location.longitude" @event-new-location-selected="handleUpdateLocationLatLng" />
+        <ChooseLocationMap :lat="location.latitude" :lng="location.longitude" @event-new-location-selected="handleUpdateLocationLatLng" />
         <!--        <ChooseLocationMap :lat="location.latitude" :lng="location.longitude" @event-new-location-selected="handleUpdateLocationLatLng"/>-->
       </div>
       <div class="col-4">
@@ -93,13 +93,11 @@ import ShroomDropdown from "@/components/ShroomDropdown.vue";
 import shroomService from "@/services/ShroomService";
 import SessionStorageService from "@/services/SessionStorageService";
 import ShroomModal from "@/components/modal/ShroomModal.vue";
-import ShowLocationsMap from "@/components/map/ShowLocationsMap.vue";
 import ChooseLocationMap from "@/components/map/ChooseLocationMap.vue";
-import ChooseLocationMap2 from "@/components/map/ChooseLocationMap2.vue";
 
 export default {
   name: 'LocationView',
-  components: {ChooseLocationMap2, ChooseLocationMap, ShowLocationsMap, ShroomModal, ShroomDropdown, ImageInput, Image: Image},
+  components: {ChooseLocationMap, ShroomModal, ShroomDropdown, ImageInput, Image: Image},
   data() {
     return {
       shroomModalIsOpen: false,

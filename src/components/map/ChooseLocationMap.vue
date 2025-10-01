@@ -1,15 +1,7 @@
 <template>
-  <div class="col-lg-8 col-md-7">
-    <div class="map-wrapper">
-      <l-map
-          ref="mapRef"
-          :zoom="zoom"
-          :center="center"
-          @ready="onMapReady"
-          :options="mapOptions"
-          style="height: 100vh; width: 100%;"
-      >
-        <l-tile-layer :url="tileUrl" :attribution="attribution"></l-tile-layer>
+  <div>
+    <MapBase>
+      <template #insideMap>
 
         <l-marker
             v-if="clickPin"
@@ -20,8 +12,9 @@
         >
           <l-tooltip direction="top" :permanent="false">Minu asukoht</l-tooltip>
         </l-marker>
-      </l-map>
-    </div>
+
+      </template>
+    </MapBase>
   </div>
 
 </template>
@@ -29,15 +22,16 @@
 <script>
 import {LMap, LMarker, LPopup, LTileLayer, LTooltip} from "@vue-leaflet/vue-leaflet";
 import {Icon} from "leaflet";
+import MapBase from "@/components/map/base/MapBase.vue";
 
 export default {
-  name: 'ChooseLocationMap',
-  components: {LMap, LTileLayer, LMarker, LTooltip, LPopup},
+  name: 'ChooseLocationMap2',
+  components: {MapBase, Map, LMap, LTileLayer, LMarker, LTooltip, LPopup},
 
   props: {
     mapLocations: {
       type: Array,
-      default: () => [], // Ensure a default value to avoid undefined
+      default: () => [],
     },
 
     lat: Number,
@@ -52,29 +46,13 @@ export default {
       attribution: "© OpenStreetMap contributors",
       mapOptions: {zoomControl: true, scrollWheelZoom: true},
       clickPin: {
-        latitude:  0,
+        latitude: 0,
         longitude: 0
       },
 
     }
   },
   methods: {
-
-    showLocationName(mapLocation) {
-      this.hoveredLocationName = mapLocation.locationName; // Show location name on hover
-    },
-
-    showPopup(mapLocation) {
-      this.selectedLocation = mapLocation; // Store selected location data for popup
-    },
-
-    goToLocationInfoPage(mapLocation) {
-      // Navigate to the full location info page
-      this.$router.push({
-        path: "/location-info",
-        query: {locationId: mapLocation.locationId},
-      });
-    },
 
     onPinDrag(event) {
       const newLatLng = event.target.getLatLng();
