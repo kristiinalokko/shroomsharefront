@@ -68,7 +68,7 @@
               <button v-if="isAdmin && location.status=== 'P'" @click="activateLocation(location.locationId)" type="button"
                       class="btn btn-success">Aktiveeri
               </button>
-              <button v-if="isAdmin && location.status !== 'D'"
+              <button v-if="(userId === location.userId || isAdmin) && location.status !== 'D'"
                       @click="confirmationModalIsOpen=true" type="button" class="btn btn-danger">Deaktiveeri
               </button>
               <DeleteConfirmationModal :confirmationModalIsOpen="confirmationModalIsOpen"
