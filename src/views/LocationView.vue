@@ -6,7 +6,6 @@
     </div>
     <div class="row">
       <div class="col">
-        <Ch
         <ChooseLocationMap :lat="location.latitude" :lng="location.longitude" @event-new-location-selected="handleUpdateLocationLatLng"/>
       </div>
       <div class="col-4">

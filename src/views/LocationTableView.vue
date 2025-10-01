@@ -30,6 +30,9 @@
     <div class="col">
     </div>
   </div>
+  <div>
+    <button @click="NavigationService.navigateToAddLocationView" type="button" class="btn btn-primary col-3 me-3">Lisa uus asukoht </button>
+  </div>
   <div v-if="isLoggedIn" class="row">
     <h1 class="mt-5">Siin on sinu lisatud asukohad: </h1>
   </div>
@@ -59,7 +62,7 @@
           <td>{{ location.status }}</td>
           <td>
             <div v-if="location.status !== 'D'" class="btn-group" role="group" aria-label="Basic example">
-              <button v-if="location.status !== 'P'" @click="NavigationService.navigateToLocationView(location.locationId)" type="button" class="btn btn-primary">Muuda</button>
+              <button v-if="location.status !== 'P'" @click="NavigationService.navigateToEditLocationView(location.locationId)" type="button" class="btn btn-primary">Muuda</button>
               <button @click="NavigationService.navigateToLocationInfoView(location.locationId)" type="button" class="btn btn-secondary">Vaata lähemalt</button>
             </div>
           </td>
