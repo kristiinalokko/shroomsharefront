@@ -7,7 +7,7 @@
     <div class="row">
       <div class="col">
 
-        <ChooseLocationMap @event-new-location-selected="handleUpdateLocationLatLng"/>
+        <ChooseLocationMap :lat="location.latitude" :lng="location.longitude" @event-new-location-selected="handleUpdateLocationLatLng"/>
       </div>
       <div class="col-4">
         <div class="row mb-3">
@@ -31,7 +31,7 @@
             laius: {{ location.latitude}}
           </div>
           <div class="m-3">
-            pikkus: {{ location.latitude}}
+            pikkus: {{ location.longitude}}
           </div>
         </div>
         <div class="row mb-3">
@@ -116,7 +116,7 @@ export default {
         longitude: 0,
         description: '',
         locationImage: '',
-        status: '',
+        status: '',  //back ei võta seda vastu
       },
 
       temp: {
@@ -140,7 +140,7 @@ export default {
 
     updateLocation() {
       if (this.inputIsValid()) {
-        locationService.sendUpdateLocationRequest(this.location)
+        locationService.sendUpdateLocationRequest(this.location, this.locationId)
             .then(() => NavigationService.navigateToHome())
             .catch(error => this.handleErrorResponse(error))
       }

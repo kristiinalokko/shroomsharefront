@@ -15,8 +15,8 @@ export default {
         return axios.post('/location', location)
     },
 
-    sendUpdateLocationRequest(location) {
-        return axios.put('/location', location)
+    sendUpdateLocationRequest(location, locationId) {
+        return axios.put('/location', location, {params: { locationId: locationId}})
     },
 
     sendGetMapLocationsAllRequest() {
