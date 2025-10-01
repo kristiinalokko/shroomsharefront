@@ -55,7 +55,7 @@ export default {
     sendUpdateShroomRequest(shroomId, shroomData) {
         return axios.post("/shroom", shroomData, {
             params:{
-                shoomId:shroomId
+                shroomId:shroomId
             }
         })
     },
