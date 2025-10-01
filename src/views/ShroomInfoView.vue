@@ -33,7 +33,7 @@
       </div>
     </div>
     <div class="row">
-      <ShowLocationsMap :map-locations="locations"/>
+      <ShowLocationsMap2 :map-locations="locations"/>
     </div>
   </div>
 </template>
@@ -49,9 +49,7 @@ import SessionStorageService from "@/services/SessionStorageService";
 import ImageService from "@/services/ImageService";
 import LocationService from "@/services/LocationService";
 import NavigationService from "@/services/NavigationService";
-import Map from "@/components/Map.vue";
-import ChooseLocationMap from "@/components/map/ChooseLocationMap.vue";
-import ShowLocationsMap from "@/components/map/ShowLocationsMap.vue";
+import ShowLocationsMap2 from "@/components/map/ShowLocationsMap2.vue";
 import DeleteConfirmationModal from "@/components/modal/DeleteConfirmationModal.vue";
 
 export default {
@@ -63,9 +61,7 @@ export default {
   },
   components: {
     DeleteConfirmationModal,
-    ShowLocationsMap,
-    ChooseLocationMap,
-    Map,
+    ShowLocationsMap2,
     ShroomModal,
     AlertDanger,
     Image,
