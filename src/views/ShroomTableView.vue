@@ -30,9 +30,8 @@
     </div>
   </div>
   <div class="row justify-content-center">
-    <button @click="shroomModalIsOpen=true" type="button" class="btn btn-primary col-3 me-3">Lisa uus seen
+    <button @click="shroomModalIsOpen=true; shroomId = '0'" type="button" class="btn btn-primary col-3 me-3">Lisa uus seen
     </button>
-    <ShroomModal :shroomModalIsOpen="shroomModalIsOpen" :shroom-id="0" @event-close-modal="shroomModalIsOpen = false"/>
   </div>
   <div v-if="isLoggedIn" class="row">
     <h1 class="mt-5">Siin on sinu lisatud seened: </h1>
@@ -61,11 +60,24 @@
           <td>{{ shroom.description }}</td>
           <td v-if="isAdmin">{{ shroom.username }}</td>
           <td :class="getStatusClass(shroom.status)">
-            {{ getStatusLabel(shroom.status) }}</td>
+            {{ getStatusLabel(shroom.status) }}
+          </td>
           <td>
             <div v-if="shroom.status !== 'D'" class="btn-group" role="group" aria-label="Basic example">
-              <button @click="NavigationService.navigateToError()" type="button" class="btn btn-primary">Muuda</button>
-              <button @click="NavigationService.navigateToShroomInfoView(shroom.shroomId)" type="button" class="btn btn-secondary">Vaata lähemalt</button>
+              <button @click="shroomModalIsOpen=true; shroomId=shroom.shroomId" type="button" class="btn btn-primary">Muuda</button>
+              <button @click="NavigationService.navigateToShroomInfoView(shroom.shroomId)" type="button"
+                      class="btn btn-secondary">Vaata lähemalt
+              </button>
+              <button v-if="sessionStorageService.isAdmin() && shroom.status=== 'P'" @click="activateShroom(shroom.shroomId)" type="button"
+                      class="btn btn-success">Aktiveeri
+              </button>
+              <button v-if="sessionStorageService.isAdmin() && shroom.status !== 'D'"
+                      @click="confirmationModalIsOpen=true" type="button" class="btn btn-danger">Deaktiveeri
+              </button>
+              <DeleteConfirmationModal :confirmationModalIsOpen="confirmationModalIsOpen"
+                                       @event-delete="deleteShroom(shroom.shroomId)"
+                                       @event-close-modal="handleCloseModal"/>
+              <ShroomModal :shroomModalIsOpen="shroomModalIsOpen" :shroomId="shroomId" @event-close-modal="handleCloseModal"/>
             </div>
           </td>
         </tr>
@@ -82,23 +94,31 @@
 <script>
 import ShroomService from "@/services/ShroomService";
 import SessionStorageService from "@/services/SessionStorageService";
+import sessionStorageService from "@/services/SessionStorageService";
 import NavigationService from "@/services/NavigationService";
 import ShroomModal from "@/components/modal/ShroomModal.vue";
+import DeleteConfirmationModal from "@/components/modal/DeleteConfirmationModal.vue";
+import shroomService from "@/services/ShroomService";
 
 export default {
   name: 'ShroomTableView',
-  components: {ShroomModal},
+  components: {DeleteConfirmationModal, ShroomModal},
   computed: {
+    sessionStorageService() {
+      return sessionStorageService
+    },
     NavigationService() {
       return NavigationService
     }
   },
   data() {
     return {
+      confirmationModalIsOpen: false,
       shroomModalIsOpen: false,
       isLoggedIn: SessionStorageService.isLoggedIn(),
       isAdmin: SessionStorageService.isAdmin(),
       userId: Number(sessionStorage.getItem("userId")),
+      shroomId: 0,
 
       shrooms: [
         {
@@ -119,6 +139,15 @@ export default {
     }
   },
   methods: {
+
+    deleteShroom(shroomId) {
+      ShroomService.sendDeleteRequest(shroomId)
+          .then(() => {
+            this.confirmationModalIsOpen = false;
+            this.getAllShrooms()
+          })
+          .catch(error => this.handleErrorResponse(error))
+    },
 
     getAllShrooms() {
       ShroomService.getAllShroomsDetailedInfo()
@@ -146,6 +175,18 @@ export default {
       if (status === 'P') return 'text-warning';
       if (status === 'D') return 'text-danger';
       return '';
+    },
+
+    handleCloseModal(){
+      this.shroomModalIsOpen = false;
+      this.confirmationModalIsOpen = false;
+      this.getAllShrooms()
+    },
+
+    activateShroom(shroomId){
+      shroomService.sendActivateShroomRequest(shroomId)
+          .then(() => this.getAllShrooms())
+          .catch(error => this.handleErrorResponse(error))
     }
 
   },

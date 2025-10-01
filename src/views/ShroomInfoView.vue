@@ -60,7 +60,7 @@ export default {
     }
   },
   components: {
-    DeleteConfirmationModal,
+    DeleteConfirmationModal: DeleteConfirmationModal,
     ShowLocationsMap2,
     ShroomModal,
     AlertDanger,
