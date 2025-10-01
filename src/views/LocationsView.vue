@@ -39,15 +39,25 @@
               />
             </div>
 
-            <div class="mb-2">
-              <label for="radius">Otsi kaugusel (km):</label>
+            <div class=mb-2>
+              <label for=radius>Otsi kaugusel (km): {{ filters.radiusKm }}</label>
               <input
-                  v-model.number="filters.radiusKm"
-                  type="number"
-                  id="radius"
-                  class="form-control"
-                  min="1"
-                  step="1"
+                  v-model.number=filters.radiusKm
+                  type=number
+                  id=radius
+                  class=form-control
+                  min=1
+                  max=400
+                  step=1
+              />
+              <input
+                  v-model.number=filters.radiusKm
+                  type=range
+                  id=radiusSlider
+                  class=form-range mt-2
+                  min=1
+                  max=400
+                  step=1
               />
             </div>
 
