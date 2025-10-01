@@ -24,7 +24,7 @@ export default {
 
 
     navigateToLocationInfoView(locationId) {
-        router.push({name: 'location-info', query: {locationId: locationId}})
+        router.push({name: 'locationInfo', query: {locationId: locationId}})
     },
 
 };

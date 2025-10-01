@@ -59,7 +59,7 @@
           <td>{{ location.status }}</td>
           <td>
             <div v-if="location.status !== 'D'" class="btn-group" role="group" aria-label="Basic example">
-              <button @click="NavigationService.navigateToLocationView(location.locationId)" type="button" class="btn btn-primary">Muuda</button>
+              <button v-if="location.status !== 'P'" @click="NavigationService.navigateToLocationView(location.locationId)" type="button" class="btn btn-primary">Muuda</button>
               <button @click="NavigationService.navigateToLocationInfoView(location.locationId)" type="button" class="btn btn-secondary">Vaata lähemalt</button>
             </div>
           </td>
