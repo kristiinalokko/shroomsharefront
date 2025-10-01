@@ -1,6 +1,7 @@
 <template>
   <h1>Siin on kõik asukohad meie andmebaasis (mis on hetkel aktiivsed)</h1>
   <div class="row">
+    <AlertDanger :message="errorResponse.message"/>
     <div class="col">
     </div>
     <div class="col">
@@ -107,10 +108,11 @@ import DeleteConfirmationModal from "@/components/modal/DeleteConfirmationModal.
 import sessionStorageService from "@/services/SessionStorageService";
 import Favorite from "@/components/Favorite.vue";
 import FavoriteService from "@/services/FavoriteService";
+import AlertDanger from "@/components/AlertDanger.vue";
 
 export default {
   name: 'LocationTableView',
-  components: {Favorite, DeleteConfirmationModal},
+  components: {AlertDanger, Favorite, DeleteConfirmationModal},
   computed: {
     SessionStorageService() {
       return SessionStorageService
@@ -161,10 +163,6 @@ export default {
       this.locations = response.data
     },
 
-    handleErrorResponse(error) {
-      this.errorResponse = error.response.data
-      // alert(this.errorResponse.message)
-    },
 
     getStatusLabel(status) {
       if (status === 'A') return 'Aktiivne';
@@ -210,6 +208,17 @@ export default {
           .then(() => this.getAllLocations())
           .catch(error => this.handleErrorResponse(error))
     },
+
+    handleErrorResponse(error) {
+      this.errorResponse = error.response.data
+      setTimeout(this.resetErrorMessage, 4000)
+      // alert(this.errorResponse.message)
+    },
+
+    resetErrorMessage() {
+      this.errorResponse.message = ''
+    },
+
 
   },
   mounted() {

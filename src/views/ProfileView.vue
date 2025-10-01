@@ -2,6 +2,7 @@
   <div class="container text-center">
     <h1>Profiil</h1>
     <div class="row">
+      <AlertDanger :message="errorResponse.message"/>
       <div class="col">
         <div class="row">
           <Image :image-data="profile.imageData" :default-image-data="defaultImageData"/>
@@ -41,11 +42,12 @@
 import ProfileService from "@/services/ProfileService";
 import Image from "@/components/Image.vue";
 import defaultProfileImage from '@/assets/profile.jpg'
+import AlertDanger from "@/components/AlertDanger.vue";
 
 
 export default {
   name: 'ProfileView',
-  components: {Image},
+  components: {AlertDanger, Image},
   data() {
     return {
       isEdit: false,
@@ -87,7 +89,12 @@ export default {
 
     handleErrorResponse(error) {
       this.errorResponse = error.response.data
+      setTimeout(this.resetErrorMessage, 4000)
       // alert(this.errorResponse.message)
+    },
+
+    resetErrorMessage() {
+      this.errorResponse.message = ''
     },
 
   },

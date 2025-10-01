@@ -5,6 +5,7 @@
 
   <div class="container text-center justify-content-center">
     <div class="row">
+<!--      <AlertSuccess :message=""-->
       <div class="col">
       </div>
       <div class="col">
@@ -33,9 +34,11 @@
 <script>
 import RegisterService from "@/services/RegisterService";
 import NavigationService from "@/services/NavigationService";
+import AlertSuccess from "@/components/AlertSuccess.vue";
 
 export default {
   name: 'RegisterView',
+  components: {AlertSuccess},
   data() {
     return {
       username: '',
