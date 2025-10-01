@@ -24,11 +24,15 @@
         </tr>
         </tbody>
       </table>
-<!--      todo: võiks olla vastus "Ei leidnud ühetgi seent", kui ta ei leidnud ühtegi aktiivset seent-->
       <div v-else> Ei leidnud ühtegi seent!</div>
     </div>
     <div class="col">
     </div>
+  </div>
+  <div class="row justify-content-center">
+    <button @click="shroomModalIsOpen=true" type="button" class="btn btn-primary col-3 me-3">Lisa uus seen
+    </button>
+    <ShroomModal :shroomModalIsOpen="shroomModalIsOpen" :shroom-id="0" @event-close-modal="shroomModalIsOpen = false"/>
   </div>
   <div v-if="isLoggedIn" class="row">
     <h1 class="mt-5">Siin on sinu lisatud seened: </h1>
@@ -78,9 +82,11 @@
 import ShroomService from "@/services/ShroomService";
 import SessionStorageService from "@/services/SessionStorageService";
 import NavigationService from "@/services/NavigationService";
+import ShroomModal from "@/components/modal/ShroomModal.vue";
 
 export default {
   name: 'ShroomTableView',
+  components: {ShroomModal},
   computed: {
     NavigationService() {
       return NavigationService
@@ -88,6 +94,7 @@ export default {
   },
   data() {
     return {
+      shroomModalIsOpen: false,
       isLoggedIn: SessionStorageService.isLoggedIn(),
       isAdmin: SessionStorageService.isAdmin(),
       userId: Number(sessionStorage.getItem("userId")),

@@ -18,7 +18,7 @@ export default {
         router.push({name: 'shroomInfo', query: {shroomId: shroomId}})
     },
 
-    navigateToLocationView(locationId) {
+    navigateToEditLocationView(locationId) {
         router.push({name: 'location', query: {locationId: locationId}})
     },
 
@@ -29,6 +29,9 @@ export default {
 
     navigateToShroomTable(){
         router.push({name:'shroomTable'})
-    }
+    },
 
+    navigateToAddLocationView(){
+        router.push({name:'location'})
+    }
 };
