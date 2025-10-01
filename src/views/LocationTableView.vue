@@ -10,6 +10,7 @@
           <th scope="col">Asukoha nimi</th>
           <th scope="col">Kirjeldus</th>
           <th scope="col">Lisas</th>
+          <th scope="col">Lemmik</th>
         </tr>
         </thead>
         <tbody v-for="location in locations">
@@ -21,6 +22,16 @@
           </th>
           <td>{{ location.description }}</td>
           <td>{{ location.username }}</td>
+          <td>
+            <div class="favorite-small">
+              <Favorite :is-favorite="location.isFavorite"
+                        :location-id="location.locationId"
+                        :user-id="userId"
+                        @event-delete-favorite="handleDeleteFavorite"
+                        @event-add-favorite="handleAddFavorite"
+              />
+            </div>
+          </td>
         </tr>
         </tbody>
       </table>
@@ -94,10 +105,12 @@ import NavigationService from "@/services/NavigationService";
 import locationService from "@/services/LocationService";
 import DeleteConfirmationModal from "@/components/modal/DeleteConfirmationModal.vue";
 import sessionStorageService from "@/services/SessionStorageService";
+import Favorite from "@/components/Favorite.vue";
+import FavoriteService from "@/services/FavoriteService";
 
 export default {
   name: 'LocationTableView',
-  components: {DeleteConfirmationModal},
+  components: {Favorite, DeleteConfirmationModal},
   computed: {
     SessionStorageService() {
       return SessionStorageService
@@ -123,7 +136,8 @@ export default {
           username: '',
           locationName: '',
           description: '',
-          status: ''
+          status: '',
+          isFavorite: false
         }
       ],
 
@@ -137,7 +151,7 @@ export default {
   methods: {
 
     getAllLocations() {
-      locationService.sendGetAllTableLocationsRequest()
+      locationService.sendGetAllTableLocationsRequest(this.userId)
           .then(response => this.handleGetAllResponse(response))
           .catch(error => this.handleErrorResponse(error))
     },
@@ -182,7 +196,19 @@ export default {
     handleCloseModal(){
       this.confirmationModalIsOpen = false
       this.getAllLocations()
-    }
+    },
+
+    handleDeleteFavorite(event) {
+      FavoriteService.deleteFavorite(event.userId, event.locationId)
+          .then(() => this.getAllLocations())
+          .catch(error => this.handleErrorResponse(error))
+    },
+
+    handleAddFavorite(event) {
+      FavoriteService.addFavorite(event.userId, event.locationId)
+          .then(() => this.getAllLocations())
+          .catch(error => this.handleErrorResponse(error))
+    },
 
   },
   mounted() {

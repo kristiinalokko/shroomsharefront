@@ -25,7 +25,7 @@ import {Icon} from "leaflet";
 import MapBase from "@/components/map/base/MapBase.vue";
 
 export default {
-  name: 'ChooseLocationMap2',
+  name: 'ChooseLocationMap',
   components: {MapBase, Map, LMap, LTileLayer, LMarker, LTooltip, LPopup},
 
   props: {
