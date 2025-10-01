@@ -69,10 +69,10 @@
                       class="btn btn-success">Aktiveeri
               </button>
               <button v-if="(userId === location.userId || isAdmin) && location.status !== 'D'"
-                      @click="confirmationModalIsOpen=true" type="button" class="btn btn-danger">Deaktiveeri
+                      @click="confirmationModalIsOpen=true; locationId=location.locationId" type="button" class="btn btn-danger">Deaktiveeri
               </button>
               <DeleteConfirmationModal :confirmationModalIsOpen="confirmationModalIsOpen"
-                                       @event-delete="deleteLocation(location.locationId)"
+                                       @event-delete="deleteLocation(locationId)"
                                        @event-close-modal="handleCloseModal"/>
             </div>
           </td>
@@ -115,6 +115,7 @@ export default {
       isLoggedIn: SessionStorageService.isLoggedIn(),
       isAdmin: SessionStorageService.isAdmin(),
       userId: Number(sessionStorage.getItem("userId")),
+      locationId: 0,
 
       locations: [
         {
