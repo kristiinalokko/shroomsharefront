@@ -21,11 +21,14 @@
           <button v-if="SessionStorageService.isAdmin() || userId === shroom.userId" @click="shroomModalIsOpen=true"
                   type="button" class="btn btn-primary col-3 me-3">Muuda seent
           </button>
-          <button v-if="SessionStorageService.isAdmin() " @click="deleteShroom"
+          <button v-if="SessionStorageService.isAdmin() " @click="confirmationModalIsOpen=true"
                   type="button" class="btn btn-primary col-3 me-3">Kustuta seen
           </button>
           <ShroomModal :shroomModalIsOpen="shroomModalIsOpen" :shroomId="shroomId"
                        @event-close-modal="shroomModalIsOpen = false"/>
+          <DeleteConfirmationModal :confirmationModalIsOpen="confirmationModalIsOpen"
+                                   @event-delete="deleteShroom"
+                                   @event-close-modal="confirmationModalIsOpen=false" />
         </div>
       </div>
     </div>
@@ -49,6 +52,7 @@ import NavigationService from "@/services/NavigationService";
 import Map from "@/components/Map.vue";
 import ChooseLocationMap from "@/components/map/ChooseLocationMap.vue";
 import ShowLocationsMap from "@/components/map/ShowLocationsMap.vue";
+import DeleteConfirmationModal from "@/components/modal/DeleteConfirmationModal.vue";
 
 export default {
   name: 'ShroomInfoView',
@@ -58,6 +62,7 @@ export default {
     }
   },
   components: {
+    DeleteConfirmationModal,
     ShowLocationsMap,
     ChooseLocationMap,
     Map,
@@ -67,6 +72,7 @@ export default {
   },
   data() {
     return {
+      confirmationModalIsOpen: false,
       shroomModalIsOpen: false,
       errorMessage: '',
       defaultShroomImage: defaultShroomImage,
@@ -106,7 +112,7 @@ export default {
   methods: {
     deleteShroom(){
       ShroomService.sendDeleteRequest(this.shroomId)
-          .then(() => alert("Seen kustutatud"))
+          .then(() => NavigationService.navigateToShroomTable())
           .catch(error => this.handleErrorResponse(error))
     },
 
