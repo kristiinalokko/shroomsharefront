@@ -102,7 +102,7 @@ export default {
   },
   methods: {
     deleteShroom(){
-      ShroomService.sendDeleteRequest(this.shroomId)
+      ShroomService.sendDeleteShroomRequest(this.shroomId)
           .then(() => NavigationService.navigateToShroomTable())
           .catch(error => this.handleErrorResponse(error))
     },

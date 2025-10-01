@@ -218,7 +218,7 @@ export default {
       }
     },
     deactivateLocation() {
-      locationService.deactivateLocation(this.locationId)
+      locationService.sendDeactivateLocationRequest(this.locationId)
       NavigationService.navigateToHome()
     },
 

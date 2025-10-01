@@ -65,6 +65,15 @@
             <div v-if="location.status !== 'D'" class="btn-group" role="group" aria-label="Basic example">
               <button @click="NavigationService.navigateToEditLocationView(location.locationId)" type="button" class="btn btn-primary">Muuda</button>
               <button @click="NavigationService.navigateToLocationInfoView(location.locationId)" type="button" class="btn btn-secondary">Vaata lähemalt</button>
+              <button v-if="isAdmin && location.status=== 'P'" @click="activateLocation(location.locationId)" type="button"
+                      class="btn btn-success">Aktiveeri
+              </button>
+              <button v-if="isAdmin && location.status !== 'D'"
+                      @click="confirmationModalIsOpen=true" type="button" class="btn btn-danger">Deaktiveeri
+              </button>
+              <DeleteConfirmationModal :confirmationModalIsOpen="confirmationModalIsOpen"
+                                       @event-delete="deleteLocation(location.locationId)"
+                                       @event-close-modal="handleCloseModal"/>
             </div>
           </td>
         </tr>
@@ -83,16 +92,26 @@ import ShroomService from "@/services/ShroomService";
 import SessionStorageService from "@/services/SessionStorageService";
 import NavigationService from "@/services/NavigationService";
 import locationService from "@/services/LocationService";
+import DeleteConfirmationModal from "@/components/modal/DeleteConfirmationModal.vue";
+import sessionStorageService from "@/services/SessionStorageService";
 
 export default {
   name: 'LocationTableView',
+  components: {DeleteConfirmationModal},
   computed: {
+    SessionStorageService() {
+      return SessionStorageService
+    },
+    sessionStorageService() {
+      return sessionStorageService
+    },
     NavigationService() {
       return NavigationService
     }
   },
   data() {
     return {
+      confirmationModalIsOpen: false,
       isLoggedIn: SessionStorageService.isLoggedIn(),
       isAdmin: SessionStorageService.isAdmin(),
       userId: Number(sessionStorage.getItem("userId")),
@@ -143,6 +162,26 @@ export default {
       if (status === 'P') return 'text-warning';
       if (status === 'D') return 'text-danger';
       return '';
+    },
+
+    activateLocation(locationId){
+      locationService.sendActivateLocationRequest(locationId)
+          .then(() => this.getAllLocations())
+          .catch(error => this.handleErrorResponse(error))
+    },
+
+    deleteLocation(locationId){
+      locationService.sendDeactivateLocationRequest(locationId)
+          .then(() => {
+            this.confirmationModalIsOpen = false;
+            this.getAllLocations()
+          })
+          .catch(error => this.handleErrorResponse(error))
+    },
+
+    handleCloseModal(){
+      this.confirmationModalIsOpen = false
+      this.getAllLocations()
     }
 
   },
