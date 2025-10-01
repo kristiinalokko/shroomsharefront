@@ -30,7 +30,7 @@
     <div class="col">
     </div>
   </div>
-  <div>
+  <div v-if="isLoggedIn" >
     <button @click="NavigationService.navigateToAddLocationView" type="button" class="btn btn-primary col-3 me-3">Lisa uus asukoht </button>
   </div>
   <div v-if="isLoggedIn" class="row">

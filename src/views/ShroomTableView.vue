@@ -29,7 +29,7 @@
     <div class="col">
     </div>
   </div>
-  <div class="row justify-content-center">
+  <div v-if="isLoggedIn" class="row justify-content-center">
     <button @click="shroomModalIsOpen=true" type="button" class="btn btn-primary col-3 me-3">Lisa uus seen
     </button>
     <ShroomModal :shroomModalIsOpen="shroomModalIsOpen" :shroom-id="0" @event-close-modal="shroomModalIsOpen = false"/>
