@@ -169,7 +169,7 @@ export default {
         this.location.userId = sessionStorage.getItem('userId')
         LocationService.sendNewLocationRequest(this.location)
             .then(response => {
-              NavigationService.navigateToEdit(response.data)
+              NavigationService.navigateToLocationInfoView(response.data)
               this.locationId = response.data
               this.isEdit = true
               this.getLocationShrooms(this.locationId)

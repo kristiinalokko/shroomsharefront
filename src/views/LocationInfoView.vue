@@ -28,6 +28,9 @@
           <div class="row m-5">
             Lisatud: {{ location.createdAt }}
           </div>
+          <div :class="getStatusClass(location.status)">
+            Staatus: {{ getStatusLabel(location.status) }}
+          </div>
           <div v-if="isLoggedIn" class="row m-5 justify-content-center">
             Lisa lemmikute hulka:
             <Favorite :is-favorite="isFavorite"
@@ -254,6 +257,20 @@ export default {
         this.isVisible = false
       }
     },
+
+    getStatusLabel(status) {
+      if (status === 'A') return 'Aktiivne, kõik saavad asukohta näha';
+      if (status === 'P') return 'Ootel, administraator peab asukoha kinnitama';
+      if (status === 'D') return 'Deaktiveeritud';
+      return status;
+    },
+
+    getStatusClass(status) {
+      if (status === 'A') return 'text-success';
+      if (status === 'P') return 'text-warning';
+      if (status === 'D') return 'text-danger';
+      return '';
+    }
 
 
   },
