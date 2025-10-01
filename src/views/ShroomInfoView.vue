@@ -21,6 +21,9 @@
           <button v-if="SessionStorageService.isAdmin() || userId === shroom.userId" @click="shroomModalIsOpen=true"
                   type="button" class="btn btn-primary col-3 me-3">Muuda seent
           </button>
+          <button v-if="SessionStorageService.isAdmin() " @click="deleteShroom"
+                  type="button" class="btn btn-primary col-3 me-3">Kustuta seen
+          </button>
           <ShroomModal :shroomModalIsOpen="shroomModalIsOpen" :shroomId="shroomId"
                        @event-close-modal="shroomModalIsOpen = false"/>
         </div>
@@ -99,6 +102,12 @@ export default {
     }
   },
   methods: {
+    deleteShroom(){
+      ShroomService.sendDeleteRequest(this.shroomId)
+          .then(() => alert("Seen kustutatud"))
+          .catch(error => this.handleErrorResponse(error))
+    },
+
     getShroom(shroomId) {
       ShroomService.getShroomDetailedInfo(shroomId)
           .then(response => this.handleGetShroomResponse(response))
