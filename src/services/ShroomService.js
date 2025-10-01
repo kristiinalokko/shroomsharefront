@@ -65,5 +65,12 @@ export default {
                 shroomId:shroomId
             }
         })
+    },
+    sendActivateShroomRequest(shroomId) {
+        return axios.put("/shroom/active", null, {
+            params:{
+                shroomId:shroomId
+            }
+        })
     }
 }
