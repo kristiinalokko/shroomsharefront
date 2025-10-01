@@ -28,7 +28,7 @@ export default {
     },
 
     deactivateLocation(locationId) {
-        return axios.put('/location-info', null, {
+        return axios.delete('/location-info', {
             params: {
                     locationId: locationId
                 }
