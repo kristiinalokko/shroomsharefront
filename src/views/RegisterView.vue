@@ -5,7 +5,7 @@
 
   <div class="container text-center justify-content-center">
     <div class="row">
-<!--      <AlertSuccess :message=""-->
+      <AlertSuccess :message="alertMessage"/>
       <div class="col">
       </div>
       <div class="col">
@@ -44,6 +44,7 @@ export default {
       username: '',
       password1: '',
       password2: '',
+      alertMessage: '',
 
       user: {
         username: '',
@@ -65,12 +66,22 @@ export default {
       } else if (this.passwordsMatch()) {
         this.createUser();
         RegisterService.sendRegistrationRequest(this.user)
-            .then(() => NavigationService.navigateToHome())
+            .then(response => this.handleSuccessfulRegistration(response))
             .catch(error => this.handleErrorResponse(error))
       } else {
         alert('passwords dont match')
       }
     },
+
+    handleSuccessfulRegistration(response) {
+      this.alertMessage = 'Kasutaja ' + this.username + ' edukalt lisatud! Võid minna sisse logima!'
+      setTimeout(this.resetAlertMessage, 6000)
+      this.username = ''
+      this.password1 = ''
+      this.password2 = ''
+
+    },
+
     inputIsEmpty() {
       return this.username.length < 1 || this.password1.length < 1 || this.password2.length < 1;
     },
@@ -85,6 +96,10 @@ export default {
     handleErrorResponse(error) {
       this.errorResponse = error.response.data
       alert(this.errorResponse.message)
+    },
+
+    resetAlertMessage() {
+      this.alertMessage = ''
     }
 
   },
