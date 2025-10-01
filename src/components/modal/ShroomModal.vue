@@ -158,7 +158,7 @@ export default {
             .then(response => this.shroom = response.data)
             .catch(error => this.handleErrorResponse(error))
         ImageService.getShroomImage(this.shroomId)
-            .then(response => this.imageData = response.data)
+            .then(response => this.imageData = response.data.imageData)
             .catch(() => {
             })
       }
