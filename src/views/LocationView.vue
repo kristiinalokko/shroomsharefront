@@ -210,7 +210,7 @@ export default {
 
     locationUnavailable() {
       if (this.location.status === "P") {
-        if (!(SessionStorageService.isAdmin()) || !(this.userId === this.location.userId)) {
+        if (!(this.userId === this.location.userId) && !(SessionStorageService.isAdmin())) {
           NavigationService.navigateToError()
         }
       } else if (this.location.status === "D") {
