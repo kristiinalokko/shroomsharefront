@@ -72,10 +72,10 @@
                       class="btn btn-success">Aktiveeri
               </button>
               <button v-if="sessionStorageService.isAdmin() && shroom.status !== 'D'"
-                      @click="confirmationModalIsOpen=true" type="button" class="btn btn-danger">Deaktiveeri
+                      @click="confirmationModalIsOpen=true; shroomId=shroom.shroomId" type="button" class="btn btn-danger">Deaktiveeri
               </button>
               <DeleteConfirmationModal :confirmationModalIsOpen="confirmationModalIsOpen"
-                                       @event-delete="deleteShroom(shroom.shroomId)"
+                                       @event-delete="deleteShroom(shroomId)"
                                        @event-close-modal="handleCloseModal"/>
               <ShroomModal :shroomModalIsOpen="shroomModalIsOpen" :shroomId="shroomId" @event-close-modal="handleCloseModal"/>
             </div>
