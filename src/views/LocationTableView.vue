@@ -59,7 +59,8 @@
           </th>
           <td>{{ location.description }}</td>
           <td v-if="isAdmin">{{ location.username }}</td>
-          <td>{{ location.status }}</td>
+          <td :class="getStatusClass(location.status)">
+            {{ getStatusLabel(location.status) }}</td>
           <td>
             <div v-if="location.status !== 'D'" class="btn-group" role="group" aria-label="Basic example">
               <button v-if="location.status !== 'P'" @click="NavigationService.navigateToEditLocationView(location.locationId)" type="button" class="btn btn-primary">Muuda</button>
@@ -130,6 +131,19 @@ export default {
       this.errorResponse = error.response.data
       // alert(this.errorResponse.message)
     },
+
+    getStatusLabel(status) {
+      if (status === 'A') return 'Aktiivne';
+      if (status === 'P') return 'Ootel';
+      if (status === 'D') return 'Deaktiveeritud';
+      return status;
+    },
+    getStatusClass(status) {
+      if (status === 'A') return 'text-success';
+      if (status === 'P') return 'text-warning';
+      if (status === 'D') return 'text-danger';
+      return '';
+    }
 
   },
   mounted() {
