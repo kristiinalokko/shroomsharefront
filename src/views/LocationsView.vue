@@ -74,22 +74,30 @@
                 :lat-lng="[mapLocation.latitude, mapLocation.longitude]"
                 @mouseover="showLocationName(mapLocation)"
                 @click="showPopup(mapLocation)"
+
             >
               <l-tooltip>{{ mapLocation.locationName }}</l-tooltip>
               <l-popup>
                 <div>
                   <strong>{{ mapLocation.locationName }}</strong><br />
-                  <strong>Username:</strong> {{ mapLocation.username }}<br />
-                  <strong>Rating:</strong> {{ mapLocation.avgRating }}<br />
-                  <strong>Added:</strong> {{ mapLocation.createdAt }}<br />
-                  <strong>Description:</strong> {{ mapLocation.description }}<br />
-                  <div v-if="mapLocation.locationImage">
-                    <img :src="mapLocation.locationImage" alt="Location Image" width="100" />
+
+
+                  <StarRating :avg-rating="mapLocation.avgRating"/>
+
+                  <!-- Display shrooms -->
+                  <div v-if="mapLocation.shrooms && mapLocation.shrooms.length > 0">
+                    <strong>Selle asukoha seened:</strong>
+                    <div v-for="shroom in mapLocation.shrooms" :key="shroom.shroomId">
+                      {{ shroom.shroomName }}
+                    </div>
                   </div>
-                  <!-- Link to full location info -->
-                  <br />
+
+
+                  <strong>Lisas:</strong> {{ mapLocation.username }}<br />
+                  <strong>Lisatud:</strong> {{ mapLocation.createdAt }}<br />
+
                   <button @click="goToLocationInfoPage(mapLocation)" class="btn btn-primary mt-2">
-                    Go to Full Info
+                    Vaata kogu infot
                   </button>
                 </div>
               </l-popup>
@@ -119,10 +127,12 @@ import { LMap, LTileLayer, LMarker, LTooltip, LPopup } from "@vue-leaflet/vue-le
 import { Icon } from "leaflet";
 import LocationService from "@/services/LocationService";
 import MapShroomDropdown from "@/components/MapShroomDropdown.vue";
+import StarRating from "@/components/rating/StarRating.vue";
+import ShroomService from "@/services/ShroomService";
 
 export default {
   name: "LocationsView",
-  components: { MapShroomDropdown, LMap, LTileLayer, LMarker, LTooltip, LPopup },
+  components: {StarRating, MapShroomDropdown, LMap, LTileLayer, LMarker, LTooltip, LPopup },
   data() {
     return {
       zoom: 7,
@@ -161,8 +171,24 @@ export default {
       });
     },
   },
+  mounted() {
+    this.getMapLocations()
+  },
 
-  methods: {
+
+
+
+
+
+    methods: {
+
+
+
+      getMapLocations() {
+        LocationService.sendGetMapLocationsAllRequest()
+            .then(response => this.mapLocations = response.data)
+            .catch()
+      },
     setShroomId(shroomId, shroomObj = null) {
       this.filters.shroomId = shroomId || null;
       this.selectedShroom = shroomObj || { shroomId: null, shroomName: "Kõik seened" };
@@ -182,9 +208,7 @@ export default {
     showLocationName(mapLocation) {
       this.hoveredLocationName = mapLocation.locationName; // Show location name on hover
     },
-    showPopup(mapLocation) {
-      this.selectedLocation = mapLocation; // Store selected location data for popup
-    },
+
     goToLocationInfoPage(mapLocation) {
       // Navigate to the full location info page
       this.$router.push({
@@ -199,7 +223,25 @@ export default {
       this.filters.longitude = newLatLng.lng;
       this.applyFilters();
     },
-  },
+      async fetchShroomsForLocation(mapLocation) {
+        try {
+          const response = await ShroomService.getShroomsByLocationId(mapLocation.locationId);
+          // Direct assignment works in Vue 3
+          mapLocation.shrooms = response.data;
+        } catch (error) {
+          console.error('Error fetching shrooms:', error);
+          mapLocation.shrooms = [];
+        }
+      },
+
+      async showPopup(mapLocation) {
+        this.selectedLocation = mapLocation;
+        // Fetch shrooms if not already loaded
+        if (!mapLocation.shrooms) {
+          await this.fetchShroomsForLocation(mapLocation);
+        }
+      },
+    }
 };
 </script>
 
