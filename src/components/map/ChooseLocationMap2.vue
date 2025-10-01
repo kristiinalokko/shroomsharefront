@@ -3,7 +3,6 @@
     <MapBase>
       <template #insideMap>
 
-
         <l-marker
             v-if="clickPin"
             :lat-lng="[clickPin.latitude, clickPin.longitude]"
