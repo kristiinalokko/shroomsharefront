@@ -10,7 +10,7 @@
 
       <div class="row">
         <div class="col">
-          <LocationImage :image-data="location.locationImage" :default-image-data="forestImageData"/>
+          <Image :image-data="location.locationImage" :default-image-data="forestImageData"/>
         </div>
         <div class="col">
           <div class="row m-5">
@@ -115,7 +115,7 @@ export default {
   },
   components: {
     DeleteConfirmationModal,
-    AlertDanger, StarRating, AddCommentModal, Comment, CommentPaginator, Favorite, LocationImage: Image},
+    AlertDanger, StarRating, AddCommentModal, Comment, CommentPaginator, Favorite, Image},
   data() {
     return {
       confirmationModalIsOpen: false,
