@@ -63,7 +63,7 @@
             {{ getStatusLabel(location.status) }}</td>
           <td>
             <div v-if="location.status !== 'D'" class="btn-group" role="group" aria-label="Basic example">
-              <button v-if="location.status !== 'P'" @click="NavigationService.navigateToEditLocationView(location.locationId)" type="button" class="btn btn-primary">Muuda</button>
+              <button @click="NavigationService.navigateToEditLocationView(location.locationId)" type="button" class="btn btn-primary">Muuda</button>
               <button @click="NavigationService.navigateToLocationInfoView(location.locationId)" type="button" class="btn btn-secondary">Vaata lähemalt</button>
             </div>
           </td>
