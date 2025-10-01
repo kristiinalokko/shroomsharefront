@@ -27,8 +27,8 @@ export default {
         return axios.get('/locationsTable');
     },
 
-    deactivateLocation(locationId) {
-        return axios.delete('/location-info', {
+    sendDeactivateLocationRequest(locationId) {
+        return axios.delete('/location/deactive', {
             params: {
                     locationId: locationId
                 }
@@ -41,6 +41,13 @@ export default {
         return axios.get("/map-locations/shroom", {
             params:{
                 shroomId:shroomId
+            }
+        })
+    },
+    sendActivateLocationRequest(locationId) {
+        return axios.put("/location/active", null,{
+            params:{
+                locationId:locationId
             }
         })
     }

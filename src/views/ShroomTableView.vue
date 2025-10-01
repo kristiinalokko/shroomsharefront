@@ -141,7 +141,7 @@ export default {
   methods: {
 
     deleteShroom(shroomId) {
-      ShroomService.sendDeleteRequest(shroomId)
+      ShroomService.sendDeleteShroomRequest(shroomId)
           .then(() => {
             this.confirmationModalIsOpen = false;
             this.getAllShrooms()

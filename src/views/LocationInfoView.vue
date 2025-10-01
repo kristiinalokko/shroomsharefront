@@ -189,7 +189,7 @@ export default {
     },
 
     deleteLocation() {
-      LocationService.deactivateLocation(this.locationId)
+      LocationService.sendDeactivateLocationRequest(this.locationId)
           .then(() => NavigationService.navigateToHome())
           .catch(error => this.handleErrorResponse(error))
     },
