@@ -132,7 +132,6 @@ import LocationService from "@/services/LocationService";
 import MapShroomDropdown from "@/components/MapShroomDropdown.vue";
 import StarRating from "@/components/rating/StarRating.vue";
 import ShroomService from "@/services/ShroomService";
-
 export default {
   name: "LocationsView",
   components: { StarRating, MapShroomDropdown, LMap, LTileLayer, LMarker, LTooltip, LPopup },
@@ -291,6 +290,7 @@ export default {
             if (allCoords.length === 1 && this.clickPin) {
               // Only red pin → show full Estonia map
               this.mapObject.setView([58.7, 25.3], 7);
+              alert('Seeni ei leitud!');
             } else if (allCoords.length > 0) {
               const bounds = latLngBounds(allCoords);
               this.mapObject.fitBounds(bounds, { padding: [50, 50] });
