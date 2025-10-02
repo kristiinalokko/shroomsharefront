@@ -1,8 +1,13 @@
 <template>
   <div>
+    <button
+        class="btn btn-danger mt-3 w-30"
+        @click="getUserLocation"
+    >
+      Määra asukoht automaatselt
+    </button>
     <MapBase>
       <template #insideMap>
-
         <l-marker
             v-if="clickPin"
             :lat-lng="[clickPin.latitude, clickPin.longitude]"
@@ -12,72 +17,99 @@
         >
           <l-tooltip direction="top" :permanent="false">Minu asukoht</l-tooltip>
         </l-marker>
-
       </template>
     </MapBase>
   </div>
-
 </template>
 
 <script>
-import {LMap, LMarker, LPopup, LTileLayer, LTooltip} from "@vue-leaflet/vue-leaflet";
-import {Icon} from "leaflet";
-import MapBase from "@/components/map/base/MapBase.vue";
+import { LMap, LMarker, LPopup, LTileLayer, LTooltip } from '@vue-leaflet/vue-leaflet';
+import { Icon } from 'leaflet';
+import MapBase from '@/components/map/base/MapBase.vue';
 
 export default {
   name: 'ChooseLocationMap',
-  components: {MapBase, Map, LMap, LTileLayer, LMarker, LTooltip, LPopup},
-
+  components: { MapBase, LMap, LTileLayer, LMarker, LTooltip, LPopup },
   props: {
     mapLocations: {
       type: Array,
       default: () => [],
     },
-
     lat: Number,
     lng: Number,
-
   },
   data() {
     return {
       zoom: 7,
       center: [58.7, 25.3], // Estonia center
-      tileUrl: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-      attribution: "© OpenStreetMap contributors",
-      mapOptions: {zoomControl: true, scrollWheelZoom: true},
+      tileUrl: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+      attribution: '© OpenStreetMap contributors',
+      mapOptions: { zoomControl: true, scrollWheelZoom: true },
       clickPin: {
         latitude: 0,
-        longitude: 0
+        longitude: 0,
       },
-
-    }
+    };
   },
   methods: {
-
     onPinDrag(event) {
       const newLatLng = event.target.getLatLng();
       this.clickPin.latitude = newLatLng.lat;
       this.clickPin.longitude = newLatLng.lng;
-      this.$emit('event-new-location-selected', newLatLng)
+      this.$emit('event-new-location-selected', newLatLng);
     },
-
+    getUserLocation() {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+            (position) => {
+              this.clickPin.latitude = position.coords.latitude;
+              this.clickPin.longitude = position.coords.longitude;
+              this.center = [position.coords.latitude, position.coords.longitude];
+              this.zoom = 15;
+              this.$emit('event-new-location-selected', {
+                lat: position.coords.latitude,
+                lng: position.coords.longitude,
+              });
+            },
+            (error) => {
+              let errorMessage = 'Unable to retrieve your location.';
+              switch (error.code) {
+                case error.PERMISSION_DENIED:
+                  errorMessage = 'Location access was denied by the user.';
+                  break;
+                case error.POSITION_UNAVAILABLE:
+                  errorMessage = 'Location information is unavailable.';
+                  break;
+                case error.TIMEOUT:
+                  errorMessage = 'The request to get location timed out.';
+                  break;
+                default:
+                  errorMessage = 'An unknown error occurred.';
+                  break;
+              }
+              alert(errorMessage);
+            }
+        );
+      } else {
+        alert('Geolocation is not supported by your browser.');
+      }
+    },
   },
   watch: {
     lat(newLat) {
-      this.clickPin.latitude = newLat || 58.7; // Provide default value if undefined
+      this.clickPin.latitude = newLat || 58.7;
     },
     lng(newLng) {
-      this.clickPin.longitude = newLng || 25.3; // Provide default value if undefined
+      this.clickPin.longitude = newLng || 25.3;
     },
   },
   computed: {
-
     myLocationIcon() {
       return new Icon({
         iconUrl:
-            "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-red.png",
+            'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-red.png',
         shadowUrl:
-            "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png",
+            'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
         iconSize: [25, 41],
         iconAnchor: [12, 41],
         popupAnchor: [1, -34],
@@ -86,8 +118,15 @@ export default {
     },
   },
   mounted() {
-    this.clickPin.latitude = this.lat || 58.7
-    this.clickPin.longitude = this.lng || 25.3
-  }
-}
+    this.clickPin.latitude = this.lat || 58.7;
+    this.clickPin.longitude = this.lng || 25.3;
+  },
+};
 </script>
+
+<style scoped>
+button {
+  display: block;
+  margin: 0 auto 1rem auto;
+}
+</style>
