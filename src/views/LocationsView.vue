@@ -12,8 +12,6 @@
               :placeholder="selectedShroomName"
               @event-new-shroom-selected="setShroomId"
           />
-
-          <!-- Filters Form -->
           <h3>Filtreeri asukohti</h3>
           <form @submit.prevent="applyFilters">
             <div class="mb-2">
@@ -28,7 +26,6 @@
                   class="form-control"
               />
             </div>
-
             <div class="mb-2">
               <label for="lastActiveAfter">Viimane aktiivsus pärast:</label>
               <input
@@ -38,31 +35,32 @@
                   class="form-control"
               />
             </div>
-
-            <div class=mb-2>
-              <label for=radius>Otsi kaugusel (km): {{ filters.radiusKm }}</label>
+            <div class="mb-2">
+              <label for="radius">Otsi kaugusel (km): {{ filters.radiusKm }}</label>
               <input
-                  v-model.number=filters.radiusKm
-                  type=number
-                  id=radius
-                  class=form-control
-                  min=1
-                  max=400
-                  step=1
+                  v-model.number="filters.radiusKm"
+                  type="number"
+                  id="radius"
+                  class="form-control"
+                  min="1"
+                  max="400"
+                  step="1"
               />
               <input
-                  v-model.number=filters.radiusKm
-                  type=range
-                  id=radiusSlider
-                  class=form-range mt-2
-                  min=1
-                  max=400
-                  step=1
+                  v-model.number="filters.radiusKm"
+                  type="range"
+                  id="radiusSlider"
+                  class="form-range mt-2"
+                  min="1"
+                  max="400"
+                  step="1"
               />
             </div>
-
             <button type="submit" class="btn btn-primary mt-2">Otsi</button>
           </form>
+          <button class="btn btn-danger mt-3 w-100" @click="shareMyLocation">
+            Jaga minu asukohta
+          </button>
         </div>
       </div>
 
@@ -75,6 +73,7 @@
               :center="center"
               :options="mapOptions"
               style="height: 100vh; width: 100%;"
+              @ready="onMapReady"
           >
             <l-tile-layer :url="tileUrl" :attribution="attribution"></l-tile-layer>
 
@@ -90,18 +89,14 @@
                 <div>
                   <strong>{{ mapLocation.locationName }}</strong><br />
                   <StarRating :avg-rating="mapLocation.avgRating" />
-
-                  <!-- Display shrooms -->
                   <div v-if="mapLocation.shrooms && mapLocation.shrooms.length > 0">
                     <strong>Selle asukoha seened:</strong>
                     <div v-for="shroom in mapLocation.shrooms" :key="shroom.shroomId">
                       {{ shroom.shroomName }}
                     </div>
                   </div>
-
                   <strong>Lisas:</strong> {{ mapLocation.username }}<br />
                   <strong>Lisatud:</strong> {{ mapLocation.createdAt }}<br />
-
                   <button
                       @click="goToLocationInfoPage(mapLocation)"
                       class="btn btn-primary mt-2"
@@ -131,7 +126,7 @@
 
 <script>
 import { LMap, LTileLayer, LMarker, LTooltip, LPopup } from "@vue-leaflet/vue-leaflet";
-import { Icon } from "leaflet";
+import { Icon, latLngBounds } from "leaflet";
 import LocationService from "@/services/LocationService";
 import MapShroomDropdown from "@/components/MapShroomDropdown.vue";
 import StarRating from "@/components/rating/StarRating.vue";
@@ -159,6 +154,8 @@ export default {
       clickPin: { latitude: 58.7, longitude: 25.3 },
       selectedShroom: { shroomId: null, shroomName: "Kõik seened" },
       selectedLocation: null,
+      mapObject: null, // Leaflet kaardi objekt
+      isFirstLoad: true
     };
   },
   computed: {
@@ -180,6 +177,9 @@ export default {
     this.applyFilters();
   },
   methods: {
+    onMapReady(mapInstance) {
+      this.mapObject = mapInstance;
+    },
     setShroomId(shroomId, shroomObj = null) {
       this.filters.shroomId = shroomId || null;
       this.selectedShroom = shroomObj || { shroomId: null, shroomName: "Kõik seened" };
@@ -193,20 +193,12 @@ export default {
         minRating: this.filters.minRating || 0,
         lastActive: this.filters.lastActive || '',
       };
-      if (this.filters.shroomId) {
-        params.shroomId = this.filters.shroomId;
-      }
+      if (this.filters.shroomId) params.shroomId = this.filters.shroomId;
 
       try {
         const response = await LocationService.sendGetFilteredMapLocationsRequest(params);
+        this.mapLocations = response.data.map(loc => ({ ...loc, shrooms: [] }));
 
-        // ensure each location has shrooms initialized
-        this.mapLocations = response.data.map(loc => ({
-          ...loc,
-          shrooms: []
-        }));
-
-        // preload shrooms for each location
         for (const loc of this.mapLocations) {
           try {
             const shroomRes = await ShroomService.getShroomsByLocationId(loc.locationId);
@@ -215,18 +207,16 @@ export default {
             loc.shrooms = [];
           }
         }
+
+        // Suumi kaardile pärast filtrit
+        this.adjustMapZoom();
+
       } catch (err) {
         console.error("Error loading filtered locations:", err);
-        if (err.response) {
-          console.error("Response data:", err.response.data);
-        }
       }
     },
     goToLocationInfoPage(mapLocation) {
-      this.$router.push({
-        path: "/location-info",
-        query: { locationId: mapLocation.locationId },
-      });
+      this.$router.push({ path: "/location-info", query: { locationId: mapLocation.locationId } });
     },
     onPinDrag(newLatLng) {
       this.clickPin.latitude = newLatLng.lat;
@@ -237,6 +227,44 @@ export default {
     },
     showPopup(mapLocation) {
       this.selectedLocation = mapLocation;
+    },
+    shareMyLocation() {
+      if (!navigator.geolocation) {
+        alert("Geolokatsiooni ei toetata.");
+        return;
+      }
+      navigator.geolocation.getCurrentPosition(
+          (position) => {
+            const lat = position.coords.latitude;
+            const lng = position.coords.longitude;
+
+            this.clickPin.latitude = lat;
+            this.clickPin.longitude = lng;
+            this.filters.latitude = lat;
+            this.filters.longitude = lng;
+
+            this.applyFilters().then(() => {
+              this.adjustMapZoom();
+            });
+          },
+          (error) => {
+            alert("Asukoha saamine ebaõnnestus: " + error.message);
+          }
+      );
+    },
+    adjustMapZoom() {
+      if (!this.mapObject) return;
+
+      const allCoords = this.mapLocations.map(loc => [loc.latitude, loc.longitude]);
+      if (this.clickPin) allCoords.push([this.clickPin.latitude, this.clickPin.longitude]);
+
+      if (allCoords.length === 1 && this.clickPin) {
+        // Ainult punane pin → näita kogu Eesti kaarti
+        this.mapObject.setView([58.7, 25.3], 7); // kogu Eesti
+      } else if (allCoords.length > 0) {
+        const bounds = latLngBounds(allCoords);
+        this.mapObject.fitBounds(bounds, { padding: [50, 50] });
+      }
     }
   }
 };
