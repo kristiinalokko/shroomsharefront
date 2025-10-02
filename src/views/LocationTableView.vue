@@ -24,7 +24,7 @@
           <td>{{ location.description }}</td>
           <td>{{ location.username }}</td>
           <td>
-            <div class="favorite-small">
+            <div v-if="isLoggedIn" class="favorite-small">
               <Favorite :is-favorite="location.isFavorite"
                         :location-id="location.locationId"
                         :user-id="userId"
