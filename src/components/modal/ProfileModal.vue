@@ -1,24 +1,33 @@
 <template>
   <Modal :modal-is-open="modalIsOpen" @event-close-modal="$emit('event-close-modal')">
     <template #title>
-      <span v-if="isEdit" >Uuenda seent:</span>
-      <span v-else >Lisa uus seen:</span>
+      <span v-if="isEdit">Uuenda profiili:</span>
+      <span v-else>Lisa enda profiil:</span>
     </template>
     <template #body>
       <div class="container text-center">
         <div class="row">
           <div class="col">
-            <Image :image-data="imageData" :default-image-data="defaultShroomImage"/>
+            <Image :image-data="imageData" :default-image-data="defaultProfileImage"/>
           </div>
           <div class="col">
             <div class="input-group justify-content-start">
+
               <div class="row">
-                <label>Seene nimi:</label>
-                <input v-model="shroom.shroomName" type="text" class="form-control" placeholder="kukeseen">
+                <label>Eesnimi:</label>
+                <input v-model="profile.firstName" type="text" class="form-control" placeholder="Eesnimi">
+              </div>
+              <div class="row">
+                <label>Perekonnanimi:</label>
+                <input v-model="profile.lastName" type="text" class="form-control" placeholder="Perekonnanimi">
               </div>
               <div class="row mb-5">
                 <label>Kirjeldus:</label>
-                <textarea v-model="shroom.description" class="form-control" placeholder="väga hea seen"/>
+                <textarea v-model="profile.description" class="form-control" placeholder="Olen ilus"/>
+              </div>
+              <div class="row mb-5">
+                <label>Email:</label>
+                <textarea v-model="profile.email" class="form-control" placeholder="kasutaja@mail.ee"/>
               </div>
               <div class="row">
                 <label>Lisa pilt:</label>
@@ -35,8 +44,12 @@
     </template>
 
     <template #buttons>
-      <button v-if="this.isEdit" @click="updateShroom" type="button" class="btn btn-outline-success me-3">Uuenda</button>
-      <button v-else @click="addShroom" type="button" class="btn btn-outline-success me-3">Lisa</button>
+      <button v-if="isEdit" @click="emitUpdatedProfile" type="button"
+              class="btn btn-outline-success me-3">Uuenda
+      </button>
+      <button v-else @click="$emit('event-add-profile', profile)" type="button" class="btn btn-outline-success me-3">
+        Lisa
+      </button>
       <button @click="$emit('event-close-modal')" type="button" class="btn btn-outline-danger">Sulge</button>
     </template>
 
@@ -47,14 +60,17 @@
 import ImageInput from "@/components/ImageInput.vue";
 import Image from "@/components/Image.vue";
 import Modal from "@/components/modal/base/Modal.vue";
+import defaultProfileImage from '@/assets/profile.jpg'
+
 
 export default {
   name: 'ProfileModal',
-  components: {Modal, Image, ImageInput},
+  components: {Modal, Image, ImageInput, defaultProfileImage},
   props: {
     modalIsOpen: Boolean,
+    isEdit: Boolean,
 
-    profile: {
+    propsProfile: {
       profileId: Number,
       userId: Number,
       username: String,
@@ -66,6 +82,44 @@ export default {
       description: String,
       imageData: String
     },
-  }
+  },
+
+  data() {
+    return {
+      defaultProfileImage: defaultProfileImage,
+      resetFileInput: false,
+      imageData: '',
+
+      profile: this.propsProfile,
+    }
+  },
+  watch: {
+    // Sync data when propsProfile changes
+    propsProfile: {
+      deep: true,
+      handler(newProfile) {
+        this.profile = { ...newProfile }; // Update profile when prop changes
+        this.imageData = newProfile.imageData; // Sync imageData
+      },
+    },
+  },
+  methods: {
+
+    handleResetImageSelectComplete() {
+      // this.profile.imageData = ''
+      this.resetFileInput = false
+    },
+
+    handleNewImageSelected(imageData) {
+      this.profile.imageData = imageData;
+      this.imageData = imageData
+    },
+
+    emitUpdatedProfile() {
+      this.$emit("event-profile-changed", this.profile);
+    },
+  },
+
+
 }
 </script>
