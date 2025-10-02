@@ -1,7 +1,6 @@
 <template>
   <h1>Siin on kõik asukohad meie andmebaasis (mis on hetkel aktiivsed)</h1>
   <div class="row">
-    <AlertDanger :message="errorResponse.message"/>
     <div class="col">
     </div>
     <div class="col">
@@ -42,11 +41,15 @@
     <div class="col">
     </div>
   </div>
-  <div v-if="isLoggedIn" >
-    <button @click="NavigationService.navigateToAddLocationView" type="button" class="btn btn-primary col-3 me-3">Lisa uus asukoht </button>
+  <div v-if="isLoggedIn">
+    <button @click="NavigationService.navigateToAddLocationView" type="button" class="btn btn-primary col-3 me-3">Lisa
+      uus asukoht
+    </button>
   </div>
   <div v-if="isLoggedIn" class="row">
     <h1 class="mt-5">Siin on sinu lisatud asukohad: </h1>
+    <AlertDanger :message="errorResponse.message"/>
+    <AlertSuccess :message="successMessage"/>
   </div>
   <div v-if="isLoggedIn" class="row">
     <div class="col">
@@ -72,16 +75,23 @@
           <td>{{ location.description }}</td>
           <td v-if="isAdmin">{{ location.username }}</td>
           <td :class="getStatusClass(location.status)">
-            {{ getStatusLabel(location.status) }}</td>
+            {{ getStatusLabel(location.status) }}
+          </td>
           <td>
             <div v-if="location.status !== 'D'" class="btn-group" role="group" aria-label="Basic example">
-              <button @click="NavigationService.navigateToEditLocationView(location.locationId)" type="button" class="btn btn-primary">Muuda</button>
-              <button @click="NavigationService.navigateToLocationInfoView(location.locationId)" type="button" class="btn btn-secondary">Vaata lähemalt</button>
-              <button v-if="isAdmin && location.status=== 'P'" @click="activateLocation(location.locationId)" type="button"
+              <button @click="NavigationService.navigateToEditLocationView(location.locationId)" type="button"
+                      class="btn btn-primary">Muuda
+              </button>
+              <button @click="NavigationService.navigateToLocationInfoView(location.locationId)" type="button"
+                      class="btn btn-secondary">Vaata lähemalt
+              </button>
+              <button v-if="isAdmin && location.status=== 'P'" @click="activateLocation(location.locationId)"
+                      type="button"
                       class="btn btn-success">Aktiveeri
               </button>
               <button v-if="(userId === location.userId || isAdmin) && location.status !== 'D'"
-                      @click="confirmationModalIsOpen=true; locationId=location.locationId" type="button" class="btn btn-danger">Deaktiveeri
+                      @click="confirmationModalIsOpen=true; locationId=location.locationId" type="button"
+                      class="btn btn-danger">Deaktiveeri
               </button>
               <DeleteConfirmationModal :confirmationModalIsOpen="confirmationModalIsOpen"
                                        @event-delete="deleteLocation(locationId)"
@@ -100,19 +110,19 @@
 </template>
 
 <script>
-import ShroomService from "@/services/ShroomService";
 import SessionStorageService from "@/services/SessionStorageService";
+import sessionStorageService from "@/services/SessionStorageService";
 import NavigationService from "@/services/NavigationService";
 import locationService from "@/services/LocationService";
 import DeleteConfirmationModal from "@/components/modal/DeleteConfirmationModal.vue";
-import sessionStorageService from "@/services/SessionStorageService";
 import Favorite from "@/components/Favorite.vue";
 import FavoriteService from "@/services/FavoriteService";
 import AlertDanger from "@/components/AlertDanger.vue";
+import AlertSuccess from "@/components/AlertSuccess.vue";
 
 export default {
   name: 'LocationTableView',
-  components: {AlertDanger, Favorite, DeleteConfirmationModal},
+  components: {AlertSuccess, AlertDanger, Favorite, DeleteConfirmationModal},
   computed: {
     SessionStorageService() {
       return SessionStorageService
@@ -143,6 +153,8 @@ export default {
           isFavorite: false
         }
       ],
+
+      successMessage: '',
 
       errorResponse: {
         message: '',
@@ -177,22 +189,26 @@ export default {
       return '';
     },
 
-    activateLocation(locationId){
+    activateLocation(locationId) {
       locationService.sendActivateLocationRequest(locationId)
-          .then(() => this.getAllLocations())
-          .catch(error => this.handleErrorResponse(error))
-    },
-
-    deleteLocation(locationId){
-      locationService.sendDeactivateLocationRequest(locationId)
           .then(() => {
-            this.confirmationModalIsOpen = false;
             this.getAllLocations()
+            this.handleSuccessAlert("Aktiveeritud")
           })
           .catch(error => this.handleErrorResponse(error))
     },
 
-    handleCloseModal(){
+    deleteLocation(locationId) {
+      locationService.sendDeactivateLocationRequest(locationId)
+          .then(() => {
+            this.confirmationModalIsOpen = false;
+            this.getAllLocations()
+            this.handleSuccessAlert("Kustutatud")
+          })
+          .catch(error => this.handleErrorResponse(error))
+    },
+
+    handleCloseModal() {
       this.confirmationModalIsOpen = false
       this.getAllLocations()
     },
@@ -211,12 +227,18 @@ export default {
 
     handleErrorResponse(error) {
       this.errorResponse = error.response.data
-      setTimeout(this.resetErrorMessage, 4000)
+      setTimeout(this.resetAlertMessage, 4000)
       // alert(this.errorResponse.message)
     },
 
-    resetErrorMessage() {
+    handleSuccessAlert(message){
+      this.successMessage = message
+      setTimeout(this.resetAlertMessage, 4000)
+    },
+
+    resetAlertMessage() {
       this.errorResponse.message = ''
+      this.successMessage = ''
     },
 
 

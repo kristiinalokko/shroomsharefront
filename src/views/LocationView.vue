@@ -3,7 +3,8 @@
     <div class="row>">
       <h1 v-if="this.locationId > 0">Muuda asukohta</h1>
       <h1 v-else>Lisa asukoht</h1>
-      <AlertSuccess :message="alertMessage"/>
+      <AlertSuccess :message="successMessage"/>
+      <AlertDanger :message="errorMessage"/>
     </div>
     <div class="row">
       <div class="col">
@@ -96,10 +97,11 @@ import SessionStorageService from "@/services/SessionStorageService";
 import ShroomModal from "@/components/modal/ShroomModal.vue";
 import ChooseLocationMap from "@/components/map/ChooseLocationMap.vue";
 import AlertSuccess from "@/components/AlertSuccess.vue";
+import AlertDanger from "@/components/AlertDanger.vue";
 
 export default {
   name: 'LocationView',
-  components: {AlertSuccess, ChooseLocationMap, ShroomModal, ShroomDropdown, ImageInput, Image: Image},
+  components: {AlertDanger, AlertSuccess, ChooseLocationMap, ShroomModal, ShroomDropdown, ImageInput, Image: Image},
   data() {
     return {
       shroomModalIsOpen: false,
@@ -110,7 +112,8 @@ export default {
       forestImageData: defaultForestImage,
       shroomImageData: defaultShroomImage,
 
-      alertMessage:'',
+      successMessage:'',
+      errorMessage:'',
 
       location: {
         userId: 0,
@@ -144,7 +147,7 @@ export default {
     updateLocation() {
       if (this.inputIsValid()) {
         locationService.sendUpdateLocationRequest(this.location, this.locationId)
-            .then(() => this.alertMessage = "Uuendatud")
+            .then(() => this.handleSuccessMessage("Uuendatud"))
             .catch(error => this.handleErrorResponse(error))
       }
     },
@@ -172,15 +175,14 @@ export default {
       if (this.inputIsValid()) {
         this.location.userId = sessionStorage.getItem('userId')
         LocationService.sendNewLocationRequest(this.location)
-            .then(response => {
-              this.alertMessage = "Salvestatud"
-              this.locationId = response.data
+            .then(() => {
+              this.handleSuccessMessage("Salvestatud")
               this.isEdit = true
               this.getLocationShrooms(this.locationId)
             })
             .catch(error => this.handleErrorResponse(error))
       } else {
-        alert("täida kõik väljad")
+        this.handleErrorMessage("Täida väljad")
       }
     },
 
@@ -231,6 +233,21 @@ export default {
       this.location.longitude = latLng.lng
 
     },
+
+    handleSuccessMessage(message){
+      this.successMessage = message
+      setTimeout(this.resetAlertMessage, 4000)
+    },
+
+    handleErrorMessage(message){
+      this.errorMessage = message
+      setTimeout(this.resetAlertMessage, 4000)
+    },
+
+    resetAlertMessage(){
+      this.successMessage = ''
+      this.errorMessage = ''
+    }
   },
 
   mounted() {

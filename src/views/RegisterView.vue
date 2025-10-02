@@ -44,7 +44,7 @@ export default {
       username: '',
       password1: '',
       password2: '',
-      alertMessage: '',
+      successMessage: '',
 
       user: {
         username: '',
