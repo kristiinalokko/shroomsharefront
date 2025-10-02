@@ -97,7 +97,7 @@ export default {
   methods: {
 
     handleNewImageSelected(imageData) {
-      this.imageData = imageData
+      this.imageData = typeof imageData === 'object' && imageData.imageData ? imageData.imageData : imageData;
     },
 
     handleResetImageSelectComplete() {
