@@ -25,11 +25,13 @@
                                    @event-delete="deleteShroom"
                                    @event-close-modal="confirmationModalIsOpen=false" />
         </div>
+        <br>
+        <div class="row">
+          <ShowLocationsMap :map-locations="locations"/>
+        </div>
       </div>
     </div>
-    <div class="row">
-      <ShowLocationsMap :map-locations="locations"/>
-    </div>
+
   </div>
 </template>
 
