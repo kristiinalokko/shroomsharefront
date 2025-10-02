@@ -60,8 +60,8 @@ export default {
     shroomId: Number,
   },
   watch: {
-    shroomModalIsOpen(newVal) {
-      if (newVal) {
+    shroomModalIsOpen(newVal, oldVal) {
+      if (newVal && !oldVal) { // Only when opening
         this.onModalOpen();
       }
     },

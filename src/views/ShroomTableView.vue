@@ -77,7 +77,6 @@
               <DeleteConfirmationModal :confirmationModalIsOpen="confirmationModalIsOpen"
                                        @event-delete="deleteShroom(shroomId)"
                                        @event-close-modal="handleCloseModal"/>
-              <ShroomModal :shroomModalIsOpen="shroomModalIsOpen" :shroomId="shroomId" @event-close-modal="handleCloseModal"/>
             </div>
           </td>
         </tr>
@@ -87,7 +86,7 @@
     <div class="col">
     </div>
   </div>
-
+  <ShroomModal :shroomModalIsOpen="shroomModalIsOpen" :shroomId="shroomId" @event-close-modal="handleCloseModal"/>
 
 </template>
 
