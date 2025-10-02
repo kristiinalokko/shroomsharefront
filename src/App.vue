@@ -18,7 +18,8 @@
     </template>
 
     <button class="top-right-button">
-      Inbox
+<!--      Inbox-->
+      <span v-if="isLoggedIn"> {{ userId }}</span>
     </button>
   </nav>
   <router-view @event-logged-in="updateNavMenu"/>
@@ -37,6 +38,7 @@ export default {
     return {
       isLoggedIn: false,
       isAdmin: false,
+      userId: sessionStorage.getItem("userId")
     }
   },
   methods: {

@@ -10,7 +10,7 @@
           <th scope="col">Asukoha nimi</th>
           <th scope="col">Kirjeldus</th>
           <th scope="col">Lisas</th>
-          <th scope="col">Lemmik</th>
+          <th v-if="isLoggedIn" scope="col">Lemmik</th>
         </tr>
         </thead>
         <tbody v-for="location in locations">

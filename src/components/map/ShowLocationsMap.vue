@@ -52,7 +52,7 @@ export default {
   },
   data() {
     return {
-      zoom: 7,
+      zoom: 6,
       center: [58.7, 25.3], // Estonia center
       tileUrl: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
       attribution: "© OpenStreetMap contributors",
