@@ -154,8 +154,8 @@ export default {
       clickPin: { latitude: 58.7, longitude: 25.3 },
       selectedShroom: { shroomId: null, shroomName: "Kõik seened" },
       selectedLocation: null,
-      mapObject: null, // Leaflet kaardi objekt
-      isFirstLoad: true
+      mapObject: null,
+      mapReady: false
     };
   },
   computed: {
@@ -174,11 +174,14 @@ export default {
     },
   },
   mounted() {
-    this.applyFilters();
+    // Don't call applyFilters here - wait for map to be ready
   },
   methods: {
     onMapReady(mapInstance) {
       this.mapObject = mapInstance;
+      this.mapReady = true;
+      // Load initial data after map is ready
+      this.applyFilters();
     },
     setShroomId(shroomId, shroomObj = null) {
       this.filters.shroomId = shroomId || null;
@@ -208,8 +211,13 @@ export default {
           }
         }
 
-        // Suumi kaardile pärast filtrit
-        this.adjustMapZoom();
+        // Wait for DOM updates and map to be ready
+        await this.$nextTick();
+
+        // Only adjust zoom if map is loaded and container is valid
+        if (this.mapReady && this.mapObject && this.mapObject._loaded) {
+          this.adjustMapZoom();
+        }
 
       } catch (err) {
         console.error("Error loading filtered locations:", err);
@@ -243,9 +251,7 @@ export default {
             this.filters.latitude = lat;
             this.filters.longitude = lng;
 
-            this.applyFilters().then(() => {
-              this.adjustMapZoom();
-            });
+            this.applyFilters();
           },
           (error) => {
             alert("Asukoha saamine ebaõnnestus: " + error.message);
@@ -253,17 +259,37 @@ export default {
       );
     },
     adjustMapZoom() {
-      if (!this.mapObject) return;
+      if (!this.mapObject || !this.mapReady) return;
 
-      const allCoords = this.mapLocations.map(loc => [loc.latitude, loc.longitude]);
-      if (this.clickPin) allCoords.push([this.clickPin.latitude, this.clickPin.longitude]);
+      try {
+        const allCoords = this.mapLocations.map(loc => [loc.latitude, loc.longitude]);
+        if (this.clickPin) allCoords.push([this.clickPin.latitude, this.clickPin.longitude]);
 
-      if (allCoords.length === 1 && this.clickPin) {
-        // Ainult punane pin → näita kogu Eesti kaarti
-        this.mapObject.setView([58.7, 25.3], 7); // kogu Eesti
-      } else if (allCoords.length > 0) {
-        const bounds = latLngBounds(allCoords);
-        this.mapObject.fitBounds(bounds, { padding: [50, 50] });
+        // Use setTimeout to ensure map container is fully rendered
+        setTimeout(() => {
+          if (!this.mapObject || !this.mapObject._loaded) return;
+
+          // Check if map container exists
+          const container = this.mapObject.getContainer();
+          if (!container || container.offsetWidth === 0) {
+            console.warn('Map container not ready yet');
+            return;
+          }
+
+          try {
+            if (allCoords.length === 1 && this.clickPin) {
+              // Only red pin → show full Estonia map
+              this.mapObject.setView([58.7, 25.3], 7);
+            } else if (allCoords.length > 0) {
+              const bounds = latLngBounds(allCoords);
+              this.mapObject.fitBounds(bounds, { padding: [50, 50] });
+            }
+          } catch (innerError) {
+            console.error('Error in fitBounds/setView:', innerError);
+          }
+        }, 200);
+      } catch (error) {
+        console.error('Error adjusting map zoom:', error);
       }
     }
   }
