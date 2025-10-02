@@ -20,7 +20,7 @@
                   type="button" class="btn btn-primary col-3 me-3">Kustuta seen
           </button>
           <ShroomModal :shroomModalIsOpen="shroomModalIsOpen" :shroomId="shroomId"
-                       @event-close-modal="shroomModalIsOpen = false"/>
+                       @event-close-modal="closeModal"/>
           <DeleteConfirmationModal :confirmationModalIsOpen="confirmationModalIsOpen"
                                    @event-delete="deleteShroom"
                                    @event-close-modal="confirmationModalIsOpen=false" />
@@ -101,7 +101,7 @@ export default {
     }
   },
   methods: {
-    deleteShroom(){
+    deleteShroom() {
       ShroomService.sendDeleteShroomRequest(this.shroomId)
           .then(() => NavigationService.navigateToShroomTable())
           .catch(error => this.handleErrorResponse(error))
@@ -142,6 +142,11 @@ export default {
       } else {
         NavigationService.navigateToError();
       }
+    },
+
+    closeModal() {
+      this.shroomModalIsOpen = false
+      this.getShroom(this.shroomId)
     },
 
   },
