@@ -3,6 +3,7 @@
     <h1>Profiil</h1>
     <div class="row">
       <AlertDanger :message="errorResponse.message"/>
+      <ProfileModal :modal-is-open="modalIsOpen" :profile="profile"/>
       <div class="col">
         <div class="row">
           <Image :image-data="profile.imageData" :default-image-data="defaultImageData"/>
@@ -43,17 +44,18 @@ import ProfileService from "@/services/ProfileService";
 import Image from "@/components/Image.vue";
 import defaultProfileImage from '@/assets/profile.jpg'
 import AlertDanger from "@/components/AlertDanger.vue";
+import ProfileModal from "@/components/modal/ProfileModal.vue";
 
 
 export default {
   name: 'ProfileView',
-  components: {AlertDanger, Image},
+  components: {ProfileModal, AlertDanger, Image, defaultProfileImage},
   data() {
     return {
       isEdit: false,
       userId: Number(sessionStorage.getItem("userId")),
       defaultImageData: defaultProfileImage,
-
+      modalIsOpen: false,
 
       profile: {
         profileId: 0,
