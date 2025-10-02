@@ -1,8 +1,7 @@
 <template>
   <nav>
-    <router-link to="/locations"> Locations |</router-link>
 
-    <router-link to="/">| Home |</router-link>
+    <router-link to="/locations">| Avaleht |</router-link>
 
     <router-link to="/shroom-table">| Seened |</router-link>
 

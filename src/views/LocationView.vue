@@ -3,6 +3,7 @@
     <div class="row>">
       <h1 v-if="this.locationId > 0">Muuda asukohta</h1>
       <h1 v-else>Lisa asukoht</h1>
+      <AlertSuccess :message="alertMessage"/>
     </div>
     <div class="row">
       <div class="col">
@@ -94,10 +95,11 @@ import shroomService from "@/services/ShroomService";
 import SessionStorageService from "@/services/SessionStorageService";
 import ShroomModal from "@/components/modal/ShroomModal.vue";
 import ChooseLocationMap from "@/components/map/ChooseLocationMap.vue";
+import AlertSuccess from "@/components/AlertSuccess.vue";
 
 export default {
   name: 'LocationView',
-  components: {ChooseLocationMap, ShroomModal, ShroomDropdown, ImageInput, Image: Image},
+  components: {AlertSuccess, ChooseLocationMap, ShroomModal, ShroomDropdown, ImageInput, Image: Image},
   data() {
     return {
       shroomModalIsOpen: false,
@@ -107,6 +109,8 @@ export default {
       userId: Number(sessionStorage.getItem("userId")),
       forestImageData: defaultForestImage,
       shroomImageData: defaultShroomImage,
+
+      alertMessage:'',
 
       location: {
         userId: 0,
@@ -140,7 +144,7 @@ export default {
     updateLocation() {
       if (this.inputIsValid()) {
         locationService.sendUpdateLocationRequest(this.location, this.locationId)
-            .then(() => NavigationService.navigateToHome())
+            .then(() => this.alertMessage = "Uuendatud")
             .catch(error => this.handleErrorResponse(error))
       }
     },
@@ -169,7 +173,7 @@ export default {
         this.location.userId = sessionStorage.getItem('userId')
         LocationService.sendNewLocationRequest(this.location)
             .then(response => {
-              NavigationService.navigateToLocationInfoView(response.data)
+              this.alertMessage = "Salvestatud"
               this.locationId = response.data
               this.isEdit = true
               this.getLocationShrooms(this.locationId)
