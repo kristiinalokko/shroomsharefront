@@ -55,6 +55,7 @@ import defaultProfileImage from '@/assets/profile.jpg'
 import AlertDanger from "@/components/AlertDanger.vue";
 import ProfileModal from "@/components/modal/ProfileModal.vue";
 import AlertSuccess from "@/components/AlertSuccess.vue";
+import sessionStorageService from "@/services/SessionStorageService";
 
 
 export default {
@@ -71,7 +72,7 @@ export default {
 
       profile: {
         profileId: 0,
-        userId: 0,
+        userId: Number(sessionStorage.getItem("userId")),
         username: '',
         password: '',
         userStatus: '',
