@@ -38,7 +38,7 @@
     <h1 class="mt-5">Siin on sinu lisatud seened: </h1>
     <AlertSuccess :message="successMessage"/>
     <div class="col">
-    </div>
+  </div>
     <div class="col ms-5 me-5">
       <div v-if="isAdmin" class="btn-group mb-3 w-100" role="group" aria-label="Status filter">
         <input v-model="showActive" type="checkbox" class="btn-check" id="btnActive" autocomplete="off">

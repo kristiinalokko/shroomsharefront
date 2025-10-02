@@ -50,6 +50,22 @@
     <h1 class="mt-5">Siin on sinu lisatud asukohad: </h1>
     <AlertDanger :message="errorResponse.message"/>
     <AlertSuccess :message="successMessage"/>
+    <div class="col">
+    </div>
+    <div class="col ms-5 me-5">
+      <div v-if="isAdmin" class="btn-group mb-3 w-100" role="group" aria-label="Status filter">
+        <input v-model="showActive" type="checkbox" class="btn-check" id="btnActive" autocomplete="off">
+        <label class="btn btn-outline-success" for="btnActive">Aktiivne</label>
+
+        <input v-model="showPending" type="checkbox" class="btn-check" id="btnPending" autocomplete="off">
+        <label class="btn btn-outline-warning" for="btnPending">Ootel</label>
+
+        <input v-model="showDeactivated" type="checkbox" class="btn-check" id="btnDeactivated" autocomplete="off">
+        <label class="btn btn-outline-danger" for="btnDeactivated">Deaktiveeritud</label>
+      </div>
+    </div>
+    <div class="col">
+    </div>
   </div>
   <div v-if="isLoggedIn" class="row">
     <div class="col">
@@ -65,7 +81,7 @@
           <th scope="col"></th>
         </tr>
         </thead>
-        <tbody v-for="location in locations">
+        <tbody v-for="location in filteredLocations">
         <tr v-if="(userId===location.userId) || isAdmin">
           <th scope="row">
             <router-link :to="{ path: '/location-info', query: { locationId: location.locationId } }">
@@ -124,11 +140,15 @@ export default {
   name: 'LocationTableView',
   components: {AlertSuccess, AlertDanger, Favorite, DeleteConfirmationModal},
   computed: {
-    SessionStorageService() {
-      return SessionStorageService
-    },
-    sessionStorageService() {
-      return sessionStorageService
+    filteredLocations() {
+      if (!this.isAdmin) return this.locations;
+
+      return this.locations.filter(location => {
+        if (location.status === 'A' && this.showActive) return true;
+        if (location.status === 'P' && this.showPending) return true;
+        if (location.status === 'D' && this.showDeactivated) return true;
+        return false;
+      });
     },
     NavigationService() {
       return NavigationService
@@ -160,6 +180,10 @@ export default {
         message: '',
         errorCode: 0
       },
+
+      showActive: true,
+      showPending: true,
+      showDeactivated: true,
 
     }
   },
