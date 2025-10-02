@@ -60,8 +60,8 @@ export default {
     shroomId: Number,
   },
   watch: {
-    shroomModalIsOpen(newVal) {
-      if (newVal) {
+    shroomModalIsOpen(newVal, oldVal) {
+      if (newVal && !oldVal) { // Only when opening
         this.onModalOpen();
       }
     },
@@ -97,7 +97,7 @@ export default {
   methods: {
 
     handleNewImageSelected(imageData) {
-      this.imageData = imageData
+      this.imageData = typeof imageData === 'object' && imageData.imageData ? imageData.imageData : imageData;
     },
 
     handleResetImageSelectComplete() {
@@ -161,6 +161,16 @@ export default {
             .then(response => this.imageData = response.data.imageData)
             .catch(() => {
             })
+      } else {
+        this.shroom ={
+          userId: 0,
+          shroomId: 0,
+          shroomName: '',
+          description: '',
+          status: ''
+        };
+        this.imageData = '';
+        this.resetFileInput = true
       }
     }
   },
