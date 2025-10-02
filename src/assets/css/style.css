@@ -175,3 +175,9 @@ h1 {
 .favorite-small .fa-heart {
     font-size: 1.5rem; /* Adjust the size as needed */
 }
+body {
+    background-color: #fdeadc !important; /* Replace with any color code or name */
+    margin: 0; /* Remove default margins */
+    padding: 0;
+    font-family: Arial, sans-serif; /* Optional: Define font styles */
+}

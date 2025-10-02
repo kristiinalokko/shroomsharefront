@@ -1,5 +1,6 @@
 <template>
   <nav>
+    <img src="@/assets/ShroomShare_logo.jpg" height="150" width="150"/>
 
     <router-link to="/locations">| Avaleht |</router-link>
 
