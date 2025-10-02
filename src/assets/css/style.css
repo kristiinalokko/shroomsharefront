@@ -1,4 +1,3 @@
-
 #app {
     font-family: Avenir, Helvetica, Arial, sans-serif;
     -webkit-font-smoothing: antialiased;
@@ -174,4 +173,299 @@ h1 {
 
 .favorite-small .fa-heart {
     font-size: 1.5rem; /* Adjust the size as needed */
+}
+
+/* Global 90s Button Styles */
+* {
+  font-family: 'Comic Neue', 'Comic Sans MS', cursive !important;
+}
+
+/* Override all buttons */
+button, .btn, input[type="button"], input[type="submit"] {
+  background: linear-gradient(45deg, #FF4500, #FFD700) !important;
+  color: #FFFFFF !important;
+  font-weight: bold !important;
+  font-size: 14px !important;
+  padding: 8px 16px !important;
+  border: 3px outset #FFD700 !important;
+  cursor: pointer !important;
+  font-family: 'Comic Neue', cursive !important;
+  text-shadow: 1px 1px 2px #000000 !important;
+  animation: buttonPulse 2s ease infinite !important;
+}
+
+button:hover, .btn:hover {
+  background: linear-gradient(45deg, #FFD700, #FF4500) !important;
+  border: 3px inset #FFD700 !important;
+  transform: scale(1.05) !important;
+}
+
+/* Success/Primary buttons */
+.btn-success, .btn-primary {
+  background: linear-gradient(45deg, #00FF00, #32CD32) !important;
+  border: 3px outset #32CD32 !important;
+}
+
+.btn-success:hover, .btn-primary:hover {
+  background: linear-gradient(45deg, #32CD32, #00FF00) !important;
+  border: 3px inset #32CD32 !important;
+}
+
+/* Danger/Delete buttons */
+.btn-danger {
+  background: linear-gradient(45deg, #FF0000, #FF69B4) !important;
+  border: 3px outset #FF69B4 !important;
+}
+
+.btn-danger:hover {
+  background: linear-gradient(45deg, #FF69B4, #FF0000) !important;
+  border: 3px inset #FF69B4 !important;
+}
+
+/* Warning buttons */
+.btn-warning {
+  background: linear-gradient(45deg, #FFA500, #FFFF00) !important;
+  border: 3px outset #FFFF00 !important;
+  color: #000000 !important;
+}
+
+.btn-warning:hover {
+  background: linear-gradient(45deg, #FFFF00, #FFA500) !important;
+  border: 3px inset #FFFF00 !important;
+}
+
+/* Secondary buttons */
+.btn-secondary {
+  background: linear-gradient(45deg, #800080, #FF00FF) !important;
+  border: 3px outset #FF00FF !important;
+}
+
+.btn-secondary:hover {
+  background: linear-gradient(45deg, #FF00FF, #800080) !important;
+  border: 3px inset #FF00FF !important;
+}
+
+/* Form inputs */
+input[type="text"], input[type="password"], input[type="email"], textarea, select {
+  border: 3px inset #C0C0C0 !important;
+  padding: 8px !important;
+  font-size: 14px !important;
+  font-family: 'Comic Neue', cursive !important;
+  background: linear-gradient(45deg, #FFFFFF, #F0F8FF) !important;
+}
+
+input:focus, textarea:focus, select:focus {
+  border: 3px outset #FFD700 !important;
+  background: linear-gradient(45deg, #FFFF99, #FFFFFF) !important;
+  box-shadow: 0 0 10px #FFD700 !important;
+}
+
+/* Checkboxes and radio buttons */
+input[type="checkbox"], input[type="radio"] {
+  transform: scale(1.5) !important;
+  margin: 5px !important;
+}
+
+/* Labels */
+label {
+  font-weight: bold !important;
+  color: #800080 !important;
+  text-shadow: 1px 1px 2px #FFFFFF !important;
+}
+
+/* Tables */
+table {
+  border-collapse: separate !important;
+  border-spacing: 2px !important;
+  border: 3px ridge #000000 !important;
+}
+
+th {
+  background: linear-gradient(45deg, #FF69B4, #FFD700) !important;
+  color: #000000 !important;
+  font-weight: bold !important;
+  text-shadow: 1px 1px 2px #FFFFFF !important;
+  border: 2px outset #C0C0C0 !important;
+  padding: 8px !important;
+}
+
+td {
+  border: 1px inset #C0C0C0 !important;
+  padding: 6px !important;
+  background: #FFFFFF !important;
+}
+
+/* Alerts */
+.alert {
+  border: 3px ridge #000000 !important;
+  animation: alertGlow 2s ease infinite !important;
+  font-weight: bold !important;
+}
+
+.alert-danger {
+  background: linear-gradient(45deg, #FF0000, #FF69B4) !important;
+  color: #FFFFFF !important;
+}
+
+.alert-success {
+  background: linear-gradient(45deg, #00FF00, #32CD32) !important;
+  color: #000000 !important;
+}
+
+/* Modal styling */
+.modal-content {
+  border: 5px ridge #FFD700 !important;
+  background: linear-gradient(45deg, #FFFFFF, #F0F8FF) !important;
+}
+
+.modal-header {
+  background: linear-gradient(90deg, #FF00FF, #00FFFF) !important;
+  border-bottom: 3px ridge #000000 !important;
+}
+
+.modal-title {
+  color: #FFFFFF !important;
+  text-shadow: 2px 2px 4px #000000 !important;
+  font-weight: bold !important;
+}
+
+.modal-footer {
+  background: linear-gradient(90deg, #FFD700, #FFA500) !important;
+  border-top: 3px ridge #000000 !important;
+}
+
+/* Dropdown menus */
+.dropdown-menu {
+  border: 3px ridge #000000 !important;
+  background: linear-gradient(135deg, #FFFFFF, #FFFFCC) !important;
+}
+
+.dropdown-item {
+  color: #800080 !important;
+  font-weight: bold !important;
+}
+
+.dropdown-item:hover {
+  background: linear-gradient(45deg, #FFFF00, #FF69B4) !important;
+  color: #000000 !important;
+}
+
+/* Animations */
+@keyframes buttonPulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.02); }
+}
+
+@keyframes alertGlow {
+  0%, 100% { box-shadow: 0 0 5px #FFD700; }
+  50% { box-shadow: 0 0 20px #FFD700, 0 0 30px #FFD700; }
+}
+
+/* Form groups */
+.form-group, .input-group {
+  margin: 15px 0 !important;
+}
+
+.form-label {
+  color: #FF0000 !important;
+  font-weight: bold !important;
+  text-shadow: 1px 1px 2px #FFFFFF !important;
+}
+
+/* Cards */
+.card {
+  border: 4px ridge #FFD700 !important;
+  background: linear-gradient(135deg, #FFFFFF, #F0F8FF) !important;
+  box-shadow: 5px 5px 15px #000000 !important;
+}
+
+.card-header {
+  background: linear-gradient(90deg, #FF69B4, #FFD700) !important;
+  border-bottom: 3px ridge #000000 !important;
+  font-weight: bold !important;
+}
+
+/* Navigation links */
+.nav-link {
+  color: #0000FF !important;
+  font-weight: bold !important;
+  text-decoration: underline !important;
+}
+
+.nav-link:hover {
+  color: #FF0000 !important;
+  background-color: #FFFF00 !important;
+}
+
+/* Pagination */
+.page-link {
+  background: linear-gradient(45deg, #FF69B4, #FFD700) !important;
+  border: 2px outset #C0C0C0 !important;
+  color: #000000 !important;
+  font-weight: bold !important;
+}
+
+.page-link:hover {
+  background: linear-gradient(45deg, #FFD700, #FF69B4) !important;
+  border: 2px inset #C0C0C0 !important;
+}
+
+/* File inputs */
+input[type="file"] {
+  border: 3px ridge #FFD700 !important;
+  background: linear-gradient(45deg, #FFFFFF, #FFFFCC) !important;
+  padding: 5px !important;
+  font-weight: bold !important;
+}
+
+/* Star ratings */
+.star-rating {
+  filter: drop-shadow(2px 2px 4px #FFD700) !important;
+}
+
+/* Breadcrumbs */
+.breadcrumb {
+  background: linear-gradient(90deg, #FFFF00, #FFA500) !important;
+  border: 2px ridge #000000 !important;
+}
+
+.breadcrumb-item a {
+  color: #800080 !important;
+  font-weight: bold !important;
+  text-decoration: underline !important;
+}
+
+/* Progress bars */
+.progress {
+  border: 2px ridge #000000 !important;
+  background: linear-gradient(90deg, #FFFFFF, #F0F0F0) !important;
+}
+
+.progress-bar {
+  background: linear-gradient(90deg, #00FF00, #32CD32) !important;
+  animation: progressGlow 2s ease infinite !important;
+}
+
+@keyframes progressGlow {
+  0%, 100% { filter: brightness(1); }
+  50% { filter: brightness(1.3); }
+}
+
+/* Scrollbars */
+::-webkit-scrollbar {
+  width: 20px !important;
+}
+
+::-webkit-scrollbar-track {
+  background: linear-gradient(90deg, #FF69B4, #FFD700) !important;
+  border: 2px ridge #000000 !important;
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(90deg, #800080, #FF00FF) !important;
+  border: 2px outset #C0C0C0 !important;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(90deg, #FF00FF, #800080) !important;
 }

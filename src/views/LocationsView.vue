@@ -1,127 +1,148 @@
 <template>
-  <div class="container-fluid">
-    <div class="row">
-      <h1 class="mb-3">Seene asukohad</h1>
-    </div>
-    <div class="row">
-      <!-- Left Column: Controls -->
-      <div class="col-lg-4 col-md-5">
-        <div class="controls-panel">
-          <MapShroomDropdown
-              :selected-shroom="filters.shroomId"
-              :placeholder="selectedShroomName"
-              @event-new-shroom-selected="setShroomId"
-          />
-          <h3>Filtreeri asukohti</h3>
-          <form @submit.prevent="applyFilters">
-            <div class="mb-2">
-              <label for="rating">Minimaalne rating:</label>
-              <input
-                  v-model.number="filters.minRating"
-                  type="number"
-                  id="rating"
-                  min="0"
-                  max="5"
-                  step="0.1"
-                  class="form-control"
-              />
-            </div>
-            <div class="mb-2">
-              <label for="lastActiveAfter">Viimane aktiivsus pärast:</label>
-              <input
-                  v-model="filters.lastActive"
-                  type="date"
-                  id="lastActiveAfter"
-                  class="form-control"
-              />
-            </div>
-            <div class="mb-2">
-              <label for="radius">Otsi kaugusel (km): {{ filters.radiusKm }}</label>
-              <input
-                  v-model.number="filters.radiusKm"
-                  type="number"
-                  id="radius"
-                  class="form-control"
-                  min="1"
-                  max="400"
-                  step="1"
-              />
-              <input
-                  v-model.number="filters.radiusKm"
-                  type="range"
-                  id="radiusSlider"
-                  class="form-range mt-2"
-                  min="1"
-                  max="400"
-                  step="1"
-              />
-            </div>
-            <button type="submit" class="btn btn-primary mt-2">Otsi</button>
-          </form>
-          <button class="btn btn-danger mt-3 w-100" @click="shareMyLocation">
-            Jaga minu asukohta
-          </button>
-        </div>
-      </div>
+  <div class="nineties-page">
+    <center>
+      <h1 class="nineties-title">
+        <blink>🍄 WELCOME TO THE ULTIMATE MUSHROOM DATABASE! 🍄</blink>
+      </h1>
+      <marquee behavior="scroll" direction="left" class="subtitle-marquee">
+        ★ Find the COOLEST mushrooms in your area! ★ Share your discoveries! ★ Join the fungus revolution! ★
+      </marquee>
+    </center>
 
-      <!-- Right Column: Map -->
-      <div class="col-lg-8 col-md-7">
-        <div class="map-wrapper">
-          <l-map
-              ref="mapRef"
-              :zoom="zoom"
-              :center="center"
-              :options="mapOptions"
-              style="height: 100vh; width: 100%;"
-              @ready="onMapReady"
-          >
-            <l-tile-layer :url="tileUrl" :attribution="attribution"></l-tile-layer>
+    <!-- 90s Alert Messages -->
+    <center v-if="errorMessage">
+      <table border="3" cellpadding="10" bgcolor="#FF0000" class="alert-table">
+        <tr>
+          <td align="center">
+            <font color="#FFFFFF" size="4"><b>⚠️ ERROR ALERT! ⚠️</b></font><br>
+            <font color="#FFFF00" size="3">{{ errorMessage }}</font>
+          </td>
+        </tr>
+      </table>
+    </center>
 
-            <!-- Shroom location markers -->
-            <l-marker
-                v-for="mapLocation in mapLocations"
-                :key="mapLocation.locationId"
-                :lat-lng="[mapLocation.latitude, mapLocation.longitude]"
-                :icon="blueShroomIcon"
-                @click="showPopup(mapLocation)"
-            >
-              <l-tooltip>{{ mapLocation.locationName }}</l-tooltip>
-              <l-popup>
-                <div>
-                  <strong>{{ mapLocation.locationName }}</strong><br />
-                  <StarRating :avg-rating="mapLocation.avgRating" />
-                  <div v-if="mapLocation.shrooms && mapLocation.shrooms.length > 0">
-                    <strong>Selle asukoha seened:</strong>
-                    <div v-for="shroom in mapLocation.shrooms" :key="shroom.shroomId">
-                      {{ shroom.shroomName }}
+    <center v-if="successMessage">
+      <table border="3" cellpadding="10" bgcolor="#00FF00" class="alert-table">
+        <tr>
+          <td align="center">
+            <font color="#FF0000" size="4"><b>🎉 SUCCESS! 🎉</b></font><br>
+            <font color="#0000FF" size="3">{{ successMessage }}</font>
+          </td>
+        </tr>
+      </table>
+    </center>
+
+    <!-- Main Content in 90s Table Layout -->
+    <table width="100%" border="5" cellpadding="15" cellspacing="5" bgcolor="#FFFF99" class="main-table">
+      <tr>
+        <td width="20%" bgcolor="#FF69B4" valign="top">
+          <center>
+            <h3 class="sidebar-title">🌟 SITE INFO 🌟</h3>
+            <p class="sidebar-text">
+              <blink>NEW!</blink> Upload your mushroom pics!<br><br>
+              💯 Over 1337 mushrooms catalogued!<br><br>
+              🔥 Hot locations updated daily!<br><br>
+              ⭐ Join our growing community!
+            </p>
+            <img src="@/assets/shroom.png" width="80" height="80" alt="Cool Shroom" class="spinning-image">
+          </center>
+        </td>
+        <td bgcolor="#FFFFFF" class="main-content">
+          <!-- 90s Map Section -->
+          <center>
+            <h2 class="content-title">🗺️ FIND MUSHROOMS ON OUR INTERACTIVE MAP! 🗺️</h2>
+            <table border="2" bgcolor="#FFFFCC" cellpadding="10" width="100%">
+              <tr>
+                <td align="center">
+                  <font color="#FF0000" size="3"><b>Choose your favorite shroom type:</b></font><br>
+                  <MapShroomDropdown @event-new-shroom-selected="setShroomId" />
+                  <br><br>
+                  <button @click="shareMyLocation" class="nineties-map-button">📍 USE MY LOCATION! 📍</button>
+                </td>
+              </tr>
+            </table>
+
+            <!-- The Map -->
+            <div class="map-container">
+              <LMap
+                v-model:zoom="zoom"
+                v-model:center="center"
+                :options="mapOptions"
+                @ready="onMapReady"
+                style="height: 400px; width: 100%; border: 5px ridge #000000;"
+              >
+                <LTileLayer :url="tileUrl" :attribution="attribution" />
+
+                <!-- Red draggable pin -->
+                <LMarker
+                  :lat-lng="[clickPin.latitude, clickPin.longitude]"
+                  :icon="myLocationIcon"
+                  :draggable="true"
+                  @moveend="onPinDrag"
+                >
+                  <LTooltip>📍 Your Search Center</LTooltip>
+                </LMarker>
+
+                <!-- Blue mushroom pins -->
+                <LMarker
+                  v-for="mapLocation in mapLocations"
+                  :key="mapLocation.locationId"
+                  :lat-lng="[mapLocation.latitude, mapLocation.longitude]"
+                  :icon="blueShroomIcon"
+                  @click="showPopup(mapLocation)"
+                >
+                  <LPopup>
+                    <div class="popup-content">
+                      <h4>{{ mapLocation.locationName }}</h4>
+                      <StarRating :rating="mapLocation.averageRating" />
+                      <div v-for="shroom in mapLocation.shrooms" :key="shroom.shroomId">
+                        🍄 {{ shroom.shroomName }}
+                      </div>
+                      <button @click="goToLocationInfoPage(mapLocation)" class="popup-button">
+                        VIEW DETAILS
+                      </button>
                     </div>
-                  </div>
-                  <strong>Lisas:</strong> {{ mapLocation.username }}<br />
-                  <strong>Lisatud:</strong> {{ mapLocation.createdAt }}<br />
-                  <button
-                      @click="goToLocationInfoPage(mapLocation)"
-                      class="btn btn-primary mt-2"
-                  >
-                    Vaata kogu infot
-                  </button>
-                </div>
-              </l-popup>
-            </l-marker>
+                  </LPopup>
+                </LMarker>
+              </LMap>
+            </div>
+          </center>
+        </td>
+        <td width="20%" bgcolor="#00FFFF" valign="top">
+          <center>
+            <h3 class="sidebar-title">🎵 COOL LINKS 🎵</h3>
+            <p class="sidebar-text">
+              <a href="#" class="nineties-sidebar-link">🍄 Mushroom Facts</a><br><br>
+              <a href="#" class="nineties-sidebar-link">📧 Email Webmaster</a><br><br>
+              <a href="#" class="nineties-sidebar-link">💾 Download Screensaver</a><br><br>
+              <a href="#" class="nineties-sidebar-link">🎮 Mushroom Game</a>
+            </p>
+            <marquee direction="up" height="100px" class="vertical-marquee">
+              ⭐ Best viewed at 800x600! ⭐ Requires Internet Explorer 4.0! ⭐
+            </marquee>
+          </center>
+        </td>
+      </tr>
+    </table>
 
-            <!-- Draggable red pin for "Minu asukoht" -->
-            <l-marker
-                v-if="clickPin"
-                :lat-lng="[clickPin.latitude, clickPin.longitude]"
-                :draggable="true"
-                :icon="myLocationIcon"
-                @update:lat-lng="onPinDrag"
-            >
-              <l-tooltip direction="top" :permanent="false">Minu asukoht</l-tooltip>
-            </l-marker>
-          </l-map>
-        </div>
-      </div>
-    </div>
+    <!-- Guest Book Section -->
+    <center>
+      <table border="4" cellpadding="10" bgcolor="#FFD700" class="guestbook-table">
+        <tr bgcolor="#FF4500">
+          <td align="center">
+            <font color="#FFFFFF" size="5"><b>📝 SIGN OUR GUEST BOOK! 📝</b></font>
+          </td>
+        </tr>
+        <tr>
+          <td align="center">
+            <font color="#800080" size="3">
+              <b>Leave a message for other mushroom enthusiasts!</b><br>
+              Tell us about your favorite fungi discoveries!
+            </font>
+          </td>
+        </tr>
+      </table>
+    </center>
   </div>
 </template>
 
@@ -308,15 +329,135 @@ export default {
 </script>
 
 <style scoped>
-.map-wrapper {
-  height: 100vh;
-  width: 100%;
-}
-.controls-panel {
+.nineties-page {
+  background: repeating-linear-gradient(
+    45deg,
+    #FFE4E1,
+    #FFE4E1 10px,
+    #E6E6FA 10px,
+    #E6E6FA 20px
+  );
+  min-height: 100vh;
   padding: 20px;
-  height: 100vh;
-  overflow-y: auto;
-  background-color: #f8f9fa;
-  border-right: 1px solid #dee2e6;
+}
+
+.nineties-title {
+  font-size: 36px;
+  color: #FF0000;
+  text-shadow: 3px 3px 0px #00FF00, 6px 6px 0px #0000FF;
+  font-weight: bold;
+  margin: 20px 0;
+  text-decoration: underline;
+}
+
+.subtitle-marquee {
+  font-size: 18px;
+  color: #800080;
+  font-weight: bold;
+  background: linear-gradient(90deg, #FFFF00, #FF69B4, #00FFFF);
+  padding: 10px;
+  border: 3px solid #000000;
+  margin: 10px 0;
+}
+
+.alert-table {
+  margin: 15px 0;
+  animation: alertPulse 1s ease infinite;
+}
+
+@keyframes alertPulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.02); }
+  100% { transform: scale(1); }
+}
+
+.main-table {
+  box-shadow: 10px 10px 20px #000000;
+  border-collapse: separate;
+  border-spacing: 5px;
+}
+
+.sidebar-title {
+  color: #000080;
+  font-size: 16px;
+  text-decoration: underline;
+  text-shadow: 2px 2px 4px #FFFFFF;
+}
+
+.sidebar-text {
+  color: #000000;
+  font-size: 12px;
+  font-weight: bold;
+  line-height: 1.6;
+}
+
+.nineties-sidebar-link {
+  color: #0000FF;
+  text-decoration: underline;
+  font-weight: bold;
+}
+
+.nineties-sidebar-link:hover {
+  color: #FF0000;
+  background-color: #FFFF00;
+}
+
+.spinning-image {
+  animation: spin 3s linear infinite;
+  border: 3px ridge #FFD700;
+  margin: 10px 0;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.vertical-marquee {
+  font-size: 11px;
+  color: #800080;
+  font-weight: bold;
+  background-color: #FFFFFF;
+  border: 2px solid #000000;
+  padding: 5px;
+}
+
+.main-content {
+  padding: 20px;
+  font-size: 14px;
+}
+
+.guestbook-table {
+  margin: 20px 0;
+  animation: guestbookGlow 2s ease-in-out infinite alternate;
+}
+
+@keyframes guestbookGlow {
+  0% { box-shadow: 0 0 5px #FFD700; }
+  100% { box-shadow: 0 0 20px #FFD700, 0 0 30px #FFD700; }
+}
+
+.map-container {
+  position: relative;
+  width: 100%;
+  height: 400px;
+  margin: 20px 0;
+  border: 5px ridge #000000;
+}
+
+.nineties-map-button {
+  background-color: #FF69B4;
+  color: #FFFFFF;
+  font-weight: bold;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.nineties-map-button:hover {
+  background-color: #FF1493;
 }
 </style>
+
