@@ -128,7 +128,7 @@ export default {
       this.imageData = profile.imageData
       this.modalIsOpen = false
       ProfileService.sendPostProfileRequest(this.profile)
-          .then(() => this.handlePostResponse)
+          .then(() => this.handlePostResponse())
           .catch(error => this.handleErrorResponse(error))
     },
 
