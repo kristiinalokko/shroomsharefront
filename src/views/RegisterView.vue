@@ -54,7 +54,9 @@ export default {
       errorResponse: {
         message: '',
         errorCode: 0,
-      }
+      },
+
+      alertMessage:''
 
     }
   },

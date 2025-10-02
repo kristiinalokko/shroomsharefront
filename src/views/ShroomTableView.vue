@@ -37,6 +37,16 @@
   <div v-if="isLoggedIn" class="row">
     <h1 class="mt-5">Siin on sinu lisatud seened: </h1>
     <AlertSuccess :message="successMessage"/>
+    <div v-if="isAdmin" class="btn-group mb-3" role="group" aria-label="Status filter">
+      <input v-model="showActive" type="checkbox" class="btn-check" id="btnActive" autocomplete="off">
+      <label class="btn btn-outline-success" for="btnActive">Aktiivne</label>
+
+      <input v-model="showPending" type="checkbox" class="btn-check" id="btnPending" autocomplete="off">
+      <label class="btn btn-outline-warning" for="btnPending">Ootel</label>
+
+      <input v-model="showDeactivated" type="checkbox" class="btn-check" id="btnDeactivated" autocomplete="off">
+      <label class="btn btn-outline-danger" for="btnDeactivated">Deaktiveeritud</label>
+    </div>
   </div>
   <div v-if="isLoggedIn" class="row">
     <div class="col">
@@ -52,7 +62,7 @@
           <th scope="col"></th>
         </tr>
         </thead>
-        <tbody v-for="shroom in shrooms">
+        <tbody v-for="shroom in filteredShrooms">
         <tr v-if="(userId===shroom.userId) || isAdmin">
           <th scope="row">
             <router-link :to="{ path: '/shroom-info', query: { shroomId: shroom.shroomId } }">
@@ -111,6 +121,16 @@ export default {
   name: 'ShroomTableView',
   components: {AlertSuccess, AlertDanger, DeleteConfirmationModal, ShroomModal},
   computed: {
+    filteredShrooms() {
+      if (!this.isAdmin) return this.shrooms;
+
+      return this.shrooms.filter(shroom => {
+        if (shroom.status === 'A' && this.showActive) return true;
+        if (shroom.status === 'P' && this.showPending) return true;
+        if (shroom.status === 'D' && this.showDeactivated) return true;
+        return false;
+      });
+    },
     sessionStorageService() {
       return sessionStorageService
     },
@@ -145,7 +165,9 @@ export default {
 
       successMessage: '',
 
-
+      showActive: true,
+      showPending: true,
+      showDeactivated: true,
 
     }
   },
