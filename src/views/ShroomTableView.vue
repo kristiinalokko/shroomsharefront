@@ -30,11 +30,13 @@
     </div>
   </div>
   <div v-if="isLoggedIn" class="row justify-content-center">
-    <button @click="shroomModalIsOpen=true; shroomId = '0'" type="button" class="btn btn-primary col-3 me-3">Lisa uus seen
+    <button @click="shroomModalIsOpen=true; shroomId = '0'" type="button" class="btn btn-primary col-3 me-3">Lisa uus
+      seen
     </button>
   </div>
   <div v-if="isLoggedIn" class="row">
     <h1 class="mt-5">Siin on sinu lisatud seened: </h1>
+    <AlertSuccess :message="successMessage"/>
   </div>
   <div v-if="isLoggedIn" class="row">
     <div class="col">
@@ -64,15 +66,19 @@
           </td>
           <td>
             <div v-if="shroom.status !== 'D'" class="btn-group" role="group" aria-label="Basic example">
-              <button @click="shroomModalIsOpen=true; shroomId=shroom.shroomId" type="button" class="btn btn-primary">Muuda</button>
+              <button @click="shroomModalIsOpen=true; shroomId=shroom.shroomId" type="button" class="btn btn-primary">
+                Muuda
+              </button>
               <button @click="NavigationService.navigateToShroomInfoView(shroom.shroomId)" type="button"
                       class="btn btn-secondary">Vaata lähemalt
               </button>
-              <button v-if="sessionStorageService.isAdmin() && shroom.status=== 'P'" @click="activateShroom(shroom.shroomId)" type="button"
+              <button v-if="sessionStorageService.isAdmin() && shroom.status=== 'P'"
+                      @click="activateShroom(shroom.shroomId)" type="button"
                       class="btn btn-success">Aktiveeri
               </button>
               <button v-if="sessionStorageService.isAdmin() && shroom.status !== 'D'"
-                      @click="confirmationModalIsOpen=true; shroomId=shroom.shroomId" type="button" class="btn btn-danger">Deaktiveeri
+                      @click="confirmationModalIsOpen=true; shroomId=shroom.shroomId" type="button"
+                      class="btn btn-danger">Deaktiveeri
               </button>
               <DeleteConfirmationModal :confirmationModalIsOpen="confirmationModalIsOpen"
                                        @event-delete="deleteShroom(shroomId)"
@@ -92,16 +98,18 @@
 
 <script>
 import ShroomService from "@/services/ShroomService";
+import shroomService from "@/services/ShroomService";
 import SessionStorageService from "@/services/SessionStorageService";
 import sessionStorageService from "@/services/SessionStorageService";
 import NavigationService from "@/services/NavigationService";
 import ShroomModal from "@/components/modal/ShroomModal.vue";
 import DeleteConfirmationModal from "@/components/modal/DeleteConfirmationModal.vue";
-import shroomService from "@/services/ShroomService";
+import AlertDanger from "@/components/AlertDanger.vue";
+import AlertSuccess from "@/components/AlertSuccess.vue";
 
 export default {
   name: 'ShroomTableView',
-  components: {DeleteConfirmationModal, ShroomModal},
+  components: {AlertSuccess, AlertDanger, DeleteConfirmationModal, ShroomModal},
   computed: {
     sessionStorageService() {
       return sessionStorageService
@@ -135,6 +143,10 @@ export default {
         errorCode: 0
       },
 
+      successMessage: '',
+
+
+
     }
   },
   methods: {
@@ -143,6 +155,7 @@ export default {
       ShroomService.sendDeleteShroomRequest(shroomId)
           .then(() => {
             this.confirmationModalIsOpen = false;
+            this.handleSuccessAlert("Kustutatud")
             this.getAllShrooms()
           })
           .catch(error => this.handleErrorResponse(error))
@@ -160,7 +173,6 @@ export default {
 
     handleErrorResponse(error) {
       this.errorResponse = error.response.data
-      // alert(this.errorResponse.message)
     },
 
     getStatusLabel(status) {
@@ -176,17 +188,29 @@ export default {
       return '';
     },
 
-    handleCloseModal(){
+    handleCloseModal() {
       this.shroomModalIsOpen = false;
       this.confirmationModalIsOpen = false;
       this.getAllShrooms()
     },
 
-    activateShroom(shroomId){
+    activateShroom(shroomId) {
       shroomService.sendActivateShroomRequest(shroomId)
-          .then(() => this.getAllShrooms())
+          .then(() => {
+            this.getAllShrooms()
+            this.handleSuccessAlert("Aktiveeritud")
+          })
           .catch(error => this.handleErrorResponse(error))
-    }
+    },
+
+    handleSuccessAlert(message) {
+      this.successMessage = message
+      setTimeout(this.resetAlertMessage, 4000)
+    },
+
+    resetAlertMessage() {
+      this.successMessage = ''
+    },
 
   },
   mounted() {

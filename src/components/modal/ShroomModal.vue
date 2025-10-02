@@ -1,8 +1,9 @@
 <template>
   <Modal :modal-is-open="shroomModalIsOpen" @event-close-modal="$emit('event-close-modal')">
     <template #title>
-      <span v-if="isEdit" >Uuenda seent:</span>
-      <span v-else >Lisa uus seen:</span>
+      <span v-if="isEdit">Uuenda seent:</span>
+      <span v-else>Lisa uus seen:</span>
+      <AlertDanger :message="alertMessage"/>
     </template>
     <template #body>
       <div class="container text-center">
@@ -35,7 +36,8 @@
     </template>
 
     <template #buttons>
-      <button v-if="this.isEdit" @click="updateShroom" type="button" class="btn btn-outline-success me-3">Uuenda</button>
+      <button v-if="this.isEdit" @click="updateShroom" type="button" class="btn btn-outline-success me-3">Uuenda
+      </button>
       <button v-else @click="addShroom" type="button" class="btn btn-outline-success me-3">Lisa</button>
       <button @click="$emit('event-close-modal')" type="button" class="btn btn-outline-danger">Sulge</button>
     </template>
@@ -51,10 +53,11 @@ import LocationImage from "@/components/Image.vue";
 import Image from "@/components/Image.vue";
 import ShroomService from "@/services/ShroomService";
 import ImageService from "@/services/ImageService";
+import AlertDanger from "@/components/AlertDanger.vue";
 
 export default {
   name: 'ShroomModal',
-  components: {Image, LocationImage: LocationImage, ImageInput, Modal},
+  components: {AlertDanger, Image, LocationImage: LocationImage, ImageInput, Modal},
   props: {
     shroomModalIsOpen: Boolean,
     shroomId: Number,
@@ -66,8 +69,8 @@ export default {
       }
     },
   },
-  computed:{
-    isEdit(){
+  computed: {
+    isEdit() {
       return this.shroomId > 0
     },
   },
@@ -91,6 +94,8 @@ export default {
         message: '',
         errorCode: 0
       },
+
+      alertMessage: ''
 
     }
   },
@@ -122,7 +127,7 @@ export default {
             .then(() => this.handleShroomAdded())
             .catch(error => this.handleErrorResponse(error));
       } else {
-        alert("täida väljad")
+        this.handleAlertDanger("Täida kõik väljad")
       }
     },
 
@@ -134,7 +139,7 @@ export default {
             .then(() => this.handleShroomUpdated())
             .catch(error => this.handleErrorResponse(error));
       } else {
-        alert("täida väljad")
+        this.handleAlertDanger("Täida kõik väljad")
       }
     },
 
@@ -143,13 +148,20 @@ export default {
     },
 
     handleShroomAdded() {
-      alert("Seen edukalt lisatud")
       this.$emit('event-close-modal');
     },
 
     handleShroomUpdated() {
-      alert("Seen edukalt uuendatud")
       this.$emit('event-close-modal');
+    },
+
+    handleAlertDanger(message) {
+      this.alertMessage = message
+      setTimeout(this.resetAlert, 4000)
+    },
+
+    resetAlert(){
+      this.alertMessage = ''
     },
 
     onModalOpen() {
@@ -162,7 +174,7 @@ export default {
             .catch(() => {
             })
       } else {
-        this.shroom ={
+        this.shroom = {
           userId: 0,
           shroomId: 0,
           shroomName: '',
