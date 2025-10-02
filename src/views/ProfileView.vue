@@ -137,6 +137,7 @@ export default {
     },
 
     handlePostResponse() {
+      this.isEdit = true
       this.successMessage = "Profiil edukalt lisatud"
       setTimeout(this.resetSuccessMessage, 4000)
     },
