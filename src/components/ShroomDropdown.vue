@@ -48,6 +48,13 @@ export default {
       dropdownOpen: false
     };
   },
+  watch: {
+    dropdownOpen(newValue) {
+      if (newValue) {
+        this.getAllShrooms()
+      }
+    }
+  },
   computed: {
     filteredShrooms() {
       return this.shrooms.filter((s) =>

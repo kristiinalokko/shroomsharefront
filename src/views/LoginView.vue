@@ -2,7 +2,7 @@
   <h1>
     Tere, palun logi sisse
   </h1>
-
+<alert-danger :message="errorResponse.message"/>
   <div class="container text-center justify-content-center">
     <div class="row">
       <div class="col">
@@ -28,9 +28,11 @@
 <script>
 import LoginService from "@/services/LoginService";
 import NavigationService from "@/services/NavigationService";
+import AlertDanger from "@/components/AlertDanger.vue";
 
 export default {
   name: 'LoginView',
+  components: {AlertDanger},
   data() {
     return {
       username: '',
@@ -69,9 +71,12 @@ export default {
 
     handleErrorResponse(error) {
       this.errorResponse = error.response.data
-      alert(this.errorResponse.message)
+      setTimeout(this.resetErrorMessage, 4000)
     },
 
+    resetErrorMessage(){
+      this.errorResponse.message = ''
+    }
   },
 
   mounted() {

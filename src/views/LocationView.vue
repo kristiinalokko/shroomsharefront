@@ -51,6 +51,10 @@
           <button v-else @click="saveLocation" type="button" class="btn btn-primary col-3 me-3">Salvesta</button>
           <button @click="$router.go(-1)" type="button" class="btn btn-secondary col-3 me-3">Tagasi</button>
         </div>
+        <div>
+          <AlertSuccess :message="successMessage"/>
+          <AlertDanger :message="errorMessage"/>
+        </div>
       </div>
     </div>
   </div>
@@ -175,8 +179,9 @@ export default {
       if (this.inputIsValid()) {
         this.location.userId = sessionStorage.getItem('userId')
         LocationService.sendNewLocationRequest(this.location)
-            .then(() => {
+            .then((response) => {
               this.handleSuccessMessage("Salvestatud")
+              this.locationId = response.data
               this.isEdit = true
               this.getLocationShrooms(this.locationId)
             })
